@@ -1,0 +1,22 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/d/Downloads/iojs-v3.3.1-linux-x64/bin/iojs',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'watch' ]
+2 info using npm@3.3.8
+3 info using node@v3.3.1
+4 verbose stack Error: ENOENT: no such file or directory, open '/mnt/B/Javascript_Monads/__acc_Zone27/JS-monads-part3/package.json'
+4 verbose stack     at Error (native)
+5 verbose cwd /mnt/B/Javascript_Monads/__acc_Zone27/JS-monads-part3
+6 error Linux 3.16.0-37-generic
+7 error argv "/home/d/Downloads/iojs-v3.3.1-linux-x64/bin/iojs" "/usr/local/bin/npm" "run" "watch"
+8 error node v3.3.1
+9 error npm  v3.3.8
+10 error path /mnt/B/Javascript_Monads/__acc_Zone27/JS-monads-part3/package.json
+11 error code ENOENT
+12 error errno -2
+13 error syscall open
+14 error enoent ENOENT: no such file or directory, open '/mnt/B/Javascript_Monads/__acc_Zone27/JS-monads-part3/package.json'
+14 error enoent This is most likely not a problem with npm itself
+14 error enoent and is related to npm not being able to find a file.
+15 verbose exit [ -2, true ]
