@@ -29,7 +29,7 @@ var makeWSDriver = function () {
   }
 }
 
-mM1.ret([2,4,6,8]);
+mM1.ret([0,0,0,0]);
 mM3.ret([]);
 
 function main(sources) {
