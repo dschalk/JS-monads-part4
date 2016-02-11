@@ -123,7 +123,7 @@ main = do
     state <- atomically $ newTMVar newServerState
     Warp.runSettings Warp.defaultSettings
       { Warp.settingsTimeout = 36000,
-        Warp.settingsPort = 3093 
+        Warp.settingsPort = 3099 
       } $ WaiWS.websocketsOr WS.defaultConnectionOptions (application state) staticApp
 staticApp :: Network.Wai.Application
 staticApp = Static.staticApp $ Static.embeddedSettings $(embedDir "client")

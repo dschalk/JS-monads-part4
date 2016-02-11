@@ -12,7 +12,7 @@ mM6.ret('');
 function createWebSocket(path) {
     let host = window.location.hostname;
     if(host == '') host = 'localhost';
-    let uri = 'ws://' + host + ':3093' + path;
+    let uri = 'ws://' + host + ':3099' + path;
     let Socket = "MozWebSocket" in window ? MozWebSocket : WebSocket;
     return new Socket(uri);
 }
@@ -172,19 +172,22 @@ function main(sources) {
       h('br'),
       h('br'),
       h('br'),
-      h('p.login', {style: tempStyle}, 'In order to create a unique socket, please enter some name.'  ),
+      h('p.login', {style: tempStyle}, 'Please enter some name.'  ),
       h('br'),
       h('input.login', {style: tempStyle }   ),
       h('p', mM6.x.toString() ),
-      h('p.fred', {style: tempStyle2}, 'Enter messages here: '  ),
-      h('input.inputMessage', {style: tempStyle2}  ),
-      h('p.group2', [ 
-      h('p',  'Group: ' + Group ),
-      h('p',  'Goals: ' + mMgoals.x ) ]),
-      h('div.score', mMscoreboard.x ),
       h('p.group', {style: tempStyle2}, 'Change group: '  ),
       h('input.group', {style: tempStyle2} ),
-      h('div.messages', mMmessages.x  )
+      h('div.messages', [
+      h('p', {style: tempStyle2}, 'Enter messages here: '  ),
+      h('input.inputMessage', {style: tempStyle2} ),
+      h('div', mMmessages.x  ) ]),
+      h('p.group2', [ 
+      h('p',  'Group: ' + Group ),
+      h('p',  'Goals: ' + mMgoals.x ),
+      h('div.scoreDisplay', [
+      h('span', 'player[score][goals]' ),
+      h('div', mMscoreboard.x ) ]) ]),
       ])
     )  
   } 
@@ -228,10 +231,10 @@ var updateScoreboard = function updateScoreboard(v) {
   let ar = mMscbd.x;
   let keys = Object.keys(ar);
   for (let k in keys) {
-    mMscoreboard.bnd(unshift, h('p', ar[k]))
-  }
-    mMscoreboard
-    .bnd(unshift, h('h3', 'player [score] [goals]'))
+    mMscoreboard.bnd(unshift, h('br'))
+    .bnd(unshift, ar[k])
+    
+ }
   return mMscoreboard;
 }
 
