@@ -143,7 +143,7 @@ function main(sources) {
 
   return {
     DOM: 
-      calcStream$.map(x => 
+      calcStream$.map(() => 
       h('div.content', [ 
       h('br'),
       h('h2', 'JS-monads-part4' ),
@@ -197,18 +197,16 @@ function updateCalc() {
   ret('start').bnd(() => (
       ( mMZ2.bnd(() => mM13
                     .bnd(score, 1)
-                    .bnd(v => mM13.ret(v))
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
-                    .bnd(newRoll)) ),
+                    .bnd(newRoll))) ),
       ( mMZ4.bnd(() => mM13
                     .bnd(score, 3)
-                    .bnd(v => mM13.ret(v))
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
-                    .bnd(newRoll)) ),
+                    .bnd(newRoll))) ),
           ( mMZ5.bnd(() => mM13
                         .bnd(score,5)
-                        .bnd(v => mM13.ret(v))
-                        .bnd(next, 25, mMZ6)) ),
+                        .bnd(v => mM13.ret(v)
+                        .bnd(next, 25, mMZ6))) ),
               ( mMZ6.bnd(() => mM9.bnd(score2) 
                             .bnd(next,3,mMZ7)) ),
                   (mMZ7.bnd(() => mM13.bnd(winner)) ),                 
@@ -223,7 +221,6 @@ function updateCalc() {
                     .ret([])
                     .bnd(() => mM4
                     .ret(0).bnd(mM8.ret))))) ) 
-  ))     
 }
 
 var updateScoreboard = function updateScoreboard(v) {
@@ -268,7 +265,7 @@ var send = function() {
 
 var score = function score(v,j) {
   socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 0);
-  return ret(v + j);
+  return mM13.ret(v + j);
 }
 
 var score2 = function score2() {

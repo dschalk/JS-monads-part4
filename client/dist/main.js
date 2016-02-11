@@ -7399,7 +7399,7 @@ function main(sources) {
   var calcStream$ = (0, _most.merge)(groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
-    DOM: calcStream$.map(function (x) {
+    DOM: calcStream$.map(function () {
       return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'The first step in preparing the fourth page in this series was refactoring the code to use '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', '. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', mMscoreboard.x)])])]);
     })
   };
@@ -7408,27 +7408,23 @@ function main(sources) {
 function updateCalc() {
   ret('start').bnd(function () {
     return mMZ2.bnd(function () {
-      return mM13.bnd(score, 1).bnd(function (v) {
-        return mM13.ret(v);
-      }).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
-    }), mMZ4.bnd(function () {
-      return mM13.bnd(score, 3).bnd(function (v) {
-        return mM13.ret(v);
-      }).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
-    }), mMZ5.bnd(function () {
-      return mM13.bnd(score, 5).bnd(function (v) {
-        return mM13.ret(v);
-      }).bnd(next, 25, mMZ6);
-    }), mMZ6.bnd(function () {
-      return mM9.bnd(score2).bnd(next, 3, mMZ7);
-    }), mMZ7.bnd(function () {
-      return mM13.bnd(winner);
-    }), mM3.bnd(function (x) {
-      return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4).bnd(next, 20, mMZ2).bnd(function () {
-        return mM1.bnd(push, mM7.x).bnd(mM1.ret).bnd(displayOff, mM1.x.length + '').bnd(function () {
-          return mM3.ret([]).bnd(function () {
-            return mM4.ret(0).bnd(mM8.ret);
-          });
+      return mM13.bnd(score, 1).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
+    });
+  }, mMZ4.bnd(function () {
+    return mM13.bnd(score, 3).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
+  })), mMZ5.bnd(function () {
+    return mM13.bnd(score, 5).bnd(function (v) {
+      return mM13.ret(v).bnd(next, 25, mMZ6);
+    });
+  }), mMZ6.bnd(function () {
+    return mM9.bnd(score2).bnd(next, 3, mMZ7);
+  }), mMZ7.bnd(function () {
+    return mM13.bnd(winner);
+  }), mM3.bnd(function (x) {
+    return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4).bnd(next, 20, mMZ2).bnd(function () {
+      return mM1.bnd(push, mM7.x).bnd(mM1.ret).bnd(displayOff, mM1.x.length + '').bnd(function () {
+        return mM3.ret([]).bnd(function () {
+          return mM4.ret(0).bnd(mM8.ret);
         });
       });
     });
@@ -7475,7 +7471,7 @@ var send = function send() {
 
 var score = function score(v, j) {
   socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 0);
-  return ret(v + j);
+  return mM13.ret(v + j);
 };
 
 var score2 = function score2() {
