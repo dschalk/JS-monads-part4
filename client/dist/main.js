@@ -7409,22 +7409,22 @@ function updateCalc() {
   ret('start').bnd(function () {
     return mMZ2.bnd(function () {
       return mM13.bnd(score, 1).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
-    });
-  }, mMZ4.bnd(function () {
-    return mM13.bnd(score, 3).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
-  })), mMZ5.bnd(function () {
-    return mM13.bnd(score, 5).bnd(function (v) {
-      return mM13.ret(v).bnd(next, 25, mMZ6);
-    });
-  }), mMZ6.bnd(function () {
-    return mM9.bnd(score2).bnd(next, 3, mMZ7);
-  }), mMZ7.bnd(function () {
-    return mM13.bnd(winner);
-  }), mM3.bnd(function (x) {
-    return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4).bnd(next, 20, mMZ2).bnd(function () {
-      return mM1.bnd(push, mM7.x).bnd(mM1.ret).bnd(displayOff, mM1.x.length + '').bnd(function () {
-        return mM3.ret([]).bnd(function () {
-          return mM4.ret(0).bnd(mM8.ret);
+    }), mMZ4.bnd(function () {
+      return mM13.bnd(score, 3).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
+    }), mMZ5.bnd(function () {
+      return mM13.bnd(score, 5).bnd(function (v) {
+        return mM13.ret(v).bnd(next, 25, mMZ6);
+      });
+    }), mMZ6.bnd(function () {
+      return mM9.bnd(score2).bnd(next, 3, mMZ7);
+    }), mMZ7.bnd(function () {
+      return mM13.bnd(winner);
+    }), mM3.bnd(function (x) {
+      return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4).bnd(next, 20, mMZ2).bnd(function () {
+        return mM1.bnd(push, mM7.x).bnd(mM1.ret).bnd(displayOff, mM1.x.length + '').bnd(function () {
+          return mM3.ret([]).bnd(function () {
+            return mM4.ret(0).bnd(mM8.ret);
+          });
         });
       });
     });

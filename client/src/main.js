@@ -198,11 +198,11 @@ function updateCalc() {
       ( mMZ2.bnd(() => mM13
                     .bnd(score, 1)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
-                    .bnd(newRoll))) ),
+                    .bnd(newRoll)) ),
       ( mMZ4.bnd(() => mM13
                     .bnd(score, 3)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
-                    .bnd(newRoll))) ),
+                    .bnd(newRoll)) ),
           ( mMZ5.bnd(() => mM13
                         .bnd(score,5)
                         .bnd(v => mM13.ret(v)
@@ -221,6 +221,7 @@ function updateCalc() {
                     .ret([])
                     .bnd(() => mM4
                     .ret(0).bnd(mM8.ret))))) ) 
+  ))
 }
 
 var updateScoreboard = function updateScoreboard(v) {
