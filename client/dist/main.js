@@ -7280,21 +7280,21 @@ function createWebSocket(path) {
 
 var socket = createWebSocket('/');
 
-var makeWSDriver = function makeWSDriver() {
-  return function () {
-    return (0, _most.create)(function (add) {
-      socket.onmessage = function (msg) {
-        add(msg);
-      };
-    });
-  };
+var websocketsDriver = function websocketsDriver() {
+  return (0, _most.create)(function (add) {
+    socket.onmessage = function (msg) {
+      add(msg);
+    };
+  });
 };
+
+console.log(websocketsDriver);
 
 mM1.ret([0, 0, 0, 0]);
 mM3.ret([]);
 
 function main(sources) {
-
+  console.log(sources);
   var messages$ = sources.WS.map(function (e) {
     var prefix = e.data.substring(0, 6);
     var ar = e.data.split(",");
@@ -7557,7 +7557,7 @@ function updateGroup(e) {
 
 var sources = {
   DOM: (0, _motorcycleDom.makeDOMDriver)('#main-container'),
-  WS: makeWSDriver()
+  WS: websocketsDriver
 };
 
 _motorcycleCore2['default'].run(main, sources);

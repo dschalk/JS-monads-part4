@@ -19,21 +19,21 @@ function createWebSocket(path) {
 
 const socket = createWebSocket('/');
 
-var makeWSDriver = function () {
-  return function () {
+var websocketsDriver = function () {
     return create(add => {
       socket.onmessage = (msg) => {
         add(msg)
       }
     })
   }
-}
+
+console.log(websocketsDriver);
 
 mM1.ret([0,0,0,0]);
 mM3.ret([]);
 
 function main(sources) {
-
+  console.log(sources); 
   const messages$ = (sources.WS).map(e => {
     let prefix = e.data.substring(0,6);
     let ar = e.data.split(",");
@@ -356,7 +356,7 @@ function updateGroup(e) {
 
 const sources = {
   DOM: makeDOMDriver('#main-container'),
-  WS: makeWSDriver()
+  WS: websocketsDriver
 }
 
 
