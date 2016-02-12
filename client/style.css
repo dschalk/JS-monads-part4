@@ -47,6 +47,11 @@ button {
   color: #BBBBFF;
 }
 
+.winner {
+  color: #FF0000;
+  font-size: 27px;
+}
+
 .p {
   text-indent: 20px;
   }

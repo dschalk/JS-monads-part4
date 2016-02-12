@@ -64,6 +64,9 @@ function main(sources) {
       .bnd(push,str)
       .bnd(updateMessages)
     }
+    if (prefix === 'CE#$42') {
+      mMgoals.ret('The winner is ' + ar[2]);
+    }
   });
 
   const loginPress$ = sources.DOM
@@ -170,6 +173,8 @@ function main(sources) {
       h('br'),
       h('button.roll', {style: tempStyle2}, 'ROLL' ),
       h('br'),
+      h('br'),
+      h('div.winner', mMgoals2.x+''  ),
       h('br'),
       h('br'),
       h('p.login', {style: tempStyle}, 'Please enter some name.'  ),
@@ -279,8 +284,9 @@ var score2 = function score2() {
 
 var winner = function winner() {
   let k = -3
-  mMgoals.ret(mMgoals.x + 1);
+  mMgoals.ret(mMgoals.x - 3);
   socket.send('CG#$42,' + Group + ',' + Name + ',' + 0 + ',' + k);
+  socket.send('CE#$42,' + Group + ',' + Name);
   mMgoals2.ret('The winner is ' + Name);
   return ret(0);
 }
