@@ -7409,7 +7409,8 @@ function main(sources) {
 function updateCalc() {
   ret('start').bnd(function () {
     return mMZ2.bnd(function () {
-      return mM13.bnd(score, 1).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
+      return mM13.bnd(score, 1).bnd(next2, mM13.x % 5 === 0, mMZ5) // Releases mMZ5.
+      .bnd(newRoll);
     }), mMZ4.bnd(function () {
       return mM13.bnd(score, 3).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
     }), mMZ5.bnd(function () {
@@ -7421,7 +7422,8 @@ function updateCalc() {
     }), mMZ7.bnd(function () {
       return mM13.bnd(winner);
     }), mM3.bnd(function (x) {
-      return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4).bnd(next, 20, mMZ2).bnd(function () {
+      return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4) // Releases mMZ4.
+      .bnd(next, 20, mMZ2).bnd(function () {
         return mM1.bnd(push, mM7.x) // Returns an anonymous monad.
         .bnd(mM1.ret) // Gives mM1 the anonymous monad's value.
         .bnd(displayOff, mM1.x.length + '').bnd(function () {
@@ -7466,10 +7468,6 @@ var displayOff = function displayOff(x, a) {
 var displayInline = function displayInline(x, a) {
   document.getElementById(a).style.display = 'inline';
   return ret(x);
-};
-
-var send = function send() {
-  socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
 };
 
 var score = function score(v, j) {
@@ -7539,12 +7537,6 @@ function updateMessage(e) {
     e.target.value = '';
     console.log('Here is the message ', e.target.value);
   }
-}
-
-function pauseDemo() {
-  mM1.ret("Wait two seconds.").bnd(update).bnd(pause, 2, mMZ1).bnd(function () {
-    return mM1.ret("Goodbye").bnd(update);
-  });
 }
 
 function updateGroup(e) {

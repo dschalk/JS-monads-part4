@@ -201,7 +201,7 @@ function updateCalc() {
   ret('start').bnd(() => (
       ( mMZ2.bnd(() => mM13
                     .bnd(score, 1)
-                    .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
+                    .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.
                     .bnd(newRoll)) ),
       ( mMZ4.bnd(() => mM13
                     .bnd(score, 3)
@@ -216,7 +216,7 @@ function updateCalc() {
                   (mMZ7.bnd(() => mM13.bnd(winner)) ),                 
       (mM3.bnd(x => mM7
                     .ret(calc(x[0], mM8.x, x[1]))
-                    .bnd(next, 18, mMZ4)
+                    .bnd(next, 18, mMZ4)  // Releases mMZ4.
                     .bnd(next, 20, mMZ2) 
                     .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.
                     .bnd(mM1.ret)   // Gives mM1 the anonymous monad's value.
@@ -262,10 +262,6 @@ var displayOff = function displayOff(x,a) {
 var displayInline = function displayInline(x,a) {
     document.getElementById(a).style.display = 'inline';
     return ret(x);
-};
-
-var send = function() {
-  socket.send(`CA#$42,${Group},${Name},6,6,12,20`);
 };
 
 var score = function score(v,j) {
@@ -335,14 +331,6 @@ function updateMessage(e) {
     e.target.value = '';
     console.log('Here is the message ', e.target.value);
   }
-}
-
-function pauseDemo() {
-  mM1.ret("Wait two seconds.")
-    .bnd(update)
-    .bnd(pause,2,mMZ1)
-    .bnd(() => mM1.ret("Goodbye")
-    .bnd(update))
 }
 
 function updateGroup(e) {
