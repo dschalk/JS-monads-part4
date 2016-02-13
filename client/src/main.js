@@ -49,8 +49,7 @@ function main(sources) {
       mMscbd.ret(scores)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
-      .bnd(() => mM8.ret(0)
-      .bnd(() => mM6)));
+      .bnd(() => mM8.ret(0) ));
     }
     if (prefix === 'CC#$42') {
       mM6.ret( ar[2] + ' successfully logged in.');

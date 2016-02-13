@@ -7306,9 +7306,7 @@ function main(sources) {
       var scores = ar[3].split("<br>");
       mMscbd.ret(scores).bnd(updateScoreboard).bnd(function () {
         return mM3.ret([]).bnd(function () {
-          return mM8.ret(0).bnd(function () {
-            return mM6;
-          });
+          return mM8.ret(0);
         });
       });
     }
