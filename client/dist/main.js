@@ -7422,7 +7422,9 @@ function updateCalc() {
       return mM13.bnd(winner);
     }), mM3.bnd(function (x) {
       return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4).bnd(next, 20, mMZ2).bnd(function () {
-        return mM1.bnd(push, mM7.x).bnd(mM1.ret).bnd(displayOff, mM1.x.length + '').bnd(function () {
+        return mM1.bnd(push, mM7.x) // Returns an anonymous monad.
+        .bnd(mM1.ret) // Gives mM1 the anonymous monad's value.
+        .bnd(displayOff, mM1.x.length + '').bnd(function () {
           return mM3.ret([]).bnd(function () {
             return mM4.ret(0).bnd(mM8.ret);
           });

@@ -218,8 +218,8 @@ function updateCalc() {
                     .ret(calc(x[0], mM8.x, x[1]))
                     .bnd(next, 18, mMZ4)
                     .bnd(next, 20, mMZ2) 
-                    .bnd(() => mM1.bnd(push,mM7.x)
-                    .bnd(mM1.ret)
+                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.
+                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad's value.
                     .bnd(displayOff, ((mM1.x.length)+''))
                     .bnd(() => mM3
                     .ret([])
