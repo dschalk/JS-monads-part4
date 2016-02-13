@@ -7288,17 +7288,13 @@ var websocketsDriver = function websocketsDriver() {
   });
 };
 
-console.log(websocketsDriver);
-
 mM1.ret([0, 0, 0, 0]);
 mM3.ret([]);
 
 function main(sources) {
-  console.log(sources);
   var messages$ = sources.WS.map(function (e) {
     var prefix = e.data.substring(0, 6);
     var ar = e.data.split(",");
-    console.log('e', e);
     if (prefix === 'CA#$42') {
       mM1.ret([ar[3], ar[4], ar[5], ar[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3');
     }
@@ -7330,13 +7326,11 @@ function main(sources) {
   var loginPress$ = sources.DOM.select('input.login').events('keydown');
 
   var loginPressAction$ = loginPress$.map(function (e) {
-    console.log('updateLogin ', e);
     var v = e.target.value;
     if (v == '') {
       return;
     }
     if (e.keyCode == 13) {
-      console.log('e.target.value ', e.target.value);
       socket.send("CC#$42" + v);
       Name = v;
       mM3.ret([]).bnd(mM2.ret);
@@ -7349,7 +7343,6 @@ function main(sources) {
   var groupPress$ = sources.DOM.select('input.group').events('keydown');
 
   var groupPressAction$ = groupPress$.map(function (e) {
-    console.log('In groupPressAction');
     var v = e.target.value;
     if (v == '') {
       return;
@@ -7368,8 +7361,6 @@ function main(sources) {
   });
 
   var numClick$ = sources.DOM.select('.num').events('click');
-
-  console.log('numClick$ ', numClick$);
 
   var numClickAction$ = numClick$.map(function (e) {
     mM3.bnd(push, e.target.textContent).bnd(function () {
@@ -7496,56 +7487,6 @@ var newRoll = function newRoll(v) {
   socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
   return ret(v);
 };
-
-function updateLogin(e) {
-  console.log('updateLogin ', e);
-  var v = e.target.value;
-  if (v == '') {
-    return;
-  }
-  if (e.keyCode == 13) {
-    socket.send("CC#$42" + v);
-    Name = v;
-    mM3.ret([]).bnd(mM2.ret);
-    e.target.value = '';
-    tempStyle = { display: 'none' };
-    tempStyle2 = { display: 'inline' };
-  }
-}
-
-function updateGoback() {
-  monadStyle = inputStyleA;
-  chatStyle = inputStyleB;
-  update0();
-}
-
-function updateRoll() {
-  mM13.ret(mM13.x - 1);
-  socket.send('CG#$42,' + Group + ',' + Name + ',' + -1 + ',' + 0);
-  socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
-}
-
-function updateGotochat() {
-  monadStyle = inputStyleB;
-  chatStyle = inputStyleA;
-  update0();
-}
-
-function updateMessage(e) {
-  if (e.keyCode == 13) {
-    socket.send('CD#$42,' + Group + ',' + Name + ',' + e.target.value);
-    e.target.value = '';
-    console.log('Here is the message ', e.target.value);
-  }
-}
-
-function updateGroup(e) {
-  Group = e.target.value;
-  if (e.keyCode == 13) {
-    socket.send('CO#$42,' + e.target.value + ',' + Name + ',' + e.target.value);
-  }
-  oldVnode = patch(oldVnode, newVnode());
-}
 
 var sources = {
   DOM: (0, _motorcycleDom.makeDOMDriver)('#main-container'),

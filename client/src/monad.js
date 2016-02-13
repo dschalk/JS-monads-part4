@@ -60,6 +60,7 @@ var M = function M(a,b) {
   return mon;
 };
 
+var Count = 0;
 var mM1 = M([],'mM1');
 var mM2 = M(0,'mM2');
 var mM3 = M(0,'mM3');
