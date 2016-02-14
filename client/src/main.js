@@ -31,38 +31,42 @@ mM1.ret([0,0,0,0]);
 mM3.ret([]);
 
 function main(sources) {
-  const messages$ = (sources.WS).map(e => {
-    let prefix = e.data.substring(0,6);
-    let ar = e.data.split(",");
-    if (prefix === 'CA#$42') {
-      mM1.ret([ar[3], ar[4], ar[5], ar[6]])
+  const messages$ = (sources.WS).map(e => 
+    mMar.ret(e.data.split(','))
+    .bnd(() => mMprefix.ret(mMar.x[0]))
+    .bnd(() => mMscores.ret(mMar.x[3].split("<br>")))
+    .bnd(() => mMname.ret(mMar.x[2])).bnd(() =>
+    (mMZ10.bnd(() => ret('temp')
+      .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
-      .bnd(displayInline,'3');
-    }
-    if (prefix === 'CB#$42') {
-      let scores = ar[3].split("<br>");
-      mMscbd.ret(scores)
+      .bnd(displayInline,'3')
+      .bnd(log, 'In CA#$42' )) )),
+    (mMZ11.bnd(() => ret('temp')
+      .bnd(map, mMscbd.ret(mMscores.x)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
-      .bnd(() => mM8.ret(0) ));
-    }
-    if (prefix === 'CC#$42') {
-      mM6.ret( ar[2] + ' successfully logged in.');
-    }
-    if (prefix === 'CD#$42') {
-      let name = ar[2];
-      ar.splice(0,3);
-      let message = ar.reduce((a,b) => a + ", " + b)
-      let str = name + ': ' + message;
-      mMmsg
-      .bnd(push,str)
+      .bnd(() => mM8.ret(0) ))
+      .bnd(log, 'In CB#$42' )))),
+    (mMZ12.bnd(() => ret('temp')   
+      .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')
+      .bnd(log, 'In CC#$42' )))),
+    (mMZ13.bnd(() => mMar
+      .bnd(splice, 0 ,3)
+      .bnd(reduce, (a,b) => a + ", " + b)
+      .bnd(() => mMmsg
+      .bnd(push, mMname.x + ': ' + mMar.x)
       .bnd(updateMessages)
-    }
-    if (prefix === 'CE#$42') {
-      mMgoals.ret('The winner is ' + ar[2]);
-    }
-  });
+      .bnd(log, 'In CD#$42' )))),
+    (mMZ14.bnd(() => ret('temp')
+      .bnd(map, mMgoals.ret('The winner is ' + mMname.x ) 
+      .bnd(log, 'In CE#$42' )))),
+  (ret('tests')
+   .bnd(next2, mMprefix.x === 'CA#$42', mMZ10)
+   .bnd(next2, mMprefix.x === 'CB#$42', mMZ11)
+   .bnd(next2, mMprefix.x === 'CC#$42', mMZ12)
+   .bnd(next2, mMprefix.x === 'CD#$42', mMZ13)
+   .bnd(next2, mMprefix.x === 'CE#$42', mMZ14))))
 
   const loginPress$ = sources.DOM
     .select('input.login').events('keydown');
@@ -251,7 +255,7 @@ var displayOff = function displayOff(x,a) {
 };
 
 var displayInline = function displayInline(x,a) {
-    document.getElementById(a).style.display = 'inline';
+    if (document.getElementById(a)) document.getElementById(a).style.display = 'inline';
     return ret(x);
 };
 

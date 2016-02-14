@@ -88,6 +88,10 @@ var mMgoals = M(0,'mMgoals');
 var mMgoals2 = M('','mMgoals2');
 var mMnbrs = M([],'mMnbrs');
 var mMnumbers = M([],'mMnumbers');
+var mMname = M('', 'mMname');
+var mMar = M([1,2,3,4,5], 'mMar');
+var mMscores = M('', 'mMscores');
+var mMprefix = M('', 'mMprefix');
 
 var MI = function MI() {
   return new MonadIter();
@@ -102,6 +106,11 @@ var mMZ6 = MI();
 var mMZ7 = MI();
 var mMZ8 = MI();
 var mMZ9 = MI();
+var mMZ10 = MI();
+var mMZ11 = MI();
+var mMZ12 = MI();
+var mMZ13 = MI();
+var mMZ14 = MI();
 
 var toNums = function toNums(x) {
   let y = x.map(x => parseFloat(x));
@@ -153,8 +162,31 @@ var toFloat = function toFloat(x) {
   return ret(newx);
 };
 
-var splice = function splice(x,i) {
-  let ar = x.splice(i,1);
+var splice = function splice(x, j, k) {
+  let ar;
+  if (Array.isArray(x)) {ar = x.splice(j,k)}
+  else {ar = x};
+  return ret(ar);
+}
+
+var filter = function filter(x, condition) {
+  let ar;
+  if (Array.isArray(x)) {ar = x.filter(() => condition)}
+  else (ar = x);
+  return ret(ar);
+}
+
+var map = function map(x, y) {
+  let ar;
+  if (Array.isArray(x)) {ar = x.map(v => y)}
+  else (ar = x);
+  return ret(ar);
+}
+
+var reduce = function reduce(x, y) {
+  let ar;
+  if (Array.isArray(x) && x.length > 0) {ar = x.reduce(y)}
+  else (ar = x);
   return ret(ar);
 }
 
