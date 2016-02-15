@@ -59,7 +59,7 @@ function main(sources) {
       .bnd(updateMessages)
       .bnd(log, 'In CD#$42' )))),
     (mMZ14.bnd(() => ret('temp')
-      .bnd(map, mMgoals.ret('The winner is ' + mMname.x ) 
+      .bnd(map, mMgoals2.ret('The winner is ' + mMname.x ) 
       .bnd(log, 'In CE#$42' )))),
   (ret('tests')
    .bnd(next2, mMprefix.x === 'CA#$42', mMZ10)
@@ -276,8 +276,7 @@ var winner = function winner() {
   let k = -3
   mMgoals.ret(mMgoals.x - 3);
   socket.send('CG#$42,' + Group + ',' + Name + ',' + 0 + ',' + k);
-  socket.send('CE#$42,' + Group + ',' + Name);
-  mMgoals2.ret('The winner is ' + Name);
+  socket.send('CE#$42,' + Group + ',' + Name + ',nothing ');
   return ret(0);
 }
 

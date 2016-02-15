@@ -106,11 +106,22 @@ var mMZ6 = MI();
 var mMZ7 = MI();
 var mMZ8 = MI();
 var mMZ9 = MI();
+
 var mMZ10 = MI();
 var mMZ11 = MI();
 var mMZ12 = MI();
 var mMZ13 = MI();
 var mMZ14 = MI();
+var mMZ15 = MI();
+var mMZ16 = MI();
+
+var mMZ20 = MI();
+var mMZ21 = MI();
+var mMZ22 = MI();
+var mMZ23 = MI();
+var mMZ24 = MI();
+var mMZ25 = MI();
+var mMZ26 = MI();
 
 var toNums = function toNums(x) {
   let y = x.map(x => parseFloat(x));
@@ -143,11 +154,11 @@ var pause = function(x,t,mon2) {
   return mon2;
 };
 
-var push = function push(x,v) {
-  let ar = x;
-  ar.push(v);
-  let cleanX = ar.filter(v => (v !== "" && v !== undefined));
-  return ret(cleanX);
+var wait = function wait(x, y, mon2) {
+  if (x === y) {
+    mon2.release();
+  }
+  return mon2;
 };
 
 var unshift = function unshift(x,v) {
@@ -162,32 +173,49 @@ var toFloat = function toFloat(x) {
   return ret(newx);
 };
 
+var push = function push(x, j) {
+  if (Array.isArray(x)) {
+    return ret(x.push(j));
+  }
+  return ret(x);
+}
+
+var push = function push(x,v) {
+  let ar = x;
+  ar.push(v);
+  let cleanX = ar.filter(v => (v !== "" && v !== undefined));
+  return ret(cleanX);
+};
 var splice = function splice(x, j, k) {
-  let ar;
-  if (Array.isArray(x)) {ar = x.splice(j,k)}
-  else {ar = x};
-  return ret(ar);
+  if (Array.isArray(x)) {
+    return ret(x.splice(j,k));
+  }
+  return ret(x);
+}
+
+var clean = function clean(x) {
+  return ret(x.filter(v => v !== ""));
 }
 
 var filter = function filter(x, condition) {
-  let ar;
-  if (Array.isArray(x)) {ar = x.filter(() => condition)}
-  else (ar = x);
-  return ret(ar);
+  if (Array.isArray(x)) {
+    return ret(x.filter(v => condition))
+  }
+  return ret(x);
 }
 
 var map = function map(x, y) {
-  let ar;
-  if (Array.isArray(x)) {ar = x.map(v => y)}
-  else (ar = x);
-  return ret(ar);
+  if (Array.isArray(x)) {
+    return ret(x.map(v => y))
+  }
+  return ret(x);
 }
 
 var reduce = function reduce(x, y) {
-  let ar;
-  if (Array.isArray(x) && x.length > 0) {ar = x.reduce(y)}
-  else (ar = x);
-  return ret(ar);
+  if (Array.isArray(x) && x.length > 0) {
+    return ret(x.reduce(y))
+  }
+  return ret(x);
 }
 
 var pop = function pop(x) {
