@@ -21,11 +21,9 @@ const socket = createWebSocket('/');
 
 var websocketsDriver = function () {
     return create(add => {
-      socket.onmessage = (msg) => {
-        add(msg)
-      }
+      socket.onmessage = msg => add(msg)
     })
-  }
+}
 
 mM1.ret([0,0,0,0]);
 mM3.ret([]);

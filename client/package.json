@@ -10,9 +10,13 @@
     "@cycle/http": "^8.0.0",
     "@motorcycle/core": "^1.1.0",
     "@motorcycle/dom": "^1.1.0",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
     "most": "^0.18.0",
     "rx": "4.0.6",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "webpack": "^1.12.13"
   },
   "devDependencies": {
     "browserify": "11.0.1",
