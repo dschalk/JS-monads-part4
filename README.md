@@ -13,26 +13,21 @@ Refactored the JS-monads-part3 game to use [Motorcyclejs](https://github.com/mot
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
       .bnd(displayInline,'3')
-      .bnd(log, 'In CA#$42' )) )),
     (mMZ11.bnd(() => ret('temp')
       .bnd(map, mMscbd.ret(mMscores.x)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
       .bnd(() => mM8.ret(0) ))
-      .bnd(log, 'In CB#$42' )))),
     (mMZ12.bnd(() => ret('temp')   
       .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')
-      .bnd(log, 'In CC#$42' )))),
     (mMZ13.bnd(() => mMar
       .bnd(splice, 0 ,3)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
       .bnd(push, mMname.x + ': ' + mMar.x)
       .bnd(updateMessages)
-      .bnd(log, 'In CD#$42' )))),
     (mMZ14.bnd(() => ret('temp')
       .bnd(map, mMgoals.ret('The winner is ' + mMname.x ) 
-      .bnd(log, 'In CE#$42' )))),
   (ret('tests')  // Anonymous monad with value 'tests'.
    .bnd(next2, mMprefix.x === 'CA#$42', mMZ10)
    .bnd(next2, mMprefix.x === 'CB#$42', mMZ11)
