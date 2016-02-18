@@ -2,25 +2,44 @@
 1 verbose cli [ '/home/d/Downloads/iojs-v3.3.1-linux-x64/bin/iojs',
 1 verbose cli   '/usr/local/bin/npm',
 1 verbose cli   'run',
-1 verbose cli   'build' ]
+1 verbose cli   'watch' ]
 2 info using npm@3.3.8
 3 info using node@v3.3.1
-4 verbose stack Error: missing script: build
-4 verbose stack     at run (/home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/lib/run-script.js:148:19)
-4 verbose stack     at /home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/lib/run-script.js:58:5
-4 verbose stack     at /home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/node_modules/read-package-json/read-json.js:345:5
-4 verbose stack     at checkBinReferences_ (/home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/node_modules/read-package-json/read-json.js:309:45)
-4 verbose stack     at final (/home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/node_modules/read-package-json/read-json.js:343:3)
-4 verbose stack     at then (/home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/node_modules/read-package-json/read-json.js:113:5)
-4 verbose stack     at ReadFileContext.<anonymous> (/home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/node_modules/read-package-json/read-json.js:284:20)
-4 verbose stack     at ReadFileContext.callback (/home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:76:16)
-4 verbose stack     at FSReqWrap.readFileAfterOpen [as oncomplete] (fs.js:303:13)
-5 verbose cwd /mnt/B/Javascript_Monads/__acc_Zone_29/JS-monads-part4/client
-6 error Linux 3.16.0-37-generic
-7 error argv "/home/d/Downloads/iojs-v3.3.1-linux-x64/bin/iojs" "/usr/local/bin/npm" "run" "build"
-8 error node v3.3.1
-9 error npm  v3.3.8
-10 error missing script: build
-11 error If you need help, you may report this error at:
-11 error     <https://github.com/npm/npm/issues>
-12 verbose exit [ 1, true ]
+4 verbose run-script [ 'prewatch', 'watch', 'postwatch' ]
+5 info lifecycle example@0.0.0~prewatch: example@0.0.0
+6 silly lifecycle example@0.0.0~prewatch: no script for prewatch, continuing
+7 info lifecycle example@0.0.0~watch: example@0.0.0
+8 verbose lifecycle example@0.0.0~watch: unsafe-perm in lifecycle true
+9 verbose lifecycle example@0.0.0~watch: PATH: /home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/bin/node-gyp-bin:/mnt/B/Javascript_Monads/__acc_Zone_29/JS-monads-part4/client/node_modules/.bin:/home/d/.local:home/d/.stack/programs/x86_64-linux/ghc-7.8.4/bin:/opt/ghc/7.8.4/bin:/home/d/.cabal/bin://home/d/.cabal/bin:/home/d/.cabal/bin:/home/d/.nix-profile/bin:/home/d/.nix-profile/sbin:/home/d/bin:/opt/ghc/7.8.4/bin:/usr/local/bin:/home/d/.cabal/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin
+10 verbose lifecycle example@0.0.0~watch: CWD: /mnt/B/Javascript_Monads/__acc_Zone_29/JS-monads-part4/client
+11 silly lifecycle example@0.0.0~watch: Args: [ '-c',
+11 silly lifecycle   'watchify src/main.js -t babelify --outfile dist/main.js' ]
+12 info lifecycle example@0.0.0~watch: Failed to exec watch script
+13 verbose stack Error: example@0.0.0 watch: `watchify src/main.js -t babelify --outfile dist/main.js`
+13 verbose stack spawn ENOENT
+13 verbose stack     at ChildProcess.<anonymous> (/home/d/Downloads/iojs-v3.3.1-linux-x64/lib/node_modules/npm/lib/utils/spawn.js:17:16)
+13 verbose stack     at emitTwo (events.js:87:13)
+13 verbose stack     at ChildProcess.emit (events.js:172:7)
+13 verbose stack     at maybeClose (internal/child_process.js:764:16)
+13 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+14 verbose pkgid example@0.0.0
+15 verbose cwd /mnt/B/Javascript_Monads/__acc_Zone_29/JS-monads-part4/client
+16 error Linux 3.16.0-37-generic
+17 error argv "/home/d/Downloads/iojs-v3.3.1-linux-x64/bin/iojs" "/usr/local/bin/npm" "run" "watch"
+18 error node v3.3.1
+19 error npm  v3.3.8
+20 error file sh
+21 error code ELIFECYCLE
+22 error errno ENOENT
+23 error syscall spawn
+24 error example@0.0.0 watch: `watchify src/main.js -t babelify --outfile dist/main.js`
+24 error spawn ENOENT
+25 error Failed at the example@0.0.0 watch script 'watchify src/main.js -t babelify --outfile dist/main.js'.
+25 error This is most likely a problem with the example package,
+25 error not with npm itself.
+25 error Tell the author that this fails on your system:
+25 error     watchify src/main.js -t babelify --outfile dist/main.js
+25 error You can get their info via:
+25 error     npm owner ls example
+25 error There is likely additional logging output above.
+26 verbose exit [ 1, true ]

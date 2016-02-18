@@ -55,6 +55,10 @@ var add = function(a,b) {
   return ret(a+b);
 }
 
+var addAr = function(a,b) {
+  return ret(a.map(v => v*1 + b*1));
+}
+
 var M = function M(a,b) {
   var mon = new Monad(a,b);
   return mon;
@@ -92,6 +96,7 @@ var mMname = M('', 'mMname');
 var mMar = M([1,2,3,4,5], 'mMar');
 var mMscores = M('', 'mMscores');
 var mMprefix = M('', 'mMprefix');
+var mMfib = M([0,1], 'mMfib');
 
 var MI = function MI() {
   return new MonadIter();
@@ -122,6 +127,16 @@ var mMZ23 = MI();
 var mMZ24 = MI();
 var mMZ25 = MI();
 var mMZ26 = MI();
+
+var fib = function fib(x,k) {
+  let j = k;
+
+  while (j > 0) {
+    x = [x[1], x[0] + x[1]];
+    j -= 1;
+  }
+  return ret('fibonacci ' + k + ' = ' + x[0]);
+}
 
 var toNums = function toNums(x) {
   let y = x.map(x => parseFloat(x));

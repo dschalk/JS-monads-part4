@@ -1,13 +1,17 @@
 import Cycle from '@motorcycle/core';
 import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom';
 import {just, create, merge} from 'most';
+import cow from './cow';
 
 var Group = 'solo';
 var Goals = 0;
 var Name;
+var FIB = 'waiting';
+var Result = '';
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
 mM6.ret('');
+mMfib.ret([0,1]);
 
 function createWebSocket(path) {
     let host = window.location.hostname;
@@ -134,7 +138,19 @@ function main(sources) {
     socket.send(`CA#$42,${Group},${Name},6,6,12,20`);
   });
 
-  const calcStream$ = merge(groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const fibPress$ = sources.DOM
+    .select('input#code').events('keydown');
+
+  const fibPressAction$ = fibPress$.map(e => {
+    let v = e.target.value;
+    if (v == '' ) {
+      return;
+    } 
+    if( e.keyCode == 13 ) 
+      FIB = mMfib.bnd(fib,v).x;
+  });
+
+  const calcStream$ = merge(fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -143,13 +159,14 @@ function main(sources) {
       h('br'),
       h('h2', 'JS-monads-part4' ),
       h('br'),
-      h('span', 'The first step in preparing the fourth page in this series was refactoring the code to use ' ),
+      h('span', 'This installment of the JS-monads series features ' ),
       h('a', {props: {href: 'https://github.com/motorcyclejs' },  style: {color: '#EECCFF'}},'Motorcyclejs' ), 
-      h('span', '. Motorcyclejs is Cyclejs, only using '  ),  
+      h('span', 'handling the monads. Motorcyclejs is Cyclejs, only using '  ),  
       h('a', {props: {href: 'https://github.com/paldepind/snabbdom' },  style: {color: '#EECCFF'}},'Snabbdom' ), 
       h('span',  ' instead of "virtual-dom", and ' ), 
       h('a', {props: {href: 'https://github.com/cujojs/most' },  style: {color: '#EECCFF'}},'Most' ), 
       h('span',  ' instead of "RxJS".'  ), 
+      h('h3', 'The Game From JS-monads-part3' ),
       h('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '    ),
       h('br'),
       h('button#0.num', mM1.x[0]+'' ),
@@ -185,6 +202,68 @@ function main(sources) {
       h('div.scoreDisplay', [
       h('span', 'player[score][goals]' ),
       h('div', mMscoreboard.x ) ]) ]),
+      h('hr'),
+      h('p', 'Here are the definitions of the monad constructors: '   ),
+      h('pre', `  class Monad {
+    var _this = this; 
+    constructor(z,g) {
+
+      this.x = z;
+      if (arguments.length === 1) {this.id = 'anonymous'}
+      else {this.id = g}
+
+      this.bnd = function (func, ...args) {
+        return func(_this.x, ...args);
+      };
+
+      this.ret = function (a) {
+        _this.x = a;
+        return _this;
+      };
+    }
+  };
+
+  class MonadIter {
+    var _this = this;                  
+    constructor() {
+
+      this.p = function() {};
+
+      this.release = function () {
+        return _this.p();
+      }
+ 
+      this.bnd = function (func) {
+          _this.p = func;
+      }
+    }
+  } ` ),
+      h('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: ' ),
+      h('pre', `  var fib = function fib(x,k) {
+  let j = k;
+
+  while (j > 0) {
+    x = [x[1], x[0] + x[1]];
+    j -= 1;
+  }
+  return ret('fibonacci ' + k + ' = ' + x[0]);   // An anonymous monad holding the result.
+}
+` ),  
+      h('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows: mMfib.bnd(fib,n). The result will be displayed undernieth the input box. ' ),
+      h('input#code', ),  
+      h('p#code2', FIB ),  
+      h('hr', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', ),  
+      h('p', )  
       ])
     )  
   } 
