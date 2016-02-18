@@ -23,7 +23,7 @@ function createWebSocket(path) {
 
 const socket = createWebSocket('/');
 
-var websocketsDriver = function () {
+const websocketsDriver = function () {
     return create(add => {
       socket.onmessage = msg => add(msg)
     })
@@ -146,8 +146,7 @@ function main(sources) {
     if (v == '' ) {
       return;
     } 
-    if( e.keyCode == 13 ) 
-      FIB = mMfib.bnd(fib,v).x;
+    if( e.keyCode == 13 ) FIB = mMfib.bnd(fib,v).x;
   });
 
   const calcStream$ = merge(fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
@@ -240,20 +239,74 @@ function main(sources) {
   } ` ),
       h('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: ' ),
       h('pre', `  var fib = function fib(x,k) {
-  let j = k;
-
-  while (j > 0) {
-    x = [x[1], x[0] + x[1]];
-    j -= 1;
+    let j = k;
+    while (j > 0) {
+      x = [x[1], x[0] + x[1]];
+      j -= 1;
+    }
+    return ret('fibonacci ' + k + ' = ' + x[0]);   // An anonymous monad holding the result.
   }
-  return ret('fibonacci ' + k + ' = ' + x[0]);   // An anonymous monad holding the result.
-}
 ` ),  
       h('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows: mMfib.bnd(fib,n). The result will be displayed undernieth the input box. ' ),
       h('input#code', ),  
       h('p#code2', FIB ),  
       h('hr', ),  
-      h('p', ),  
+      h('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '  ),  
+      h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part4'}, style: {color: '#EECCFF'}},  'https://github.com/dschalk/JS-monads-part4'  ),
+      h('span', 'I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:' ),  
+      h('pre', `  var websocketsDriver = function () {
+    return create(add => {
+      socket.onmessage = msg => add(msg)
+    })
+  }
+` ),
+      h('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '  ),  
+      h('p', 'This is how the driver, referenced by "sources.WS", is used: '   ),  
+      h('pre', `  function main(sources) {
+  const messages$ = (sources.WS).map(e => 
+    mMar.ret(e.data.split(','))
+    .bnd(() => mMprefix.ret(mMar.x[0]))
+    .bnd(() => mMscores.ret(mMar.x[3].split("<br>")))
+    .bnd(() => mMname.ret(mMar.x[2])).bnd(() =>
+    (mMZ10.bnd(() => ret('temp')
+      .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
+      .bnd(displayInline,'1')
+      .bnd(displayInline,'2')
+      .bnd(displayInline,'3')
+      .bnd(log, 'In CA#$42' )) )),
+    (mMZ11.bnd(() => ret('temp')
+      .bnd(map, mMscbd.ret(mMscores.x)
+      .bnd(updateScoreboard)
+      .bnd(() => mM3.ret([])
+      .bnd(() => mM8.ret(0) ))
+      .bnd(log, 'In CB#$42' )))),
+    (mMZ12.bnd(() => ret('temp')   
+      .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')
+      .bnd(log, 'In CC#$42' )))),
+    (mMZ13.bnd(() => mMar
+      .bnd(splice, 0 ,3)
+      .bnd(reduce, (a,b) => a + ", " + b)
+      .bnd(() => mMmsg
+      .bnd(push, mMname.x + ': ' + mMar.x)
+      .bnd(updateMessages)
+      .bnd(log, 'In CD#$42' )))),
+    (mMZ14.bnd(() => ret('temp')
+      .bnd(map, mMgoals2.ret('The winner is ' + mMname.x ) 
+      .bnd(log, 'In CE#$42' )))),
+  (ret('tests')
+   .bnd(next2, mMprefix.x === 'CA#$42', mMZ10)
+   .bnd(next2, mMprefix.x === 'CB#$42', mMZ11)
+   .bnd(next2, mMprefix.x === 'CC#$42', mMZ12)
+   .bnd(next2, mMprefix.x === 'CD#$42', mMZ13)
+   .bnd(next2, mMprefix.x === 'CE#$42', mMZ14)))) `  ),
+      h('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which which comes after the call to its "bnd" method. "next2" causes the code referenced by "p" to execute when the specified condition returns true. Here is its definition: ' ),  
+      h('pre', `  var next2 = function next(x, condition, mon2) {
+    if (condition) {
+      mon2.release();
+    }
+    return ret(x);
+  } `  ),
+      h('p', ' "main" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. No further function calls are necessary. '   ),  
       h('p', ),  
       h('p', ),  
       h('p', ),  
