@@ -160,7 +160,7 @@ function main(sources) {
       h('br'),
       h('span', 'This installment of the JS-monads series features ' ),
       h('a', {props: {href: 'https://github.com/motorcyclejs' },  style: {color: '#EECCFF'}},'Motorcyclejs' ), 
-      h('span', 'handling the monads. Motorcyclejs is Cyclejs, only using '  ),  
+      h('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '  ),  
       h('a', {props: {href: 'https://github.com/paldepind/snabbdom' },  style: {color: '#EECCFF'}},'Snabbdom' ), 
       h('span',  ' instead of "virtual-dom", and ' ), 
       h('a', {props: {href: 'https://github.com/cujojs/most' },  style: {color: '#EECCFF'}},'Most' ), 
@@ -247,13 +247,16 @@ function main(sources) {
     return ret('fibonacci ' + k + ' = ' + x[0]);   // An anonymous monad holding the result.
   }
 ` ),  
-      h('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows: mMfib.bnd(fib,n). The result will be displayed undernieth the input box. ' ),
+      h('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:' ),  
+      h('p', {style: {color: '#FF0000'}}, 'mMfib.bnd(fib,n)' ),
+      h('p',   'The result will be displayed undernieth the input box. ' ),
+      h('br'),
       h('input#code', ),  
       h('p#code2', FIB ),  
       h('hr', ),  
       h('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '  ),  
       h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part4'}, style: {color: '#EECCFF'}},  'https://github.com/dschalk/JS-monads-part4'  ),
-      h('span', 'I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:' ),  
+      h('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:' ),  
       h('pre', `  var websocketsDriver = function () {
     return create(add => {
       socket.onmessage = msg => add(msg)
@@ -306,7 +309,76 @@ function main(sources) {
     }
     return ret(x);
   } `  ),
-      h('p', ' "main" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. No further function calls are necessary. '   ),  
+      h('p', ' "main" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '   ),  
+      h('hr', ),  
+      h('p', 'Game clicks are handled as follows: ' ),  
+      h('pre',`  const numClick$ = sources.DOM
+    .select('.num').events('click');
+     
+  const numClickAction$ = numClick$.map(e => {
+    mM3
+    .bnd(push,e.target.textContent)
+    .bnd(() => {mM1.x[e.target.id] = "";})
+    if (mM3.x.length === 2 && mM8.x !== 0) {updateCalc();}
+  }).startWith(mM1.x[0]);
+
+  const opClick$ = sources.DOM
+    .select('.op').events('click');
+
+  const opClickAction$ = opClick$.map(e => {
+    mM8.ret(e.target.textContent);
+    if (mM3.x.length === 2) {updateCalc();}
+  })
+
+  const rollClick$ = sources.DOM
+    .select('.roll').events('click');
+
+  const rollClickAction$ = rollClick$.map(e => {  
+    mM13.ret(mM13.x - 1);
+    socket.send('CG#$42,' + Group + ',' + Name + ',' + -1 + ',' + 0);
+    socket.send(\`CA#$42,${Group},${Name},6,6,12,20\`);
+  });   `  ),
+      h('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: ' ),  
+      h('pre', `  function updateCalc() { 
+  ret('start').bnd(() => (  // Begins by creating an anonymous monad with value 'start' 
+      ( mMZ2.bnd(() => mM13
+                    .bnd(score, 1)
+                    .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.
+                    .bnd(newRoll)) ),
+      ( mMZ4.bnd(() => mM13
+                    .bnd(score, 3)
+                    .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
+                    .bnd(newRoll)) ),
+          ( mMZ5.bnd(() => mM13   // Released when the result mod 5 is 0.
+                        .bnd(score,5)
+                        .bnd(v => mM13.ret(v)
+                        .bnd(next, 25, mMZ6))) ),
+              ( mMZ6.bnd(() => mM9.bnd(score2)  // Released when the score is 25 
+                            .bnd(next,3,mMZ7)) ),
+                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                
+      (mM3.bnd(x => mM7
+                    .ret(calc(x[0], mM8.x, x[1]))
+                    .bnd(next, 18, mMZ4)  // Releases mMZ4.
+                    .bnd(next, 20, mMZ2) 
+                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.
+                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad's value.
+                    .bnd(displayOff, ((mM1.x.length)+''))
+                    .bnd(() => mM3
+                    .ret([])
+                    .bnd(() => mM4
+                    .ret(0).bnd(mM8.ret))))) ) 
+  ))
+}  `  ),
+      h('p', ' next2 is defined above. Here is next: '  ),  
+      h('pre',  `  var next = function next(x, y, mon2) {
+  if (x === y) {
+    mon2.release();
+  }
+  return ret(x);  // An anonymous monad with the value of the calling monad.
+} `  ),
+      h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates the niche filled by the monads. ' ),  
+      h('p', 'The monads are in monad.js, which is incorporated into the app by a script tag in index.html. You can press F12 and experiment with the monads on the command line. ' ),  
+      h('p', ),  
       h('p', ),  
       h('p', ),  
       h('p', ),  

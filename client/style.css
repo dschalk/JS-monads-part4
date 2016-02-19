@@ -57,7 +57,11 @@ pre {
   font-size: 27px;
 }
 
-.p {
+p {
+  text-indent: 20px;
+  }
+
+span {
   text-indent: 20px;
   }
 
