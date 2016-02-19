@@ -12,22 +12,22 @@ Refactored the JS-monads-part3 game to use [Motorcyclejs](https://github.com/mot
       .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
-      .bnd(displayInline,'3')
+      .bnd(displayInline,'3')))),
     (mMZ11.bnd(() => ret('temp')
       .bnd(map, mMscbd.ret(mMscores.x)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
-      .bnd(() => mM8.ret(0) ))
+      .bnd(() => mM8.ret(0) ))))),
     (mMZ12.bnd(() => ret('temp')   
-      .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')
+      .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')))),
     (mMZ13.bnd(() => mMar
       .bnd(splice, 0 ,3)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
       .bnd(push, mMname.x + ': ' + mMar.x)
-      .bnd(updateMessages)
-    (mMZ14.bnd(() => ret('temp')
-      .bnd(map, mMgoals.ret('The winner is ' + mMname.x ) 
+      .bnd(updateMessages)))),
+    (mMZ14.bnd(() => ret('temp'))
+      .bnd(map, mMgoals.ret('The winner is ' + mMname.x ))), 
   (ret('tests')  // Anonymous monad with value 'tests'.
    .bnd(next2, mMprefix.x === 'CA#$42', mMZ10)
    .bnd(next2, mMprefix.x === 'CB#$42', mMZ11)

@@ -371,12 +371,12 @@ function main(sources) {
 }  `  ),
       h('p', ' next2 is defined above. Here is next: '  ),  
       h('pre',  `  var next = function next(x, y, mon2) {
-  if (x === y) {
-    mon2.release();
-  }
-  return ret(x);  // An anonymous monad with the value of the calling monad.
-} `  ),
-      h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates the niche filled by the monads. ' ),  
+    if (x === y) {
+      mon2.release();
+    }
+    return ret(x);  // An anonymous monad with the value of the calling monad.
+  } `  ),
+      h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads can be useful. ' ),  
       h('p', 'The monads are in monad.js, which is incorporated into the app by a script tag in index.html. You can press F12 and experiment with the monads on the command line. ' ),  
       h('p', ),  
       h('p', ),  
