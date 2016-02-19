@@ -7318,10 +7318,11 @@ function createWebSocket(path) {
 var socket = createWebSocket('/');
 
 var websocketsDriver = function websocketsDriver() {
-  return (0, _most.create)(function (add) {
+  return (0, _most.create)(function (add, error) {
     socket.onmessage = function (msg) {
       return add(msg);
     };
+    error(mMgoals2.ret('The attempt to establish a connection with the server has failed.'));
   });
 };
 
@@ -7356,7 +7357,9 @@ function main(sources) {
       });
     }), mMZ14.bnd(function () {
       return ret('temp').bnd(map, mMgoals2.ret('The winner is ' + mMname.x).bnd(log, 'In CE#$42'));
-    }), ret('tests').bnd(next2, mMprefix.x === 'CA#$42', mMZ10).bnd(next2, mMprefix.x === 'CB#$42', mMZ11).bnd(next2, mMprefix.x === 'CC#$42', mMZ12).bnd(next2, mMprefix.x === 'CD#$42', mMZ13).bnd(next2, mMprefix.x === 'CE#$42', mMZ14));
+    }), mMZ15.bnd(function () {
+      return ret('temp').bnd(map, mMgoals2.ret('A player named ' + mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh));
+    }), ret('tests').bnd(next2, mMprefix.x === 'CA#$42', mMZ10).bnd(next2, mMprefix.x === 'CB#$42', mMZ11).bnd(next2, mMprefix.x === 'CC#$42', mMZ12).bnd(next2, mMprefix.x === 'CD#$42', mMZ13).bnd(next2, mMprefix.x === 'CE#$42', mMZ14).bnd(next2, mMprefix.x === 'EE#$42', mMZ15));
   });
 
   var loginPress$ = sources.DOM.select('input.login').events('keydown');
@@ -7531,6 +7534,12 @@ var winner = function winner() {
 var newRoll = function newRoll(v) {
   socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
   return ret(v);
+};
+
+var refresh = function refresh() {
+  setTimeout(function () {
+    document.location.reload(false);
+  }, 4000);
 };
 
 var sources = {
