@@ -97,6 +97,8 @@ var mMar = M([1,2,3,4,5], 'mMar');
 var mMscores = M('', 'mMscores');
 var mMprefix = M('', 'mMprefix');
 var mMfib = M([0,1], 'mMfib');
+var mMmain = M(null, 'mMmain');
+var mMcalc = M(null, 'mMcalc');
 
 var MI = function MI() {
   return new MonadIter();

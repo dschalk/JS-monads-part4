@@ -24,9 +24,8 @@ function createWebSocket(path) {
 const socket = createWebSocket('/');
 
 const websocketsDriver = function () {
-    return create((add, error) => {
-      socket.onmessage = msg => add(msg);
-      error(mMgoals2.ret('The attempt to establish a connection with the server has failed.'));
+    return create((add) => {
+      socket.onmessage = msg => add(msg)
     })
 }
 
@@ -36,47 +35,41 @@ mM3.ret([]);
 function main(sources) {
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
-    .bnd(() => mMprefix.ret(mMar.x[0]))
-    .bnd(() => mMscores.ret(mMar.x[3].split("<br>")))
-    .bnd(() => mMname.ret(mMar.x[2])).bnd(() =>
-    (mMZ10.bnd(() => ret('temp')
+    .bnd(array => mMscores.ret(array[3].split("<br>"))
+    .bnd(() => mMname.ret(mMar.x[2])
+    .bnd(() => mMprefix.ret(mMar.x[0])
+      .bnd(next, 'CA#$42', mMZ10)
+      .bnd(next, 'CB#$42', mMZ11)
+      .bnd(next, 'CC#$42', mMZ12)
+      .bnd(next, 'CD#$42', mMZ13)
+      .bnd(next, 'CE#$42', mMZ14)
+      .bnd(next, 'EE#$42', mMZ15)))));
+    mMmain.bnd(() =>
+    (mMZ10.bnd(() => mMmain
       .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
-      .bnd(displayInline,'3')
-      .bnd(log, 'In CA#$42' )) )),
-    (mMZ11.bnd(() => ret('temp')
+      .bnd(displayInline,'3')))),
+    (mMZ11.bnd(() => mMmain
       .bnd(map, mMscbd.ret(mMscores.x)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
-      .bnd(() => mM8.ret(0) ))
-      .bnd(log, 'In CB#$42' )))),
-    (mMZ12.bnd(() => ret('temp')   
-       .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')
-      .bnd(log, 'In CC#$42' )))),
+      .bnd(() => mM8.ret(0) ))))),
+    (mMZ12.bnd(() => mMmain   
+       .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')))),
     (mMZ13.bnd(() => mMar
       .bnd(splice, 0 ,3)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
       .bnd(push, mMname.x + ': ' + mMar.x)
-      .bnd(updateMessages)
-      .bnd(log, 'In CD#$42' )))),
-    (mMZ14.bnd(() => ret('temp')
-      .bnd(map, mMgoals2.ret('The winner is ' + mMname.x ) 
-      .bnd(log, 'In CE#$42' )))),
-    (mMZ15.bnd(() => ret('temp')
+      .bnd(updateMessages)))),
+    (mMZ14.bnd(() => mMmain
+      .bnd(map, mMgoals2.ret('The winner is ' + mMname.x )))), 
+    (mMZ15.bnd(() => mMmain
       .bnd(map, mMgoals2.ret('A player named ' + 
         mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
-      .bnd(refresh)))),
-  (ret('tests')
-   .bnd(next2, mMprefix.x === 'CA#$42', mMZ10)
-   .bnd(next2, mMprefix.x === 'CB#$42', mMZ11)
-   .bnd(next2, mMprefix.x === 'CC#$42', mMZ12)
-   .bnd(next2, mMprefix.x === 'CD#$42', mMZ13)
-   .bnd(next2, mMprefix.x === 'CE#$42', mMZ14)
-   .bnd(next2, mMprefix.x === 'EE#$42', mMZ15)
-  )))
-
+      .bnd(refresh)))))
+  
   const loginPress$ = sources.DOM
     .select('input.login').events('keydown');
 
@@ -265,9 +258,9 @@ function main(sources) {
       h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part4'}, style: {color: '#EECCFF'}},  'https://github.com/dschalk/JS-monads-part4'  ),
       h('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:' ),  
       h('pre', `  var websocketsDriver = function () {
-    return create(add => {
-      socket.onmessage = msg => add(msg)
-    })
+      return create((add) => {
+        socket.onmessage = msg => add(msg)
+      })
   }
 ` ),
       h('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '  ),  
@@ -275,40 +268,40 @@ function main(sources) {
       h('pre', `  function main(sources) {
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
-    .bnd(() => mMprefix.ret(mMar.x[0]))
-    .bnd(() => mMscores.ret(mMar.x[3].split("<br>")))
-    .bnd(() => mMname.ret(mMar.x[2])).bnd(() =>
-    (mMZ10.bnd(() => ret('temp')
+    .bnd(array => mMscores.ret(array[3].split("<br>"))
+    .bnd(() => mMname.ret(mMar.x[2])
+    .bnd(() => mMprefix.ret(mMar.x[0])
+      .bnd(next, 'CA#$42', mMZ10)
+      .bnd(next, 'CB#$42', mMZ11)
+      .bnd(next, 'CC#$42', mMZ12)
+      .bnd(next, 'CD#$42', mMZ13)
+      .bnd(next, 'CE#$42', mMZ14)
+      .bnd(next, 'EE#$42', mMZ15)))));
+    mMmain.bnd(() =>
+    (mMZ10.bnd(() => mMmain
       .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
-      .bnd(displayInline,'3')
-      .bnd(log, 'In CA#$42' )) )),
-    (mMZ11.bnd(() => ret('temp')
+      .bnd(displayInline,'3')))),
+    (mMZ11.bnd(() => mMmain
       .bnd(map, mMscbd.ret(mMscores.x)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
-      .bnd(() => mM8.ret(0) ))
-      .bnd(log, 'In CB#$42' )))),
-    (mMZ12.bnd(() => ret('temp')   
-      .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')
-      .bnd(log, 'In CC#$42' )))),
+      .bnd(() => mM8.ret(0) ))))),
+    (mMZ12.bnd(() => mMmain   
+       .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')))),
     (mMZ13.bnd(() => mMar
       .bnd(splice, 0 ,3)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
       .bnd(push, mMname.x + ': ' + mMar.x)
-      .bnd(updateMessages)
-      .bnd(log, 'In CD#$42' )))),
-    (mMZ14.bnd(() => ret('temp')
-      .bnd(map, mMgoals2.ret('The winner is ' + mMname.x ) 
-      .bnd(log, 'In CE#$42' )))),
-  (ret('tests')
-   .bnd(next2, mMprefix.x === 'CA#$42', mMZ10)
-   .bnd(next2, mMprefix.x === 'CB#$42', mMZ11)
-   .bnd(next2, mMprefix.x === 'CC#$42', mMZ12)
-   .bnd(next2, mMprefix.x === 'CD#$42', mMZ13)
-   .bnd(next2, mMprefix.x === 'CE#$42', mMZ14)))) `  ),
+      .bnd(updateMessages)))),
+    (mMZ14.bnd(() => mMmain
+      .bnd(map, mMgoals2.ret('The winner is ' + mMname.x )))), 
+    (mMZ15.bnd(() => mMmain
+      .bnd(map, mMgoals2.ret('A player named ' + 
+        mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
+      .bnd(refresh))))) `  ),
       h('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which which comes after the call to its "bnd" method. "next2" causes the code referenced by "p" to execute when the specified condition returns true. Here is its definition: ' ),  
       h('pre', `  var next2 = function next(x, condition, mon2) {
     if (condition) {
@@ -347,7 +340,7 @@ function main(sources) {
   });   `  ),
       h('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: ' ),  
       h('pre', `  function updateCalc() { 
-  ret('start').bnd(() => (  // Begins by creating an anonymous monad with value 'start' 
+  mMcalc.bnd(() => (
       ( mMZ2.bnd(() => mM13
                     .bnd(score, 1)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.
@@ -402,22 +395,22 @@ function main(sources) {
 }  
 
 function updateCalc() { 
-  ret('start').bnd(() => (
-      ( mMZ2.bnd(() => mM13
+  mMcalc.bnd(() => (
+       (mMZ2.bnd(() => mM13
                     .bnd(score, 1)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.
-                    .bnd(newRoll)) ),
-      ( mMZ4.bnd(() => mM13
+                    .bnd(newRoll))),
+       (mMZ4.bnd(() => mM13
                     .bnd(score, 3)
                     .bnd(next2, (mM13.x % 5 === 0), mMZ5) 
-                    .bnd(newRoll)) ),
-          ( mMZ5.bnd(() => mM13
+                    .bnd(newRoll))),
+           (mMZ5.bnd(() => mM13
                         .bnd(score,5)
                         .bnd(v => mM13.ret(v)
-                        .bnd(next, 25, mMZ6))) ),
-              ( mMZ6.bnd(() => mM9.bnd(score2) 
-                            .bnd(next,3,mMZ7)) ),
-                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                 
+                        .bnd(next, 25, mMZ6)))),
+               (mMZ6.bnd(() => mM9.bnd(score2) 
+                            .bnd(next,3,mMZ7))),
+                  (mMZ7.bnd(() => mM13.bnd(winner))),                 
       (mM3.bnd(x => mM7
                     .ret(calc(x[0], mM8.x, x[1]))
                     .bnd(next, 18, mMZ4)  // Releases mMZ4.
@@ -428,7 +421,7 @@ function updateCalc() {
                     .bnd(() => mM3
                     .ret([])
                     .bnd(() => mM4
-                    .ret(0).bnd(mM8.ret))))) ) 
+                    .ret(0).bnd(mM8.ret)))))) 
   ))
 }
 
@@ -437,10 +430,8 @@ var updateScoreboard = function updateScoreboard(v) {
   let ar = mMscbd.x;
   let keys = Object.keys(ar);
   for (let k in keys) {
-    mMscoreboard.bnd(unshift, h('br'))
-    .bnd(unshift, ar[k])
-    
- }
+    mMscoreboard.bnd(unshift, h('div.indent', ar[k]))
+  }
   return mMscoreboard;
 }
 

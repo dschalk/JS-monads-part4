@@ -138,8 +138,10 @@ application state pending = do
             | any ($ getName client)
                 [T.null] ->
                     WS.sendTextData conn ("Name cannot be empty" :: Text)
-          --  | clientExists (getName client) clients ->
-          --      WS.sendTextData conn ("CC#$42,seven,seven,%#8*&&^1#$%^" :: Text)
+            | clientExists (getName client) clients -> 
+                do
+                  let duplicate = getName client
+                  WS.sendTextData conn ("EE#$42,solo," `mappend` duplicate `mappend` " ,solo" :: Text)
             | otherwise -> flip finally disconnect $ do
                     let name = getName client
                     st <- atomically $ takeTMVar state
