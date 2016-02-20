@@ -1,6 +1,6 @@
 #JS-monads-part4
 
-Refactored the JS-monads-part3 game to use [Motorcyclejs](https://github.com/motorcyclejs). This is how websockets messages are received in the "main" function in main.js:
+Refactored the JS-monads-part3 game to use [Motorcyclejs](https://github.com/motorcyclejs). This is how websockets messages are received in main.js:
 
 ```javascript
   const messages$ = (sources.WS).map(e => 
