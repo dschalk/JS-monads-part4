@@ -302,12 +302,12 @@ function main(sources) {
       .bnd(map, mMgoals2.ret('A player named ' + 
         mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
       .bnd(refresh))))) `  ),
-      h('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which which comes after the call to its "bnd" method. "next2" causes the code referenced by "p" to execute when the specified condition returns true. Here is its definition: ' ),  
-      h('pre', `  var next2 = function next(x, condition, mon2) {
-    if (condition) {
+      h('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which which comes after the call to its "bnd" method. Here is its definition of "next": ' ),  
+      h('pre',  `  var next = function next(x, y, mon2) {
+    if (x === y) {
       mon2.release();
     }
-    return ret(x);
+    return ret(x);  // An anonymous monad with the value of the calling monad.
   } `  ),
       h('p', ' "main" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '   ),  
       h('hr', ),  
@@ -369,13 +369,6 @@ function main(sources) {
                     .ret(0).bnd(mM8.ret))))) ) 
   ))
 }  `  ),
-      h('p', ' next2 is defined above. Here is next: '  ),  
-      h('pre',  `  var next = function next(x, y, mon2) {
-    if (x === y) {
-      mon2.release();
-    }
-    return ret(x);  // An anonymous monad with the value of the calling monad.
-  } `  ),
       h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads can be useful. ' ),  
       h('p', 'The monads are in monad.js, which is incorporated into the app by a script tag in index.html. You can press F12 and experiment with the monads on the command line. ' ),  
       h('p', ),  
