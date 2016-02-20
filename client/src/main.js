@@ -201,6 +201,7 @@ function main(sources) {
       h('div.scoreDisplay', [
       h('span', 'player[score][goals]' ),
       h('div', mMscoreboard.x ) ]) ]),
+      h('span', 'People in the same group, other than solo, share text messages and dice rolls. '  ),
       h('hr'),
       h('p', 'Here are the definitions of the monad constructors: '   ),
       h('pre', `  class Monad {
@@ -309,7 +310,7 @@ function main(sources) {
     }
     return ret(x);  // An anonymous monad with the value of the calling monad.
   } `  ),
-      h('p', ' "main" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '   ),  
+      h('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '   ),  
       h('hr', ),  
       h('p', 'Game clicks are handled as follows: ' ),  
       h('pre',`  const numClick$ = sources.DOM
