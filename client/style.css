@@ -124,4 +124,14 @@ h3 {
   color: #FF0000;
 }
 
+#inputEval {
+  width: 1200px;
+  font-size: 28px;
+}
+
+#eval {
+  font-size: 28px;
+  color: #FF0000;
+}
+
 

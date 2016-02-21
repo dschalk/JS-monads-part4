@@ -1,17 +1,21 @@
 import Cycle from '@motorcycle/core';
-import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom';
-import {just, create, merge} from 'most';
-import cow from './cow';
+import {Monad, mM1, mM2, mM3, mM4, mM5, mM6, mM7, mM8, mM9, mM10, mM11, mM12, mM13, mM14, mM15, mM16, mM17, mM18, mM19, mMZ1, mMZ2, mMZ3, mMZ4, mMZ5, mMZ6, mMZ7, mMZ8, mMZ9, mMZ10, mMZ11, mMZ12, mMZ13, mMZ14, mMZ15, mMZ16, mMZ17, mMZ18, mMZ19, mMZ20, mMZ21, mMZ22, mMZ23, mMZ24, mMZ25, mMZ26, mMZ27, mMZ28, mMZ29, calc, next, next2, M, MI, mMscbd, mMscoreboard, mMmsg, mMmessages, mMgoals, mMgoals2, mMfib, mMname, mMmain, mMar, mMprefix, mMscores, fib, ret, map, push, unshift, splice, reduce, mMcalc, log} from 'js-monads'; 
+import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom'; 
+import {just, create, merge} from 'most'; 
+import cow from './cow'; 
+
 
 var Group = 'solo';
 var Goals = 0;
 var Name;
 var FIB = 'waiting';
+var EVAL = 'waiting';
 var Result = '';
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
 mM6.ret('');
-mMfib.ret([0,1]);
+var M3;
+var M8;
 
 function createWebSocket(path) {
     let host = window.location.hostname;
@@ -33,6 +37,8 @@ mM1.ret([0,0,0,0]);
 mM3.ret([]);
 
 function main(sources) {
+  mMfib.ret([0,1]);
+  console.log(ret);
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
     .bnd(array => mMscores.ret(array[3].split("<br>"))
@@ -146,10 +152,29 @@ function main(sources) {
     if (v == '' ) {
       return;
     } 
-    if( e.keyCode == 13 ) FIB = mMfib.bnd(fib,v).x;
+    if( e.keyCode == 13 && Number.isInteger(v*1) ) FIB = mMfib.bnd(fib,v).x;
+    if( e.keyCode == 13 && !Number.isInteger(v*1) ) FIB = "You didn't provide an integer";
   });
 
-  const calcStream$ = merge(fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const evalPress$ = sources.DOM
+    .select('input#inputEval').events('keydown');
+
+  const evalPressAction$ = evalPress$.map(e => {
+    let v = e.target.value;
+    if (v == '' ) {
+      return;
+    } 
+    if( e.keyCode == 13 ) 
+      try {
+        EVAL = eval(v);
+        if (!(typeof EVAL === 'number' || typeof EVAL === 'string' || Arran.isArray(v))) {
+          EVAL = 'Maybe you should add ".x" at the end';
+        }
+      }
+      catch(e) {EVAL = 'ERROR ' + e };
+  });
+
+  const calcStream$ = merge(evalPressAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -370,9 +395,10 @@ function main(sources) {
                     .ret(0).bnd(mM8.ret))))) ) 
   ))
 }  `  ),
-      h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads can be useful. ' ),  
-      h('p', 'The monads are in monad.js, which is incorporated into the app by a script tag in index.html. You can press F12 and experiment with the monads on the command line. ' ),  
+      h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. ' ),  
       h('p', ),  
+      h('br'),
+      h('hr', ),  
       h('p', ),  
       h('p', ),  
       h('p', ),  
@@ -389,6 +415,8 @@ function main(sources) {
 }  
 
 function updateCalc() { 
+  M3 = mM3.x[0] + ' ' + mM3.x[1];
+  M8 = mM8.x + '';
   mMcalc.bnd(() => (
        (mMZ2.bnd(() => mM13
                     .bnd(score, 1)
@@ -407,6 +435,7 @@ function updateCalc() {
                   (mMZ7.bnd(() => mM13.bnd(winner))),                 
       (mM3.bnd(x => mM7
                     .ret(calc(x[0], mM8.x, x[1]))
+                    .bnd(log, mM7.x)
                     .bnd(next, 18, mMZ4)  // Releases mMZ4.
                     .bnd(next, 20, mMZ2) 
                     .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.
@@ -490,6 +519,11 @@ const sources = {
   WS: websocketsDriver
 }
 
+function fromInput(input) {
+    return most.fromEvent('change', input)
+        .map(function(e) { return e.target.value })
+        .map(Number);
+}
 
 Cycle.run(main, sources);
 

@@ -325,7 +325,7 @@
     exports.touchcancel = touchcancel;
 });
 
-},{"most":99}],2:[function(require,module,exports){
+},{"most":100}],2:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
         define('@most/hold', ['exports', 'most/lib/source/MulticastSource'], factory);
@@ -430,7 +430,7 @@
     exports.default = hold;
 });
 
-},{"most/lib/source/MulticastSource":86}],3:[function(require,module,exports){
+},{"most/lib/source/MulticastSource":87}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -516,7 +516,7 @@ var run = function run(main, drivers) {
 
 exports.default = { run: run };
 exports.run = run;
-},{"most-subject":33}],4:[function(require,module,exports){
+},{"most-subject":34}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -621,7 +621,7 @@ function makeEventsSelector(rootElement$, selector) {
 }
 
 exports.default = makeEventsSelector;
-},{"./select":8,"@most/dom-event":1,"matches-selector":30}],5:[function(require,module,exports){
+},{"./select":8,"@most/dom-event":1,"matches-selector":31}],5:[function(require,module,exports){
 'use strict';
 
 var _h = require('snabbdom/h');
@@ -645,7 +645,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var hh = require('hyperscript-helpers')(_h2.default);
 
 module.exports = (0, _assign2.default)({ makeDOMDriver: _makeDOMDriver2.default, h: _h2.default, thunk: _thunk2.default }, hh);
-},{"./makeDOMDriver":7,"fast.js/object/assign":29,"hyperscript-helpers":11,"snabbdom/h":102,"snabbdom/thunk":109}],6:[function(require,module,exports){
+},{"./makeDOMDriver":7,"fast.js/object/assign":29,"hyperscript-helpers":11,"snabbdom/h":103,"snabbdom/thunk":110}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -794,7 +794,7 @@ var makeDOMDriver = function makeDOMDriver(containerElementSelectors) {
 
 exports.default = makeDOMDriver;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./isolate":6,"./select":8,"./utils":9,"./vTreeParser":10,"@most/hold":2,"snabbdom":108,"snabbdom-selector/lib/classNameFromVNode":100,"snabbdom-selector/lib/selectorParser":101,"snabbdom/h":102,"snabbdom/modules/attributes":104,"snabbdom/modules/class":105,"snabbdom/modules/props":106,"snabbdom/modules/style":107}],8:[function(require,module,exports){
+},{"./isolate":6,"./select":8,"./utils":9,"./vTreeParser":10,"@most/hold":2,"snabbdom":109,"snabbdom-selector/lib/classNameFromVNode":101,"snabbdom-selector/lib/selectorParser":102,"snabbdom/h":103,"snabbdom/modules/attributes":105,"snabbdom/modules/class":106,"snabbdom/modules/props":107,"snabbdom/modules/style":108}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -959,7 +959,7 @@ var vTreeParser = function vTreeParser(vTree) {
 };
 
 exports.default = vTreeParser;
-},{"fast.js/array/filter":17,"fast.js/array/map":22,"most":99}],11:[function(require,module,exports){
+},{"fast.js/array/filter":17,"fast.js/array/map":22,"most":100}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1578,6 +1578,335 @@ module.exports = function fastAssign (target) {
 },{}],30:[function(require,module,exports){
 'use strict';
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+
+var MonadIter = function MonadIter() {
+  var _this = this;
+  this.p = function () {};
+
+  this.release = function () {
+    return _this.p();
+  };
+
+  this.bnd = function (func) {
+    _this.p = func;
+  };
+};
+
+var Monad = function Monad(z, g) {
+  var _this = this;  
+  this.x = z;
+  if (arguments.length === 1) {
+    this.id = 'anonymous';
+  } else {
+    this.id = g;
+  }
+
+  this.bnd = function (func) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return func.apply(undefined, [_this.x].concat(args));
+  };
+
+  this.ret = function (a) {
+    _this.x = a;
+    return _this;
+  }
+}
+
+var ret = function ret(v) {
+  return new Monad(v);
+}
+
+module.exports = {
+
+MonadIter: function MonadIter() {
+  var _this = this;
+  this.p = function () {};
+
+  this.release = function () {
+    return _this.p();
+  };
+
+  this.bnd = function (func) {
+    _this.p = func;
+  };
+},
+
+Monad: function Monad(z, g) {
+  var _this = this;  
+  this.x = z;
+  if (arguments.length === 1) {
+    this.id = 'anonymous';
+  } else {
+    this.id = g;
+  }
+
+  this.bnd = function (func) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return func.apply(undefined, [_this.x].concat(args));
+  },
+
+  this.ret = function (a) {
+    _this.x = a;
+    return _this;
+  };
+},
+
+ret: function(v) {
+  return new Monad(v);
+},
+
+cube: function(v) {
+  return ret(v*v*v);
+},
+
+add: function(a,b) {
+  return ret(a+b);
+},
+
+addAr: function(a,b) {
+  return ret(a.map(v => v*1 + b*1));
+},
+
+M: function M(a,b) {
+  return new Monad(a,b);
+},
+
+MI: function MI() {
+  return new MonadIter();
+},
+
+mM1: new Monad([],'mM1'),
+mM2: new Monad(0,'mM2'),
+mM3: new Monad(0,'mM3'),
+mM4: new Monad([],'mM4'),
+mM5: new Monad(0,'mM5'),
+mM6: new Monad(0,'mM6'),
+mM7: new Monad(0,'mM7'),
+mM8: new Monad(0,'mM8'),
+mM9: new Monad(0,'mM9'),
+mM10: new Monad(0,'mM10'),
+mM11: new Monad([],'mM11'),
+mM12: new Monad(0,'mM12'),
+mM13: new Monad(0,'mM13'),
+mM14: new Monad(0,'mM14'),
+mM15: new Monad(0,'mM15'),
+mM16: new Monad(0,'mM16'),
+mM17: new Monad(0,'mM17'),
+mM18: new Monad(0,'mM18'),
+mM19: new Monad(0,'mM19'),
+mMscbd: new Monad([],'mMscbd'),
+mMmessages: new Monad([],'mMmessages'),
+mMscoreboard: new Monad([],'mMscoreboard'),
+mMmsg: new Monad([],'mMmsg'),
+mMgoals: new Monad(0,'mMgoals'),
+mMgoals2: new Monad('','mMgoals2'),
+mMnbrs: new Monad([],'mMnbrs'),
+mMnumbers: new Monad([],'mMnumbers'),
+mMname: new Monad('', 'mMname'),
+mMar: new Monad([1,2,3,4,5], 'mMar'),
+mMscores: new Monad('', 'mMscores'),
+mMprefix: new Monad('', 'mMprefix'),
+mMfib: new Monad([0,1], 'mMfib'),
+mMmain: new Monad(null, 'mMmain'),
+mMcalc: new Monad(null, 'mMcalc'),
+
+mMZ1: new MonadIter(),
+mMZ2: new MonadIter(),
+mMZ3: new MonadIter(),
+mMZ4: new MonadIter(),
+mMZ5: new MonadIter(),
+mMZ6: new MonadIter(),
+mMZ7: new MonadIter(),
+mMZ8: new MonadIter(),
+mMZ9: new MonadIter(),
+
+mMZ10: new MonadIter(),
+mMZ11: new MonadIter(),
+mMZ12: new MonadIter(),
+mMZ13: new MonadIter(),
+mMZ14: new MonadIter(),
+mMZ15: new MonadIter(),
+mMZ16: new MonadIter(),
+mMZ17: new MonadIter(),
+mMZ18: new MonadIter(),
+mMZ19: new MonadIter(),
+
+mMZ20: new MonadIter(),
+mMZ21: new MonadIter(),
+mMZ22: new MonadIter(),
+mMZ23: new MonadIter(),
+mMZ24: new MonadIter(),
+mMZ25: new MonadIter(),
+mMZ26: new MonadIter(),
+mMZ27: new MonadIter(),
+mMZ28: new MonadIter(),
+mMZ29: new MonadIter(),
+
+fib: function fib(x,k) {
+  let j = k;
+  while (j > 0) {
+    x = [x[1], x[0] + x[1]];
+    j -= 1;
+  }
+  return ret('fibonacci ' + k + ': ' + x[0]);
+},
+
+toNums: function toNums(x) {
+  let y = x.map(x => parseFloat(x));
+  return ret(y);
+},
+
+calc: function calc(a,op,b) { 
+  var result;
+  switch (op) {
+      case "add": result = (parseFloat(a) + parseFloat(b));
+      break;
+      case "subtract": result = (a - b);
+      break;
+      case "mult": result = (a * b);
+      break;
+      case "div": result = (a / b);
+      break;
+      case "concat": result = (a+""+b)*1.0;
+      break;
+      default : 'Major Malfunction in calc.';
+  }
+  return result;
+},
+
+pause: function(x,t,mon2) {
+  let time = t*1000;
+  setTimeout( function() {
+    mon2.release();
+  },time );
+  return mon2;
+},
+
+wait: function wait(x, y, mon2) {
+  if (x === y) {
+    mon2.release();
+  }
+  return mon2;
+},
+
+unshift: function unshift(x,v) {
+  x.unshift(v);
+  return ret(x);
+},
+
+toFloat: function toFloat(x) {
+  newx: x.map(function (a) {
+    return parseFloat(a);
+  });
+  return ret(newx);
+},
+
+push: function push(x, j) {
+  if (Array.isArray(x)) {
+    return ret(x.push(j));
+  }
+  return ret(x);
+},
+
+push: function push(x,v) {
+  let ar = x;
+  ar.push(v);
+  let cleanX = ar.filter(v => (v !== "" && v !== undefined));
+  return ret(cleanX);
+},
+splice: function splice(x, j, k) {
+  if (Array.isArray(x)) {
+    return ret(x.splice(j,k));
+  }
+  return ret(x);
+},
+
+clean: function clean(x) {
+  return ret(x.filter(v => v !== ""));
+},
+
+filter: function filter(x, condition) {
+  if (Array.isArray(x)) {
+    return ret(x.filter(v => condition))
+  }
+  return ret(x);
+},
+
+map: function map(x, y) {
+  if (Array.isArray(x)) {
+    return ret(x.map(v => y))
+  }
+  return ret(x);
+},
+
+reduce: function reduce(x, y) {
+  if (Array.isArray(x) && x.length > 0) {
+    return ret(x.reduce(y))
+  }
+  return ret(x);
+},
+
+pop: function pop(x) {
+  let v = x[x.length - 1];
+  console.log('In pop. v: ',v);
+  return ret(v);
+},
+
+next: function next(x, y, mon2) {
+  if (x === y) {
+    mon2.release();
+  }
+  return ret(x);
+},
+
+next2: function next(x, condition, mon2) {
+  if (condition) {
+    mon2.release();
+  }
+  return ret(x);
+},
+
+hyp: function hyp(x,y) {
+  return Math.sqrt(x*x + y*y);
+},
+
+doub: function doub(v) {
+  return ret(v + v);
+},
+
+square: function square(v) {
+  return ret(v * v);
+},
+
+mult: function mult(x, y) {
+  return ret(x * y);
+},
+
+log: function log(x,message) {
+  console.log(message);
+  let mon = new Monad(x);
+  return mon;
+},
+
+delay: function delay(x, mon) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(resolve, 2000);
+  });
+}
+}
+
+
+},{}],31:[function(require,module,exports){
+'use strict';
+
 var proto = Element.prototype;
 var vendor = proto.matches
   || proto.matchesSelector
@@ -1605,7 +1934,7 @@ function match(el, selector) {
   }
   return false;
 }
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1752,7 +2081,7 @@ function runProducer(t, buffer, sink) {
     }
   }
 }
-},{"most":99,"most/lib/disposable/dispose":67,"most/lib/scheduler/PropagateTask":75,"most/lib/source/MulticastSource":86}],32:[function(require,module,exports){
+},{"most":100,"most/lib/disposable/dispose":68,"most/lib/scheduler/PropagateTask":76,"most/lib/source/MulticastSource":87}],33:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1841,7 +2170,7 @@ function tryEnd(sink, scheduler, event) {
 }
 
 exports.Subscription = Subscription;
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1902,7 +2231,7 @@ function holdSubject() {
 
 exports.subject = subject;
 exports.holdSubject = holdSubject;
-},{"./ReplaySource":31,"./Subscription":32,"@most/hold":2,"most":99,"most/lib/source/MulticastSource":86}],34:[function(require,module,exports){
+},{"./ReplaySource":32,"./Subscription":33,"@most/hold":2,"most":100,"most/lib/source/MulticastSource":87}],35:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1980,7 +2309,7 @@ LinkedList.prototype.dispose = function() {
 	return Promise.all(promises);
 };
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1991,7 +2320,7 @@ function isPromise(p) {
 	return p !== null && typeof p === 'object' && typeof p.then === 'function';
 }
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2058,7 +2387,7 @@ function copy(src, srcIndex, dst, dstIndex, len) {
 }
 
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2069,7 +2398,7 @@ function Stream(source) {
 	this.source = source;
 }
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2236,7 +2565,7 @@ function isArrayLike(x){
    return x != null && typeof x.length === 'number' && typeof x !== 'function';
 }
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2319,7 +2648,7 @@ AccumulateSink.prototype.end = function(t) {
 	this.sink.end(t, this.value);
 };
 
-},{"../Stream":37,"../base":38,"../runSource":74,"../sink/Pipe":83,"./build":41}],40:[function(require,module,exports){
+},{"../Stream":38,"../base":39,"../runSource":75,"../sink/Pipe":84,"./build":42}],41:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2343,7 +2672,7 @@ function ap(fs, xs) {
 	return combine(apply, fs, xs);
 }
 
-},{"../base":38,"./combine":42}],41:[function(require,module,exports){
+},{"../base":39,"./combine":43}],42:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2387,7 +2716,7 @@ function cycle(stream) {
 	}, stream);
 }
 
-},{"../source/core":88,"./continueWith":44}],42:[function(require,module,exports){
+},{"../source/core":89,"./continueWith":45}],43:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2464,7 +2793,7 @@ CombineSink.prototype.end = function(t, indexedValue) {
 	}
 };
 
-},{"../Stream":37,"../base":38,"../disposable/dispose":67,"../invoke":72,"../sink/IndexSink":81,"../sink/Pipe":83,"../source/core":88,"./merge":51,"./transform":62}],43:[function(require,module,exports){
+},{"../Stream":38,"../base":39,"../disposable/dispose":68,"../invoke":73,"../sink/IndexSink":82,"../sink/Pipe":84,"../source/core":89,"./merge":52,"./transform":63}],44:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2489,7 +2818,7 @@ function concatMap(f, stream) {
 	return mergeConcurrently(1, map(f, stream));
 }
 
-},{"./mergeConcurrently":52,"./transform":62}],44:[function(require,module,exports){
+},{"./mergeConcurrently":53,"./transform":63}],45:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2558,7 +2887,7 @@ ContinueWithSink.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../Promise":35,"../Stream":37,"../disposable/dispose":67,"../sink/Pipe":83}],45:[function(require,module,exports){
+},{"../Promise":36,"../Stream":38,"../disposable/dispose":68,"../sink/Pipe":84}],46:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2613,7 +2942,7 @@ DelaySink.prototype.end = function(t, x) {
 
 DelaySink.prototype.error = Sink.prototype.error;
 
-},{"../Stream":37,"../disposable/dispose":67,"../scheduler/PropagateTask":75,"../sink/Pipe":83}],46:[function(require,module,exports){
+},{"../Stream":38,"../disposable/dispose":68,"../scheduler/PropagateTask":76,"../sink/Pipe":84}],47:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2700,7 +3029,7 @@ RecoverWithSink.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../Stream":37,"../base":38,"../disposable/dispose":67,"../source/ValueSource":87,"../source/tryEvent":97}],47:[function(require,module,exports){
+},{"../Stream":38,"../base":39,"../disposable/dispose":68,"../source/ValueSource":88,"../source/tryEvent":98}],48:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2776,7 +3105,7 @@ function same(a, b) {
 	return a === b;
 }
 
-},{"../Stream":37,"../fusion/Filter":69,"../sink/Pipe":83}],48:[function(require,module,exports){
+},{"../Stream":38,"../fusion/Filter":70,"../sink/Pipe":84}],49:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2808,7 +3137,7 @@ function join(stream) {
 	return mergeConcurrently(Infinity, stream);
 }
 
-},{"./mergeConcurrently":52,"./transform":62}],49:[function(require,module,exports){
+},{"./mergeConcurrently":53,"./transform":63}],50:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2920,7 +3249,7 @@ DebounceSink.prototype._clearTimer = function() {
 	return true;
 };
 
-},{"../Stream":37,"../disposable/dispose":67,"../scheduler/PropagateTask":75,"../sink/Pipe":83}],50:[function(require,module,exports){
+},{"../Stream":38,"../disposable/dispose":68,"../scheduler/PropagateTask":76,"../sink/Pipe":84}],51:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2973,7 +3302,7 @@ LoopSink.prototype.end = function(t) {
 	this.sink.end(t, this.seed);
 };
 
-},{"../Stream":37,"../sink/Pipe":83}],51:[function(require,module,exports){
+},{"../Stream":38,"../sink/Pipe":84}],52:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3062,7 +3391,7 @@ MergeSink.prototype.end = function(t, indexedValue) {
 	}
 };
 
-},{"../Stream":37,"../base":38,"../disposable/dispose":67,"../sink/IndexSink":81,"../sink/Pipe":83,"../source/core":88}],52:[function(require,module,exports){
+},{"../Stream":38,"../base":39,"../disposable/dispose":68,"../sink/IndexSink":82,"../sink/Pipe":84,"../source/core":89}],53:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3172,7 +3501,7 @@ Inner.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../LinkedList":34,"../Stream":37,"../disposable/dispose":67}],53:[function(require,module,exports){
+},{"../LinkedList":35,"../Stream":38,"../disposable/dispose":68}],54:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3197,7 +3526,7 @@ function multicast(stream) {
 		: new Stream(new MulticastSource(source));
 }
 
-},{"../Stream":37,"../source/MulticastSource":86}],54:[function(require,module,exports){
+},{"../Stream":38,"../source/MulticastSource":87}],55:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3229,7 +3558,7 @@ function drain(stream) {
 	return runSource.withDefaultScheduler(noop, stream.source);
 }
 
-},{"../base":38,"../runSource":74}],55:[function(require,module,exports){
+},{"../base":39,"../runSource":75}],56:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3362,7 +3691,7 @@ AwaitSink.prototype._end = function(x) {
 	return Promise.resolve(x).then(this._endBound);
 };
 
-},{"../Stream":37,"../fatalError":68}],56:[function(require,module,exports){
+},{"../Stream":38,"../fatalError":69}],57:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3475,7 +3804,7 @@ function getValue(hold) {
 	return hold.value;
 }
 
-},{"../Stream":37,"../base":38,"../disposable/dispose":67,"../invoke":72,"../sink/Pipe":83}],57:[function(require,module,exports){
+},{"../Stream":38,"../base":39,"../disposable/dispose":68,"../invoke":73,"../sink/Pipe":84}],58:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3639,7 +3968,7 @@ SkipWhileSink.prototype.event = function(t, x) {
 	this.sink.event(t, x);
 };
 
-},{"../Stream":37,"../disposable/dispose":67,"../sink/Pipe":83,"../source/core":88}],58:[function(require,module,exports){
+},{"../Stream":38,"../disposable/dispose":68,"../sink/Pipe":84,"../source/core":89}],59:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3668,7 +3997,7 @@ function switchLatest(stream) {
 	}
 }
 
-},{"../Stream":37,"../source/MulticastSource":86,"./mergeConcurrently":52,"./timeslice":59,"./transform":62}],59:[function(require,module,exports){
+},{"../Stream":38,"../source/MulticastSource":87,"./mergeConcurrently":53,"./timeslice":60,"./transform":63}],60:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3785,7 +4114,7 @@ UpperBound.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../Stream":37,"../base":38,"../combinator/flatMap":48,"../disposable/dispose":67,"../sink/Pipe":83}],60:[function(require,module,exports){
+},{"../Stream":38,"../base":39,"../combinator/flatMap":49,"../disposable/dispose":68,"../sink/Pipe":84}],61:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3818,7 +4147,7 @@ TimestampSink.prototype.event = function(t, x) {
 	this.sink.event(t, { time: t, value: x });
 };
 
-},{"../Stream":37,"../sink/Pipe":83}],61:[function(require,module,exports){
+},{"../Stream":38,"../sink/Pipe":84}],62:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3943,7 +4272,7 @@ LegacyTxAdapter.prototype.getResult = function(x) {
 	return x.value;
 };
 
-},{"../Stream":37}],62:[function(require,module,exports){
+},{"../Stream":38}],63:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3991,7 +4320,7 @@ function tap(f, stream) {
 	}, stream);
 }
 
-},{"../Stream":37,"../fusion/Map":71}],63:[function(require,module,exports){
+},{"../Stream":38,"../fusion/Map":72}],64:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4126,7 +4455,7 @@ function ready(buffers) {
 	return true;
 }
 
-},{"../Queue":36,"../Stream":37,"../base":38,"../disposable/dispose":67,"../invoke":72,"../sink/IndexSink":81,"../sink/Pipe":83,"../source/core":88,"./transform":62}],64:[function(require,module,exports){
+},{"../Queue":37,"../Stream":38,"../base":39,"../disposable/dispose":68,"../invoke":73,"../sink/IndexSink":82,"../sink/Pipe":84,"../source/core":89,"./transform":63}],65:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4145,7 +4474,7 @@ function runTask(task) {
 	}
 }
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4167,7 +4496,7 @@ Disposable.prototype.dispose = function() {
 	return this._dispose(this._data);
 };
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4211,7 +4540,7 @@ SettableDisposable.prototype.dispose = function() {
 	return this.result;
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4340,7 +4669,7 @@ function memoized(disposable) {
 	return { disposed: false, disposable: disposable, value: void 0 };
 }
 
-},{"../Promise":35,"../base":38,"./Disposable":65,"./SettableDisposable":66}],68:[function(require,module,exports){
+},{"../Promise":36,"../base":39,"./Disposable":66,"./SettableDisposable":67}],69:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4353,7 +4682,7 @@ function fatalError (e) {
 	}, 0);
 }
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4404,7 +4733,7 @@ function and(p, q) {
 	};
 }
 
-},{"../sink/Pipe":83}],70:[function(require,module,exports){
+},{"../sink/Pipe":84}],71:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4438,7 +4767,7 @@ FilterMapSink.prototype.event = function(t, x) {
 FilterMapSink.prototype.end = Pipe.prototype.end;
 FilterMapSink.prototype.error = Pipe.prototype.error;
 
-},{"../sink/Pipe":83}],71:[function(require,module,exports){
+},{"../sink/Pipe":84}],72:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4495,7 +4824,7 @@ MapSink.prototype.event = function(t, x) {
 	this.sink.event(t, f(x));
 };
 
-},{"../base":38,"../sink/Pipe":83,"./Filter":69,"./FilterMap":70}],72:[function(require,module,exports){
+},{"../base":39,"../sink/Pipe":84,"./Filter":70,"./FilterMap":71}],73:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4516,7 +4845,7 @@ function invoke(f, args) {
 	}
 }
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4549,7 +4878,7 @@ function makeIterable(f, o) {
 	return o;
 }
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4578,7 +4907,7 @@ function runSource(f, source, scheduler, resolve, reject) {
 	disposable.setDisposable(source.run(observer, scheduler));
 }
 
-},{"./disposable/dispose":67,"./scheduler/defaultScheduler":77,"./sink/Observer":82}],75:[function(require,module,exports){
+},{"./disposable/dispose":68,"./scheduler/defaultScheduler":78,"./sink/Observer":83}],76:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4636,7 +4965,7 @@ function end(t, x, sink) {
 	sink.end(t, x);
 }
 
-},{"../fatalError":68}],76:[function(require,module,exports){
+},{"../fatalError":69}],77:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4852,7 +5181,7 @@ function newTimeslot(t, events) {
 	return { time: t, events: events };
 }
 
-},{"./../base":38}],77:[function(require,module,exports){
+},{"./../base":39}],78:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
@@ -4868,7 +5197,7 @@ var isNode = typeof process === 'object'
 module.exports = new Scheduler(isNode ? nodeTimer : setTimeoutTimer);
 
 }).call(this,require('_process'))
-},{"./Scheduler":76,"./nodeTimer":78,"./timeoutTimer":79,"_process":111}],78:[function(require,module,exports){
+},{"./Scheduler":77,"./nodeTimer":79,"./timeoutTimer":80,"_process":112}],79:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4914,7 +5243,7 @@ module.exports = {
 	}
 };
 
-},{"../defer":64}],79:[function(require,module,exports){
+},{"../defer":65}],80:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4931,7 +5260,7 @@ module.exports = {
 	}
 };
 
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5020,7 +5349,7 @@ ErrorTask.prototype.error = function(e) {
 	throw e;
 };
 
-},{"../defer":64}],81:[function(require,module,exports){
+},{"../defer":65}],82:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5062,7 +5391,7 @@ IndexSink.prototype.end = function(t, x) {
 
 IndexSink.prototype.error = Sink.prototype.error;
 
-},{"./Pipe":83}],82:[function(require,module,exports){
+},{"./Pipe":84}],83:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5108,7 +5437,7 @@ function disposeThen(end, error, disposable, x) {
 	}, error);
 }
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5137,7 +5466,7 @@ Pipe.prototype.error = function(t, e) {
 	return this.sink.error(t, e);
 };
 
-},{}],84:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5184,7 +5513,7 @@ function disposeEventEmitter(info) {
 	target.source.removeListener(target.event, info.addEvent);
 }
 
-},{"../disposable/dispose":67,"../sink/DeferredSink":80,"./tryEvent":97}],85:[function(require,module,exports){
+},{"../disposable/dispose":68,"../sink/DeferredSink":81,"./tryEvent":98}],86:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5216,7 +5545,7 @@ function disposeEventTarget(info) {
 	target.source.removeEventListener(target.event, info.addEvent, target.capture);
 }
 
-},{"../disposable/dispose":67,"./tryEvent":97}],86:[function(require,module,exports){
+},{"../disposable/dispose":68,"./tryEvent":98}],87:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5307,7 +5636,7 @@ MulticastSource.prototype.error = function(t, e) {
 	}
 };
 
-},{"../base":38}],87:[function(require,module,exports){
+},{"../base":39}],88:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5334,7 +5663,7 @@ ValueProducer.prototype.dispose = function() {
 	return this.task.dispose();
 };
 
-},{"../scheduler/PropagateTask":75}],88:[function(require,module,exports){
+},{"../scheduler/PropagateTask":76}],89:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5401,7 +5730,7 @@ NeverSource.prototype.run = function() {
 
 var NEVER = new Stream(new NeverSource());
 
-},{"../Stream":37,"../disposable/dispose":67,"../scheduler/PropagateTask":75,"../source/ValueSource":87}],89:[function(require,module,exports){
+},{"../Stream":38,"../disposable/dispose":68,"../scheduler/PropagateTask":76,"../source/ValueSource":88}],90:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5479,7 +5808,7 @@ Subscription.prototype.dispose = function() {
 	}
 };
 
-},{"../Stream":37,"../sink/DeferredSink":80,"./MulticastSource":86,"./tryEvent":97}],90:[function(require,module,exports){
+},{"../Stream":38,"../sink/DeferredSink":81,"./MulticastSource":87,"./tryEvent":98}],91:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5503,7 +5832,7 @@ function from(a) {
 	throw new TypeError('not iterable: ' + a);
 }
 
-},{"../base":38,"../iterable":73,"./fromArray":91,"./fromIterable":93}],91:[function(require,module,exports){
+},{"../base":39,"../iterable":74,"./fromArray":92,"./fromIterable":94}],92:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5551,7 +5880,7 @@ function produce(task, array, sink) {
 	}
 }
 
-},{"../Stream":37,"../scheduler/PropagateTask":75}],92:[function(require,module,exports){
+},{"../Stream":38,"../scheduler/PropagateTask":76}],93:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5587,7 +5916,7 @@ function fromEvent(event, source /*, useCapture = false */) {
 	return new Stream(s);
 }
 
-},{"../Stream":37,"./EventEmitterSource":84,"./EventTargetSource":85,"./MulticastSource":86}],93:[function(require,module,exports){
+},{"../Stream":38,"./EventEmitterSource":85,"./EventTargetSource":86,"./MulticastSource":87}],94:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5632,7 +5961,7 @@ function runProducer(t, producer, sink) {
 	producer.scheduler.asap(producer.task);
 }
 
-},{"../Stream":37,"../iterable":73,"../scheduler/PropagateTask":75}],94:[function(require,module,exports){
+},{"../Stream":38,"../iterable":74,"../scheduler/PropagateTask":76}],95:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5704,7 +6033,7 @@ Generate.prototype.dispose = function() {
 	this.active = false;
 };
 
-},{"../Stream":37,"../base":38}],95:[function(require,module,exports){
+},{"../Stream":38,"../base":39}],96:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5774,7 +6103,7 @@ function continueIterate(iterate, x) {
 	return !iterate.active ? iterate.value : stepIterate(iterate, x);
 }
 
-},{"../Stream":37}],96:[function(require,module,exports){
+},{"../Stream":38}],97:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5814,7 +6143,7 @@ function emit(t, x, sink) {
 	sink.event(t, x);
 }
 
-},{"../Stream":37,"../disposable/dispose":67,"../scheduler/PropagateTask":75,"./MulticastSource":86}],97:[function(require,module,exports){
+},{"../Stream":38,"../disposable/dispose":68,"../scheduler/PropagateTask":76,"./MulticastSource":87}],98:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5838,7 +6167,7 @@ function tryEnd(t, x, sink) {
 	}
 }
 
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5913,7 +6242,7 @@ function continueUnfold(unfold, tuple) {
 	return stepUnfold(unfold, tuple.seed);
 }
 
-},{"../Stream":37}],99:[function(require,module,exports){
+},{"../Stream":38}],100:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -6594,7 +6923,7 @@ Stream.prototype.multicast = function() {
 	return multicast(this);
 };
 
-},{"./lib/Stream":37,"./lib/base":38,"./lib/combinator/accumulate":39,"./lib/combinator/applicative":40,"./lib/combinator/build":41,"./lib/combinator/combine":42,"./lib/combinator/concatMap":43,"./lib/combinator/continueWith":44,"./lib/combinator/delay":45,"./lib/combinator/errors":46,"./lib/combinator/filter":47,"./lib/combinator/flatMap":48,"./lib/combinator/limit":49,"./lib/combinator/loop":50,"./lib/combinator/merge":51,"./lib/combinator/mergeConcurrently":52,"./lib/combinator/multicast":53,"./lib/combinator/observe":54,"./lib/combinator/promises":55,"./lib/combinator/sample":56,"./lib/combinator/slice":57,"./lib/combinator/switch":58,"./lib/combinator/timeslice":59,"./lib/combinator/timestamp":60,"./lib/combinator/transduce":61,"./lib/combinator/transform":62,"./lib/combinator/zip":63,"./lib/source/core":88,"./lib/source/create":89,"./lib/source/from":90,"./lib/source/fromEvent":92,"./lib/source/generate":94,"./lib/source/iterate":95,"./lib/source/periodic":96,"./lib/source/unfold":98}],100:[function(require,module,exports){
+},{"./lib/Stream":38,"./lib/base":39,"./lib/combinator/accumulate":40,"./lib/combinator/applicative":41,"./lib/combinator/build":42,"./lib/combinator/combine":43,"./lib/combinator/concatMap":44,"./lib/combinator/continueWith":45,"./lib/combinator/delay":46,"./lib/combinator/errors":47,"./lib/combinator/filter":48,"./lib/combinator/flatMap":49,"./lib/combinator/limit":50,"./lib/combinator/loop":51,"./lib/combinator/merge":52,"./lib/combinator/mergeConcurrently":53,"./lib/combinator/multicast":54,"./lib/combinator/observe":55,"./lib/combinator/promises":56,"./lib/combinator/sample":57,"./lib/combinator/slice":58,"./lib/combinator/switch":59,"./lib/combinator/timeslice":60,"./lib/combinator/timestamp":61,"./lib/combinator/transduce":62,"./lib/combinator/transform":63,"./lib/combinator/zip":64,"./lib/source/core":89,"./lib/source/create":90,"./lib/source/from":91,"./lib/source/fromEvent":93,"./lib/source/generate":95,"./lib/source/iterate":96,"./lib/source/periodic":97,"./lib/source/unfold":99}],101:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6634,7 +6963,7 @@ function classNameFromVNode(vNode) {
 
   return cn.trim();
 }
-},{"./selectorParser":101}],101:[function(require,module,exports){
+},{"./selectorParser":102}],102:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6692,7 +7021,7 @@ function selectorParser() {
     className: classes.join(' ')
   };
 }
-},{"browser-split":12}],102:[function(require,module,exports){
+},{"browser-split":12}],103:[function(require,module,exports){
 var VNode = require('./vnode');
 var is = require('./is');
 
@@ -6727,13 +7056,13 @@ module.exports = function h(sel, b, c) {
   return VNode(sel, data, children, text, undefined);
 };
 
-},{"./is":103,"./vnode":110}],103:[function(require,module,exports){
+},{"./is":104,"./vnode":111}],104:[function(require,module,exports){
 module.exports = {
   array: Array.isArray,
   primitive: function(s) { return typeof s === 'string' || typeof s === 'number'; },
 };
 
-},{}],104:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 var booleanAttrs = ["allowfullscreen", "async", "autofocus", "autoplay", "checked", "compact", "controls", "declare", 
                 "default", "defaultchecked", "defaultmuted", "defaultselected", "defer", "disabled", "draggable", 
                 "enabled", "formnovalidate", "hidden", "indeterminate", "inert", "ismap", "itemscope", "loop", "multiple", 
@@ -6774,7 +7103,7 @@ function updateAttrs(oldVnode, vnode) {
 
 module.exports = {create: updateAttrs, update: updateAttrs};
 
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 function updateClass(oldVnode, vnode) {
   var cur, name, elm = vnode.elm,
       oldClass = oldVnode.data.class || {},
@@ -6794,7 +7123,7 @@ function updateClass(oldVnode, vnode) {
 
 module.exports = {create: updateClass, update: updateClass};
 
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 function updateProps(oldVnode, vnode) {
   var key, cur, old, elm = vnode.elm,
       oldProps = oldVnode.data.props || {}, props = vnode.data.props || {};
@@ -6814,7 +7143,7 @@ function updateProps(oldVnode, vnode) {
 
 module.exports = {create: updateProps, update: updateProps};
 
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 var raf = (window && window.requestAnimationFrame) || setTimeout;
 var nextFrame = function(fn) { raf(function() { raf(fn); }); };
 
@@ -6880,7 +7209,7 @@ function applyRemoveStyle(vnode, rm) {
 
 module.exports = {create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle};
 
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 // jshint newcap: false
 /* global require, module, document, Element */
 'use strict';
@@ -7115,7 +7444,7 @@ function init(modules) {
 
 module.exports = {init: init};
 
-},{"./is":103,"./vnode":110}],109:[function(require,module,exports){
+},{"./is":104,"./vnode":111}],110:[function(require,module,exports){
 var h = require('./h');
 
 function init(thunk) {
@@ -7150,14 +7479,14 @@ module.exports = function(name, fn /* args */) {
   });
 };
 
-},{"./h":102}],110:[function(require,module,exports){
+},{"./h":103}],111:[function(require,module,exports){
 module.exports = function(sel, data, children, text, elm) {
   var key = data === undefined ? undefined : data.key;
   return {sel: sel, data: data, children: children,
           text: text, elm: elm, key: key};
 };
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -7250,7 +7579,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],112:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 "use strict";
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -7280,7 +7609,7 @@ var monadIter5 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' 
 
 var monadIter6 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n');
 
-},{"snabbdom":108,"snabbdom/h":102}],113:[function(require,module,exports){
+},{"snabbdom":109,"snabbdom/h":103}],114:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -7288,6 +7617,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var _motorcycleCore = require('@motorcycle/core');
 
 var _motorcycleCore2 = _interopRequireDefault(_motorcycleCore);
+
+var _jsMonads = require('js-monads');
 
 var _motorcycleDom = require('@motorcycle/dom');
 
@@ -7301,11 +7632,13 @@ var Group = 'solo';
 var Goals = 0;
 var Name;
 var FIB = 'waiting';
+var EVAL = 'waiting';
 var Result = '';
 var tempStyle = { display: 'inline' };
 var tempStyle2 = { display: 'none' };
-mM6.ret('');
-mMfib.ret([0, 1]);
+_jsMonads.mM6.ret('');
+var M3;
+var M8;
 
 function createWebSocket(path) {
   var host = window.location.hostname;
@@ -7325,41 +7658,43 @@ var websocketsDriver = function websocketsDriver() {
   });
 };
 
-mM1.ret([0, 0, 0, 0]);
-mM3.ret([]);
+_jsMonads.mM1.ret([0, 0, 0, 0]);
+_jsMonads.mM3.ret([]);
 
 function main(sources) {
+  _jsMonads.mMfib.ret([0, 1]);
+  console.log(_jsMonads.ret);
   var messages$ = sources.WS.map(function (e) {
-    return mMar.ret(e.data.split(',')).bnd(function (array) {
-      return mMscores.ret(array[3].split("<br>")).bnd(function () {
-        return mMname.ret(mMar.x[2]).bnd(function () {
-          return mMprefix.ret(mMar.x[0]).bnd(next, 'CA#$42', mMZ10).bnd(next, 'CB#$42', mMZ11).bnd(next, 'CC#$42', mMZ12).bnd(next, 'CD#$42', mMZ13).bnd(next, 'CE#$42', mMZ14).bnd(next, 'EE#$42', mMZ15);
+    return _jsMonads.mMar.ret(e.data.split(',')).bnd(function (array) {
+      return _jsMonads.mMscores.ret(array[3].split("<br>")).bnd(function () {
+        return _jsMonads.mMname.ret(_jsMonads.mMar.x[2]).bnd(function () {
+          return _jsMonads.mMprefix.ret(_jsMonads.mMar.x[0]).bnd(_jsMonads.next, 'CA#$42', _jsMonads.mMZ10).bnd(_jsMonads.next, 'CB#$42', _jsMonads.mMZ11).bnd(_jsMonads.next, 'CC#$42', _jsMonads.mMZ12).bnd(_jsMonads.next, 'CD#$42', _jsMonads.mMZ13).bnd(_jsMonads.next, 'CE#$42', _jsMonads.mMZ14).bnd(_jsMonads.next, 'EE#$42', _jsMonads.mMZ15);
         });
       });
     });
   });
-  mMmain.bnd(function () {
-    return mMZ10.bnd(function () {
-      return mMmain.bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3'));
+  _jsMonads.mMmain.bnd(function () {
+    return _jsMonads.mMZ10.bnd(function () {
+      return _jsMonads.mMmain.bnd(_jsMonads.map, _jsMonads.mM1.ret([_jsMonads.mMar.x[3], _jsMonads.mMar.x[4], _jsMonads.mMar.x[5], _jsMonads.mMar.x[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3'));
     });
-  }, mMZ11.bnd(function () {
-    return mMmain.bnd(map, mMscbd.ret(mMscores.x).bnd(updateScoreboard).bnd(function () {
-      return mM3.ret([]).bnd(function () {
-        return mM8.ret(0);
+  }, _jsMonads.mMZ11.bnd(function () {
+    return _jsMonads.mMmain.bnd(_jsMonads.map, _jsMonads.mMscbd.ret(_jsMonads.mMscores.x).bnd(updateScoreboard).bnd(function () {
+      return _jsMonads.mM3.ret([]).bnd(function () {
+        return _jsMonads.mM8.ret(0);
       });
     }));
-  }), mMZ12.bnd(function () {
-    return mMmain.bnd(map, mM6.ret(mMname.x + ' successfully logged in.'));
-  }), mMZ13.bnd(function () {
-    return mMar.bnd(splice, 0, 3).bnd(reduce, function (a, b) {
+  }), _jsMonads.mMZ12.bnd(function () {
+    return _jsMonads.mMmain.bnd(_jsMonads.map, _jsMonads.mM6.ret(_jsMonads.mMname.x + ' successfully logged in.'));
+  }), _jsMonads.mMZ13.bnd(function () {
+    return _jsMonads.mMar.bnd(_jsMonads.splice, 0, 3).bnd(_jsMonads.reduce, function (a, b) {
       return a + ", " + b;
     }).bnd(function () {
-      return mMmsg.bnd(push, mMname.x + ': ' + mMar.x).bnd(updateMessages);
+      return _jsMonads.mMmsg.bnd(_jsMonads.push, _jsMonads.mMname.x + ': ' + _jsMonads.mMar.x).bnd(updateMessages);
     });
-  }), mMZ14.bnd(function () {
-    return mMmain.bnd(map, mMgoals2.ret('The winner is ' + mMname.x));
-  }), mMZ15.bnd(function () {
-    return mMmain.bnd(map, mMgoals2.ret('A player named ' + mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh));
+  }), _jsMonads.mMZ14.bnd(function () {
+    return _jsMonads.mMmain.bnd(_jsMonads.map, _jsMonads.mMgoals2.ret('The winner is ' + _jsMonads.mMname.x));
+  }), _jsMonads.mMZ15.bnd(function () {
+    return _jsMonads.mMmain.bnd(_jsMonads.map, _jsMonads.mMgoals2.ret('A player named ' + _jsMonads.mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh));
   }));
 
   var loginPress$ = sources.DOM.select('input.login').events('keydown');
@@ -7372,7 +7707,7 @@ function main(sources) {
     if (e.keyCode == 13) {
       socket.send("CC#$42" + v);
       Name = v;
-      mM3.ret([]).bnd(mM2.ret);
+      _jsMonads.mM3.ret([]).bnd(_jsMonads.mM2.ret);
       e.target.value = '';
       tempStyle = { display: 'none' };
       tempStyle2 = { display: 'inline' };
@@ -7402,19 +7737,19 @@ function main(sources) {
   var numClick$ = sources.DOM.select('.num').events('click');
 
   var numClickAction$ = numClick$.map(function (e) {
-    mM3.bnd(push, e.target.textContent).bnd(function () {
-      mM1.x[e.target.id] = "";
+    _jsMonads.mM3.bnd(_jsMonads.push, e.target.textContent).bnd(function () {
+      _jsMonads.mM1.x[e.target.id] = "";
     });
-    if (mM3.x.length === 2 && mM8.x !== 0) {
+    if (_jsMonads.mM3.x.length === 2 && _jsMonads.mM8.x !== 0) {
       updateCalc();
     }
-  }).startWith(mM1.x[0]);
+  }).startWith(_jsMonads.mM1.x[0]);
 
   var opClick$ = sources.DOM.select('.op').events('click');
 
   var opClickAction$ = opClick$.map(function (e) {
-    mM8.ret(e.target.textContent);
-    if (mM3.x.length === 2) {
+    _jsMonads.mM8.ret(e.target.textContent);
+    if (_jsMonads.mM3.x.length === 2) {
       updateCalc();
     }
   });
@@ -7422,7 +7757,7 @@ function main(sources) {
   var rollClick$ = sources.DOM.select('.roll').events('click');
 
   var rollClickAction$ = rollClick$.map(function (e) {
-    mM13.ret(mM13.x - 1);
+    _jsMonads.mM13.ret(_jsMonads.mM13.x - 1);
     socket.send('CG#$42,' + Group + ',' + Name + ',' + -1 + ',' + 0);
     socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
   });
@@ -7434,41 +7769,61 @@ function main(sources) {
     if (v == '') {
       return;
     }
-    if (e.keyCode == 13) FIB = mMfib.bnd(fib, v).x;
+    if (e.keyCode == 13 && Number.isInteger(v * 1)) FIB = _jsMonads.mMfib.bnd(_jsMonads.fib, v).x;
+    if (e.keyCode == 13 && !Number.isInteger(v * 1)) FIB = "You didn't provide an integer";
   });
 
-  var calcStream$ = (0, _most.merge)(fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  var evalPress$ = sources.DOM.select('input#inputEval').events('keydown');
+
+  var evalPressAction$ = evalPress$.map(function (e) {
+    var v = e.target.value;
+    if (v == '') {
+      return;
+    }
+    if (e.keyCode == 13) try {
+      EVAL = eval(v);
+      if (!(typeof EVAL === 'number' || typeof EVAL === 'string' || Arran.isArray(v))) {
+        EVAL = 'Maybe you should add ".x" at the end';
+      }
+    } catch (e) {
+      EVAL = 'ERROR ' + e;
+    };
+  });
+
+  var calcStream$ = (0, _most.merge)(evalPressAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: calcStream$.map(function () {
-      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), (0, _motorcycleDom.h)('pre', '  class Monad {\n    var _this = this; \n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = function (func, ...args) {\n        return func(_this.x, ...args);\n      };\n\n      this.ret = function (a) {\n        _this.x = a;\n        return _this;\n      };\n    }\n  };\n\n  class MonadIter {\n    var _this = this;                  \n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return _this.p();\n      }\n \n      this.bnd = function (func) {\n          _this.p = func;\n      }\n    }\n  } '), (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), (0, _motorcycleDom.h)('pre', '  var fib = function fib(x,k) {\n    let j = k;\n    while (j > 0) {\n      x = [x[1], x[0] + x[1]];\n      j -= 1;\n    }\n    return ret(\'fibonacci \' + k + \' = \' + x[0]);   // An anonymous monad holding the result.\n  }\n'), (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', FIB), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), (0, _motorcycleDom.h)('pre', '  var websocketsDriver = function () {\n      return create((add) => {\n        socket.onmessage = msg => add(msg)\n      })\n  }\n'), (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), (0, _motorcycleDom.h)('pre', '  function main(sources) {\n  const messages$ = (sources.WS).map(e => \n    mMar.ret(e.data.split(\',\'))\n    .bnd(array => mMscores.ret(array[3].split("<br>"))\n    .bnd(() => mMname.ret(mMar.x[2])\n    .bnd(() => mMprefix.ret(mMar.x[0])\n      .bnd(next, \'CA#$42\', mMZ10)\n      .bnd(next, \'CB#$42\', mMZ11)\n      .bnd(next, \'CC#$42\', mMZ12)\n      .bnd(next, \'CD#$42\', mMZ13)\n      .bnd(next, \'CE#$42\', mMZ14)\n      .bnd(next, \'EE#$42\', mMZ15)))));\n    mMmain.bnd(() =>\n    (mMZ10.bnd(() => mMmain\n      .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])\n      .bnd(displayInline,\'1\')\n      .bnd(displayInline,\'2\')\n      .bnd(displayInline,\'3\')))),\n    (mMZ11.bnd(() => mMmain\n      .bnd(map, mMscbd.ret(mMscores.x)\n      .bnd(updateScoreboard)\n      .bnd(() => mM3.ret([])\n      .bnd(() => mM8.ret(0) ))))),\n    (mMZ12.bnd(() => mMmain   \n       .bnd(map, mM6.ret( mMname.x + \' successfully logged in.\')))),\n    (mMZ13.bnd(() => mMar\n      .bnd(splice, 0 ,3)\n      .bnd(reduce, (a,b) => a + ", " + b)\n      .bnd(() => mMmsg\n      .bnd(push, mMname.x + \': \' + mMar.x)\n      .bnd(updateMessages)))),\n    (mMZ14.bnd(() => mMmain\n      .bnd(map, mMgoals2.ret(\'The winner is \' + mMname.x )))), \n    (mMZ15.bnd(() => mMmain\n      .bnd(map, mMgoals2.ret(\'A player named \' + \n        mMname.x + \'is currently logged in. Page will refresh in 4 seconds.\')\n      .bnd(refresh))))) '), (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which which comes after the call to its "bnd" method. Here is its definition of "next": '), (0, _motorcycleDom.h)('pre', '  var next = function next(x, y, mon2) {\n    if (x === y) {\n      mon2.release();\n    }\n    return ret(x);  // An anonymous monad with the value of the calling monad.\n  } '), (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), (0, _motorcycleDom.h)('pre', '  const numClick$ = sources.DOM\n    .select(\'.num\').events(\'click\');\n     \n  const numClickAction$ = numClick$.map(e => {\n    mM3\n    .bnd(push,e.target.textContent)\n    .bnd(() => {mM1.x[e.target.id] = "";})\n    if (mM3.x.length === 2 && mM8.x !== 0) {updateCalc();}\n  }).startWith(mM1.x[0]);\n\n  const opClick$ = sources.DOM\n    .select(\'.op\').events(\'click\');\n\n  const opClickAction$ = opClick$.map(e => {\n    mM8.ret(e.target.textContent);\n    if (mM3.x.length === 2) {updateCalc();}\n  })\n\n  const rollClick$ = sources.DOM\n    .select(\'.roll\').events(\'click\');\n\n  const rollClickAction$ = rollClick$.map(e => {  \n    mM13.ret(mM13.x - 1);\n    socket.send(\'CG#$42,\' + Group + \',\' + Name + \',\' + -1 + \',\' + 0);\n    socket.send(`CA#$42,' + Group + ',' + Name + ',6,6,12,20`);\n  });   '), (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), (0, _motorcycleDom.h)('pre', '  function updateCalc() { \n  mMcalc.bnd(() => (\n      ( mMZ2.bnd(() => mM13\n                    .bnd(score, 1)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.\n                    .bnd(newRoll)) ),\n      ( mMZ4.bnd(() => mM13\n                    .bnd(score, 3)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                    .bnd(newRoll)) ),\n          ( mMZ5.bnd(() => mM13   // Released when the result mod 5 is 0.\n                        .bnd(score,5)\n                        .bnd(v => mM13.ret(v)\n                        .bnd(next, 25, mMZ6))) ),\n              ( mMZ6.bnd(() => mM9.bnd(score2)  // Released when the score is 25 \n                            .bnd(next,3,mMZ7)) ),\n                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                \n      (mM3.bnd(x => mM7\n                    .ret(calc(x[0], mM8.x, x[1]))\n                    .bnd(next, 18, mMZ4)  // Releases mMZ4.\n                    .bnd(next, 20, mMZ2) \n                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.\n                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad\'s value.\n                    .bnd(displayOff, ((mM1.x.length)+\'\'))\n                    .bnd(() => mM3\n                    .ret([])\n                    .bnd(() => mM4\n                    .ret(0).bnd(mM8.ret))))) ) \n  ))\n}  '), (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads can be useful. '), (0, _motorcycleDom.h)('p', 'The monads are in monad.js, which is incorporated into the app by a script tag in index.html. You can press F12 and experiment with the monads on the command line. '), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
+      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', _jsMonads.mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', _jsMonads.mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', _jsMonads.mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', _jsMonads.mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', _jsMonads.mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', _jsMonads.mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', _jsMonads.mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + _jsMonads.mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', _jsMonads.mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), (0, _motorcycleDom.h)('pre', '  class Monad {\n    var _this = this; \n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = function (func, ...args) {\n        return func(_this.x, ...args);\n      };\n\n      this.ret = function (a) {\n        _this.x = a;\n        return _this;\n      };\n    }\n  };\n\n  class MonadIter {\n    var _this = this;                  \n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return _this.p();\n      }\n \n      this.bnd = function (func) {\n          _this.p = func;\n      }\n    }\n  } '), (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), (0, _motorcycleDom.h)('pre', '  var fib = function fib(x,k) {\n    let j = k;\n    while (j > 0) {\n      x = [x[1], x[0] + x[1]];\n      j -= 1;\n    }\n    return ret(\'fibonacci \' + k + \' = \' + x[0]);   // An anonymous monad holding the result.\n  }\n'), (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', FIB), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), (0, _motorcycleDom.h)('pre', '  var websocketsDriver = function () {\n      return create((add) => {\n        socket.onmessage = msg => add(msg)\n      })\n  }\n'), (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), (0, _motorcycleDom.h)('pre', '  function main(sources) {\n  const messages$ = (sources.WS).map(e => \n    mMar.ret(e.data.split(\',\'))\n    .bnd(array => mMscores.ret(array[3].split("<br>"))\n    .bnd(() => mMname.ret(mMar.x[2])\n    .bnd(() => mMprefix.ret(mMar.x[0])\n      .bnd(next, \'CA#$42\', mMZ10)\n      .bnd(next, \'CB#$42\', mMZ11)\n      .bnd(next, \'CC#$42\', mMZ12)\n      .bnd(next, \'CD#$42\', mMZ13)\n      .bnd(next, \'CE#$42\', mMZ14)\n      .bnd(next, \'EE#$42\', mMZ15)))));\n    mMmain.bnd(() =>\n    (mMZ10.bnd(() => mMmain\n      .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])\n      .bnd(displayInline,\'1\')\n      .bnd(displayInline,\'2\')\n      .bnd(displayInline,\'3\')))),\n    (mMZ11.bnd(() => mMmain\n      .bnd(map, mMscbd.ret(mMscores.x)\n      .bnd(updateScoreboard)\n      .bnd(() => mM3.ret([])\n      .bnd(() => mM8.ret(0) ))))),\n    (mMZ12.bnd(() => mMmain   \n       .bnd(map, mM6.ret( mMname.x + \' successfully logged in.\')))),\n    (mMZ13.bnd(() => mMar\n      .bnd(splice, 0 ,3)\n      .bnd(reduce, (a,b) => a + ", " + b)\n      .bnd(() => mMmsg\n      .bnd(push, mMname.x + \': \' + mMar.x)\n      .bnd(updateMessages)))),\n    (mMZ14.bnd(() => mMmain\n      .bnd(map, mMgoals2.ret(\'The winner is \' + mMname.x )))), \n    (mMZ15.bnd(() => mMmain\n      .bnd(map, mMgoals2.ret(\'A player named \' + \n        mMname.x + \'is currently logged in. Page will refresh in 4 seconds.\')\n      .bnd(refresh))))) '), (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which which comes after the call to its "bnd" method. Here is its definition of "next": '), (0, _motorcycleDom.h)('pre', '  var next = function next(x, y, mon2) {\n    if (x === y) {\n      mon2.release();\n    }\n    return ret(x);  // An anonymous monad with the value of the calling monad.\n  } '), (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), (0, _motorcycleDom.h)('pre', '  const numClick$ = sources.DOM\n    .select(\'.num\').events(\'click\');\n     \n  const numClickAction$ = numClick$.map(e => {\n    mM3\n    .bnd(push,e.target.textContent)\n    .bnd(() => {mM1.x[e.target.id] = "";})\n    if (mM3.x.length === 2 && mM8.x !== 0) {updateCalc();}\n  }).startWith(mM1.x[0]);\n\n  const opClick$ = sources.DOM\n    .select(\'.op\').events(\'click\');\n\n  const opClickAction$ = opClick$.map(e => {\n    mM8.ret(e.target.textContent);\n    if (mM3.x.length === 2) {updateCalc();}\n  })\n\n  const rollClick$ = sources.DOM\n    .select(\'.roll\').events(\'click\');\n\n  const rollClickAction$ = rollClick$.map(e => {  \n    mM13.ret(mM13.x - 1);\n    socket.send(\'CG#$42,\' + Group + \',\' + Name + \',\' + -1 + \',\' + 0);\n    socket.send(`CA#$42,' + Group + ',' + Name + ',6,6,12,20`);\n  });   '), (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), (0, _motorcycleDom.h)('pre', '  function updateCalc() { \n  mMcalc.bnd(() => (\n      ( mMZ2.bnd(() => mM13\n                    .bnd(score, 1)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.\n                    .bnd(newRoll)) ),\n      ( mMZ4.bnd(() => mM13\n                    .bnd(score, 3)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                    .bnd(newRoll)) ),\n          ( mMZ5.bnd(() => mM13   // Released when the result mod 5 is 0.\n                        .bnd(score,5)\n                        .bnd(v => mM13.ret(v)\n                        .bnd(next, 25, mMZ6))) ),\n              ( mMZ6.bnd(() => mM9.bnd(score2)  // Released when the score is 25 \n                            .bnd(next,3,mMZ7)) ),\n                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                \n      (mM3.bnd(x => mM7\n                    .ret(calc(x[0], mM8.x, x[1]))\n                    .bnd(next, 18, mMZ4)  // Releases mMZ4.\n                    .bnd(next, 20, mMZ2) \n                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.\n                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad\'s value.\n                    .bnd(displayOff, ((mM1.x.length)+\'\'))\n                    .bnd(() => mM3\n                    .ret([])\n                    .bnd(() => mM4\n                    .ret(0).bnd(mM8.ret))))) ) \n  ))\n}  '), (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
     })
   };
 }
 
 function updateCalc() {
-  mMcalc.bnd(function () {
-    return mMZ2.bnd(function () {
-      return mM13.bnd(score, 1).bnd(next2, mM13.x % 5 === 0, mMZ5) // Releases mMZ5.
+  M3 = _jsMonads.mM3.x[0] + ' ' + _jsMonads.mM3.x[1];
+  M8 = _jsMonads.mM8.x + '';
+  _jsMonads.mMcalc.bnd(function () {
+    return _jsMonads.mMZ2.bnd(function () {
+      return _jsMonads.mM13.bnd(score, 1).bnd(_jsMonads.next2, _jsMonads.mM13.x % 5 === 0, _jsMonads.mMZ5) // Releases mMZ5.
       .bnd(newRoll);
-    }), mMZ4.bnd(function () {
-      return mM13.bnd(score, 3).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
-    }), mMZ5.bnd(function () {
-      return mM13.bnd(score, 5).bnd(function (v) {
-        return mM13.ret(v).bnd(next, 25, mMZ6);
+    }), _jsMonads.mMZ4.bnd(function () {
+      return _jsMonads.mM13.bnd(score, 3).bnd(_jsMonads.next2, _jsMonads.mM13.x % 5 === 0, _jsMonads.mMZ5).bnd(newRoll);
+    }), _jsMonads.mMZ5.bnd(function () {
+      return _jsMonads.mM13.bnd(score, 5).bnd(function (v) {
+        return _jsMonads.mM13.ret(v).bnd(_jsMonads.next, 25, _jsMonads.mMZ6);
       });
-    }), mMZ6.bnd(function () {
-      return mM9.bnd(score2).bnd(next, 3, mMZ7);
-    }), mMZ7.bnd(function () {
-      return mM13.bnd(winner);
-    }), mM3.bnd(function (x) {
-      return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4) // Releases mMZ4.
-      .bnd(next, 20, mMZ2).bnd(function () {
-        return mM1.bnd(push, mM7.x) // Returns an anonymous monad.
-        .bnd(mM1.ret) // Gives mM1 the anonymous monad's value.
-        .bnd(displayOff, mM1.x.length + '').bnd(function () {
-          return mM3.ret([]).bnd(function () {
-            return mM4.ret(0).bnd(mM8.ret);
+    }), _jsMonads.mMZ6.bnd(function () {
+      return _jsMonads.mM9.bnd(score2).bnd(_jsMonads.next, 3, _jsMonads.mMZ7);
+    }), _jsMonads.mMZ7.bnd(function () {
+      return _jsMonads.mM13.bnd(winner);
+    }), _jsMonads.mM3.bnd(function (x) {
+      return _jsMonads.mM7.ret((0, _jsMonads.calc)(x[0], _jsMonads.mM8.x, x[1])).bnd(_jsMonads.log, _jsMonads.mM7.x).bnd(_jsMonads.next, 18, _jsMonads.mMZ4) // Releases mMZ4.
+      .bnd(_jsMonads.next, 20, _jsMonads.mMZ2).bnd(function () {
+        return _jsMonads.mM1.bnd(_jsMonads.push, _jsMonads.mM7.x) // Returns an anonymous monad.
+        .bnd(_jsMonads.mM1.ret) // Gives mM1 the anonymous monad's value.
+        .bnd(displayOff, _jsMonads.mM1.x.length + '').bnd(function () {
+          return _jsMonads.mM3.ret([]).bnd(function () {
+            return _jsMonads.mM4.ret(0).bnd(_jsMonads.mM8.ret);
           });
         });
       });
@@ -7477,13 +7832,13 @@ function updateCalc() {
 }
 
 var updateScoreboard = function updateScoreboard(v) {
-  mMscoreboard.ret([]);
-  var ar = mMscbd.x;
+  _jsMonads.mMscoreboard.ret([]);
+  var ar = _jsMonads.mMscbd.x;
   var keys = Object.keys(ar);
   for (var k in keys) {
-    mMscoreboard.bnd(unshift, (0, _motorcycleDom.h)('div.indent', ar[k]));
+    _jsMonads.mMscoreboard.bnd(_jsMonads.unshift, (0, _motorcycleDom.h)('div.indent', ar[k]));
   }
-  return mMscoreboard;
+  return _jsMonads.mMscoreboard;
 };
 
 window.onload = function (event) {
@@ -7491,49 +7846,49 @@ window.onload = function (event) {
 };
 
 var updateMessages = function updateMessages(v) {
-  mMmessages.ret([]);
-  var ar = mMmsg.x;
+  _jsMonads.mMmessages.ret([]);
+  var ar = _jsMonads.mMmsg.x;
   var keys = Object.keys(ar);
   for (var k in keys) {
-    mMmessages.bnd(unshift, (0, _motorcycleDom.h)('div', ar[k]));
+    _jsMonads.mMmessages.bnd(_jsMonads.unshift, (0, _motorcycleDom.h)('div', ar[k]));
   }
-  return mMmessages;
+  return _jsMonads.mMmessages;
 };
 
 var displayOff = function displayOff(x, a) {
   document.getElementById(a).style.display = 'none';
-  return ret(x);
+  return (0, _jsMonads.ret)(x);
 };
 
 var displayInline = function displayInline(x, a) {
   if (document.getElementById(a)) document.getElementById(a).style.display = 'inline';
-  return ret(x);
+  return (0, _jsMonads.ret)(x);
 };
 
 var score = function score(v, j) {
   socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 0);
-  return mM13.ret(v + j);
+  return _jsMonads.mM13.ret(v + j);
 };
 
 var score2 = function score2() {
-  mMgoals.ret(mMgoals.x + 1);
+  _jsMonads.mMgoals.ret(_jsMonads.mMgoals.x + 1);
   var j = -25;
   socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 1);
-  mM13.ret(0);
-  return mMgoals;
+  _jsMonads.mM13.ret(0);
+  return _jsMonads.mMgoals;
 };
 
 var winner = function winner() {
   var k = -3;
-  mMgoals.ret(mMgoals.x - 3);
+  _jsMonads.mMgoals.ret(_jsMonads.mMgoals.x - 3);
   socket.send('CG#$42,' + Group + ',' + Name + ',' + 0 + ',' + k);
   socket.send('CE#$42,' + Group + ',' + Name + ',nothing ');
-  return ret(0);
+  return (0, _jsMonads.ret)(0);
 };
 
 var newRoll = function newRoll(v) {
   socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
-  return ret(v);
+  return (0, _jsMonads.ret)(v);
 };
 
 var refresh = function refresh() {
@@ -7547,6 +7902,12 @@ var sources = {
   WS: websocketsDriver
 };
 
+function fromInput(input) {
+  return most.fromEvent('change', input).map(function (e) {
+    return e.target.value;
+  }).map(Number);
+}
+
 _motorcycleCore2['default'].run(main, sources);
 
-},{"./cow":112,"@motorcycle/core":3,"@motorcycle/dom":5,"most":99}]},{},[113]);
+},{"./cow":113,"@motorcycle/core":3,"@motorcycle/dom":5,"js-monads":30,"most":100}]},{},[114]);

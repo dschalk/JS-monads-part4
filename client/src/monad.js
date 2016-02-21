@@ -64,6 +64,10 @@ var M = function M(a,b) {
   return mon;
 };
 
+var MI = function MI() {
+  return new MonadIter();
+};
+
 var Count = 0;
 var mM1 = M([],'mM1');
 var mM2 = M(0,'mM2');
@@ -99,10 +103,6 @@ var mMprefix = M('', 'mMprefix');
 var mMfib = M([0,1], 'mMfib');
 var mMmain = M(null, 'mMmain');
 var mMcalc = M(null, 'mMcalc');
-
-var MI = function MI() {
-  return new MonadIter();
-};
 
 var mMZ1 = MI();
 var mMZ2 = MI();
