@@ -325,7 +325,7 @@
     exports.touchcancel = touchcancel;
 });
 
-},{"most":100}],2:[function(require,module,exports){
+},{"most":89}],2:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
         define('@most/hold', ['exports', 'most/lib/source/MulticastSource'], factory);
@@ -430,7 +430,7 @@
     exports.default = hold;
 });
 
-},{"most/lib/source/MulticastSource":87}],3:[function(require,module,exports){
+},{"most/lib/source/MulticastSource":76}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -516,12 +516,13 @@ var run = function run(main, drivers) {
 
 exports.default = { run: run };
 exports.run = run;
-},{"most-subject":34}],4:[function(require,module,exports){
+},{"most-subject":23}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.makeEventsSelector = undefined;
 
 var _domEvent = require('@most/dom-event');
 
@@ -530,7 +531,7 @@ var _select = require('./select');
 var matchesSelector = undefined;
 try {
   matchesSelector = require('matches-selector');
-} catch (err) {
+} catch (e) {
   matchesSelector = function matchesSelector() {};
 }
 
@@ -589,12 +590,12 @@ var defaults = {
   useCapture: false
 };
 
-function makeEventsSelector(rootElement$, selector) {
+function makeEventsSelector(rootElement$, namespace) {
   return function eventsSelector(type) {
     var options = arguments.length <= 1 || arguments[1] === undefined ? defaults : arguments[1];
 
     if (typeof type !== 'string') {
-      throw new Error('DOM drivers events() expects argument to be a ' + 'string representing the event type to listen for.');
+      throw new Error('DOM driver\'s events() expects argument to be a ' + 'string representing the event type to listen for.');
     }
     var useCapture = false;
     if (eventTypesThatDontBubble.indexOf(type) !== -1) {
@@ -603,49 +604,350 @@ function makeEventsSelector(rootElement$, selector) {
     if (typeof options.useCapture === 'boolean') {
       useCapture = options.useCapture;
     }
+
     return rootElement$.map(function (rootElement) {
-      return { rootElement: rootElement, selector: selector };
+      return { rootElement: rootElement, namespace: namespace };
     }).skipRepeatsWith(function (prev, curr) {
-      return prev.selector.join('') === curr.selector.join('');
+      return prev.namespace.join('') === curr.namespace.join('');
     }).map(function (_ref) {
       var rootElement = _ref.rootElement;
 
-      if (!selector || selector.lenght === 0) {
+      if (!namespace || namespace.length === 0) {
         return (0, _domEvent.domEvent)(type, rootElement, useCapture);
       }
-
-      var simulateBubbling = makeSimulateBubbling(selector, rootElement);
+      var simulateBubbling = makeSimulateBubbling(namespace, rootElement);
       return (0, _domEvent.domEvent)(type, rootElement, useCapture).filter(simulateBubbling);
     }).switch().multicast();
   };
 }
 
-exports.default = makeEventsSelector;
-},{"./select":8,"@most/dom-event":1,"matches-selector":31}],5:[function(require,module,exports){
+exports.makeEventsSelector = makeEventsSelector;
+},{"./select":13,"@most/dom-event":1,"matches-selector":20}],5:[function(require,module,exports){
 'use strict';
 
-var _h = require('snabbdom/h');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var _h2 = _interopRequireDefault(_h);
+var _vnode = require('snabbdom/vnode');
+
+var _vnode2 = _interopRequireDefault(_vnode);
+
+var _is = require('snabbdom/is');
+
+var _is2 = _interopRequireDefault(_is);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var isObservable = function isObservable(x) {
+  return typeof x.observe === 'function';
+};
+
+var addNSToObservable = function addNSToObservable(vNode) {
+  addNS(vNode.data, vNode.children); // eslint-disable-line
+};
+
+function addNS(data, children) {
+  data.ns = 'http://www.w3.org/2000/svg';
+  if (typeof children !== 'undefined' && _is2.default.array(children)) {
+    for (var i = 0; i < children.length; ++i) {
+      if (isObservable(children[i])) {
+        children[i] = children[i].tap(addNSToObservable);
+      } else {
+        addNS(children[i].data, children[i].children);
+      }
+    }
+  }
+}
+
+/* eslint-disable */
+function h(sel, b, c) {
+  var data = {};
+  var children = undefined;
+  var text = undefined;
+  var i = undefined;
+  if (arguments.length === 3) {
+    data = b;
+    if (_is2.default.array(c)) {
+      children = c;
+    } else if (_is2.default.primitive(c)) {
+      text = c;
+    }
+  } else if (arguments.length === 2) {
+    if (_is2.default.array(b)) {
+      children = b;
+    } else if (_is2.default.primitive(b)) {
+      text = b;
+    } else {
+      data = b;
+    }
+  }
+  if (_is2.default.array(children)) {
+    for (i = 0; i < children.length; ++i) {
+      if (_is2.default.primitive(children[i])) {
+        children[i] = (0, _vnode2.default)(undefined, undefined, undefined, children[i]);
+      }
+    }
+  }
+  if (sel[0] === 's' && sel[1] === 'v' && sel[2] === 'g') {
+    addNS(data, children);
+  }
+  return (0, _vnode2.default)(sel, data, children, text, undefined);
+}
+/* eslint-enable */
+
+exports.default = h;
+},{"snabbdom/is":93,"snabbdom/vnode":100}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.mockDOMSource = exports.makeDOMDriver = exports.video = exports.ul = exports.u = exports.tr = exports.title = exports.thead = exports.th = exports.tfoot = exports.textarea = exports.td = exports.tbody = exports.table = exports.sup = exports.sub = exports.style = exports.strong = exports.span = exports.source = exports.small = exports.select = exports.section = exports.script = exports.samp = exports.s = exports.ruby = exports.rt = exports.rp = exports.q = exports.pre = exports.param = exports.p = exports.option = exports.optgroup = exports.ol = exports.object = exports.noscript = exports.nav = exports.meta = exports.menu = exports.mark = exports.map = exports.main = exports.link = exports.li = exports.legend = exports.label = exports.keygen = exports.kbd = exports.ins = exports.input = exports.img = exports.iframe = exports.i = exports.html = exports.hr = exports.hgroup = exports.header = exports.head = exports.h6 = exports.h5 = exports.h4 = exports.h3 = exports.h2 = exports.h1 = exports.form = exports.footer = exports.figure = exports.figcaption = exports.fieldset = exports.embed = exports.em = exports.dt = exports.dl = exports.div = exports.dir = exports.dfn = exports.del = exports.dd = exports.colgroup = exports.col = exports.code = exports.cite = exports.caption = exports.canvas = exports.button = exports.br = exports.body = exports.blockquote = exports.bdo = exports.bdi = exports.base = exports.b = exports.audio = exports.aside = exports.article = exports.area = exports.address = exports.abbr = exports.a = exports.h = exports.thunk = exports.modules = undefined;
+
+var _makeDOMDriver = require('./makeDOMDriver');
+
+Object.defineProperty(exports, 'makeDOMDriver', {
+  enumerable: true,
+  get: function get() {
+    return _makeDOMDriver.makeDOMDriver;
+  }
+});
+
+var _mockDOMSource = require('./mockDOMSource');
+
+Object.defineProperty(exports, 'mockDOMSource', {
+  enumerable: true,
+  get: function get() {
+    return _mockDOMSource.mockDOMSource;
+  }
+});
+
+var _modules = require('./modules');
+
+var modules = _interopRequireWildcard(_modules);
 
 var _thunk = require('snabbdom/thunk');
 
 var _thunk2 = _interopRequireDefault(_thunk);
 
-var _makeDOMDriver = require('./makeDOMDriver');
+var _hyperscript = require('./hyperscript');
 
-var _makeDOMDriver2 = _interopRequireDefault(_makeDOMDriver);
+var _hyperscript2 = _interopRequireDefault(_hyperscript);
 
-var _assign = require('fast.js/object/assign');
+var _hyperscriptHelpers = require('hyperscript-helpers');
 
-var _assign2 = _interopRequireDefault(_assign);
+var _hyperscriptHelpers2 = _interopRequireDefault(_hyperscriptHelpers);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var hh = require('hyperscript-helpers')(_h2.default);
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-module.exports = (0, _assign2.default)({ makeDOMDriver: _makeDOMDriver2.default, h: _h2.default, thunk: _thunk2.default }, hh);
-},{"./makeDOMDriver":7,"fast.js/object/assign":29,"hyperscript-helpers":11,"snabbdom/h":103,"snabbdom/thunk":110}],6:[function(require,module,exports){
+exports.modules = modules;
+exports.thunk = _thunk2.default;
+exports.h = _hyperscript2.default;
+
+var _hh = (0, _hyperscriptHelpers2.default)(_hyperscript2.default);
+
+var a = _hh.a;
+var abbr = _hh.abbr;
+var address = _hh.address;
+var area = _hh.area;
+var article = _hh.article;
+var aside = _hh.aside;
+var audio = _hh.audio;
+var b = _hh.b;
+var base = _hh.base;
+var bdi = _hh.bdi;
+var bdo = _hh.bdo;
+var blockquote = _hh.blockquote;
+var body = _hh.body;
+var br = _hh.br;
+var button = _hh.button;
+var canvas = _hh.canvas;
+var caption = _hh.caption;
+var cite = _hh.cite;
+var code = _hh.code;
+var col = _hh.col;
+var colgroup = _hh.colgroup;
+var dd = _hh.dd;
+var del = _hh.del;
+var dfn = _hh.dfn;
+var dir = _hh.dir;
+var div = _hh.div;
+var dl = _hh.dl;
+var dt = _hh.dt;
+var em = _hh.em;
+var embed = _hh.embed;
+var fieldset = _hh.fieldset;
+var figcaption = _hh.figcaption;
+var figure = _hh.figure;
+var footer = _hh.footer;
+var form = _hh.form;
+var h1 = _hh.h1;
+var h2 = _hh.h2;
+var h3 = _hh.h3;
+var h4 = _hh.h4;
+var h5 = _hh.h5;
+var h6 = _hh.h6;
+var head = _hh.head;
+var header = _hh.header;
+var hgroup = _hh.hgroup;
+var hr = _hh.hr;
+var html = _hh.html;
+var i = _hh.i;
+var iframe = _hh.iframe;
+var img = _hh.img;
+var input = _hh.input;
+var ins = _hh.ins;
+var kbd = _hh.kbd;
+var keygen = _hh.keygen;
+var label = _hh.label;
+var legend = _hh.legend;
+var li = _hh.li;
+var link = _hh.link;
+var main = _hh.main;
+var map = _hh.map;
+var mark = _hh.mark;
+var menu = _hh.menu;
+var meta = _hh.meta;
+var nav = _hh.nav;
+var noscript = _hh.noscript;
+var object = _hh.object;
+var ol = _hh.ol;
+var optgroup = _hh.optgroup;
+var option = _hh.option;
+var p = _hh.p;
+var param = _hh.param;
+var pre = _hh.pre;
+var q = _hh.q;
+var rp = _hh.rp;
+var rt = _hh.rt;
+var ruby = _hh.ruby;
+var s = _hh.s;
+var samp = _hh.samp;
+var script = _hh.script;
+var section = _hh.section;
+var select = _hh.select;
+var small = _hh.small;
+var source = _hh.source;
+var span = _hh.span;
+var strong = _hh.strong;
+var style = _hh.style;
+var sub = _hh.sub;
+var sup = _hh.sup;
+var table = _hh.table;
+var tbody = _hh.tbody;
+var td = _hh.td;
+var textarea = _hh.textarea;
+var tfoot = _hh.tfoot;
+var th = _hh.th;
+var thead = _hh.thead;
+var title = _hh.title;
+var tr = _hh.tr;
+var u = _hh.u;
+var ul = _hh.ul;
+var video = _hh.video;
+exports.a = a;
+exports.abbr = abbr;
+exports.address = address;
+exports.area = area;
+exports.article = article;
+exports.aside = aside;
+exports.audio = audio;
+exports.b = b;
+exports.base = base;
+exports.bdi = bdi;
+exports.bdo = bdo;
+exports.blockquote = blockquote;
+exports.body = body;
+exports.br = br;
+exports.button = button;
+exports.canvas = canvas;
+exports.caption = caption;
+exports.cite = cite;
+exports.code = code;
+exports.col = col;
+exports.colgroup = colgroup;
+exports.dd = dd;
+exports.del = del;
+exports.dfn = dfn;
+exports.dir = dir;
+exports.div = div;
+exports.dl = dl;
+exports.dt = dt;
+exports.em = em;
+exports.embed = embed;
+exports.fieldset = fieldset;
+exports.figcaption = figcaption;
+exports.figure = figure;
+exports.footer = footer;
+exports.form = form;
+exports.h1 = h1;
+exports.h2 = h2;
+exports.h3 = h3;
+exports.h4 = h4;
+exports.h5 = h5;
+exports.h6 = h6;
+exports.head = head;
+exports.header = header;
+exports.hgroup = hgroup;
+exports.hr = hr;
+exports.html = html;
+exports.i = i;
+exports.iframe = iframe;
+exports.img = img;
+exports.input = input;
+exports.ins = ins;
+exports.kbd = kbd;
+exports.keygen = keygen;
+exports.label = label;
+exports.legend = legend;
+exports.li = li;
+exports.link = link;
+exports.main = main;
+exports.map = map;
+exports.mark = mark;
+exports.menu = menu;
+exports.meta = meta;
+exports.nav = nav;
+exports.noscript = noscript;
+exports.object = object;
+exports.ol = ol;
+exports.optgroup = optgroup;
+exports.option = option;
+exports.p = p;
+exports.param = param;
+exports.pre = pre;
+exports.q = q;
+exports.rp = rp;
+exports.rt = rt;
+exports.ruby = ruby;
+exports.s = s;
+exports.samp = samp;
+exports.script = script;
+exports.section = section;
+exports.select = select;
+exports.small = small;
+exports.source = source;
+exports.span = span;
+exports.strong = strong;
+exports.style = style;
+exports.sub = sub;
+exports.sup = sup;
+exports.table = table;
+exports.tbody = tbody;
+exports.td = td;
+exports.textarea = textarea;
+exports.tfoot = tfoot;
+exports.th = th;
+exports.thead = thead;
+exports.title = title;
+exports.tr = tr;
+exports.u = u;
+exports.ul = ul;
+exports.video = video;
+},{"./hyperscript":5,"./makeDOMDriver":8,"./mockDOMSource":9,"./modules":11,"hyperscript-helpers":16,"snabbdom/thunk":99}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -662,29 +964,35 @@ var isolateSource = function isolateSource(source_, scope) {
 var isolateSink = function isolateSink(sink, scope) {
   return sink.map(function (vTree) {
     if (vTree.sel.indexOf('' + _utils.SCOPE_PREFIX + scope) === -1) {
-      vTree.sel = vTree.sel + '.' + _utils.SCOPE_PREFIX + scope;
+      if (vTree.data.ns) {
+        // svg elements
+        var _vTree$data$attrs = vTree.data.attrs;
+        var attrs = _vTree$data$attrs === undefined ? {} : _vTree$data$attrs;
+
+        attrs.class = (attrs.class || '') + ' ' + _utils.SCOPE_PREFIX + scope;
+      } else {
+        vTree.sel = vTree.sel + '.' + _utils.SCOPE_PREFIX + scope;
+      }
     }
     return vTree;
-  }).multicast();
+  });
 };
 
 exports.isolateSink = isolateSink;
 exports.isolateSource = isolateSource;
-},{"./utils":9}],7:[function(require,module,exports){
-(function (global){
+},{"./utils":15}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.makeDOMDriver = undefined;
 
 var _hold = require('@most/hold');
 
 var _hold2 = _interopRequireDefault(_hold);
 
 var _snabbdom = require('snabbdom');
-
-var _snabbdom2 = _interopRequireDefault(_snabbdom);
 
 var _h = require('snabbdom/h');
 
@@ -700,15 +1008,17 @@ var _selectorParser3 = _interopRequireDefault(_selectorParser2);
 
 var _utils = require('./utils');
 
-var _vTreeParser = require('./vTreeParser');
+var _modules = require('./modules');
 
-var _vTreeParser2 = _interopRequireDefault(_vTreeParser);
+var _modules2 = _interopRequireDefault(_modules);
+
+var _transposition = require('./transposition');
 
 var _isolate = require('./isolate');
 
 var _select = require('./select');
 
-var _select2 = _interopRequireDefault(_select);
+var _events = require('./events');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -727,7 +1037,7 @@ function makeVNodeWrapper(rootElement) {
     var _vNodeDataProps$id = vNodeDataProps.id;
     var vNodeId = _vNodeDataProps$id === undefined ? selectorId : _vNodeDataProps$id;
 
-    var isVNodeAndRootElementIdentical = vNodeId === rootElement.id && selectorTagName === rootElement.tagName && vNodeClassName === rootElement.className;
+    var isVNodeAndRootElementIdentical = vNodeId.toUpperCase() === rootElement.id.toUpperCase() && selectorTagName.toUpperCase() === rootElement.tagName.toUpperCase() && vNodeClassName.toUpperCase() === rootElement.className.toUpperCase();
 
     if (isVNodeAndRootElementIdentical) {
       return vNode;
@@ -743,38 +1053,33 @@ function makeVNodeWrapper(rootElement) {
   };
 }
 
-var domDriverInputGuard = function domDriverInputGuard(view$) {
+function DOMDriverInputGuard(view$) {
   if (!view$ || typeof view$.observe !== 'function') {
     throw new Error('The DOM driver function expects as input an ' + 'Observable of virtual DOM elements');
   }
-};
-
-// snabbdoms style module blows up server-side
-// because rAf is not defined
-if (typeof window === 'undefined') {
-  global.requestAnimationFrame = setTimeout;
 }
 
-var defaultOptions = {
-  modules: [require('snabbdom/modules/class'), require('snabbdom/modules/props'), require('snabbdom/modules/attributes'), require('snabbdom/modules/style')]
+var defaults = {
+  modules: _modules2.default
 };
 
-var makeDOMDriver = function makeDOMDriver(containerElementSelectors) {
-  var _ref = arguments.length <= 1 || arguments[1] === undefined ? defaultOptions : arguments[1];
+function makeDOMDriver(container) {
+  var _ref = arguments.length <= 1 || arguments[1] === undefined ? defaults : arguments[1];
 
   var _ref$modules = _ref.modules;
-  var modules = _ref$modules === undefined ? defaultOptions.modules : _ref$modules;
+  var modules = _ref$modules === undefined ? _modules2.default : _ref$modules;
 
-  var patch = _snabbdom2.default.init(modules);
-  var rootElement = (0, _utils.domSelectorParser)(containerElementSelectors);
+  var patch = (0, _snabbdom.init)(modules);
+  var rootElement = (0, _utils.domSelectorParser)(container);
 
-  var DomDriver = function DomDriver(view$) {
-    domDriverInputGuard(view$);
-    if (!Array.isArray(modules)) {
-      throw new Error('Optional modules option must be ' + 'an array for snabbdom modules');
-    }
+  if (!Array.isArray(modules)) {
+    throw new Error('Optional modules option must be ' + 'an array for snabbdom modules');
+  }
 
-    var rootElement$ = (0, _hold2.default)(view$.map(_vTreeParser2.default).switch().map(makeVNodeWrapper(rootElement)).scan(patch, rootElement).skip(1).map(function (_ref2) {
+  function DOMDriver(view$) {
+    DOMDriverInputGuard(view$);
+
+    var rootElement$ = (0, _hold2.default)(view$.map(_transposition.transposeVTree).switch().map(makeVNodeWrapper(rootElement)).scan(patch, rootElement).skip(1).map(function (_ref2) {
       var elm = _ref2.elm;
       return elm;
     }));
@@ -782,35 +1087,398 @@ var makeDOMDriver = function makeDOMDriver(containerElementSelectors) {
     rootElement$.drain();
 
     return {
+      observable: rootElement$,
       namespace: [],
-      select: (0, _select2.default)(rootElement$),
+      select: (0, _select.makeElementSelector)(rootElement$),
+      events: (0, _events.makeEventsSelector)(rootElement$),
       isolateSink: _isolate.isolateSink,
       isolateSource: _isolate.isolateSource
     };
-  };
+  }
 
-  return DomDriver;
-};
+  return DOMDriver;
+}
 
-exports.default = makeDOMDriver;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./isolate":6,"./select":8,"./utils":9,"./vTreeParser":10,"@most/hold":2,"snabbdom":109,"snabbdom-selector/lib/classNameFromVNode":101,"snabbdom-selector/lib/selectorParser":102,"snabbdom/h":103,"snabbdom/modules/attributes":105,"snabbdom/modules/class":106,"snabbdom/modules/props":107,"snabbdom/modules/style":108}],8:[function(require,module,exports){
+exports.makeDOMDriver = makeDOMDriver;
+},{"./events":4,"./isolate":7,"./modules":11,"./select":13,"./transposition":14,"./utils":15,"@most/hold":2,"snabbdom":98,"snabbdom-selector/lib/classNameFromVNode":90,"snabbdom-selector/lib/selectorParser":91,"snabbdom/h":92}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.makeIsStrictlyInRootScope = undefined;
+exports.mockDOMSource = undefined;
+
+var _most = require('most');
+
+var _most2 = _interopRequireDefault(_most);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var emptyStream = _most2.default.empty();
+
+function getEventsStreamForSelector(mockedEventTypes) {
+  return function getEventsStream(eventType) {
+    for (var key in mockedEventTypes) {
+      if (mockedEventTypes.hasOwnProperty(key) && key === eventType) {
+        return mockedEventTypes[key];
+      }
+    }
+    return emptyStream;
+  };
+}
+
+function mockDOMSource() {
+  var mockedSelectors = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  return {
+    select: function select(selector) {
+      for (var key in mockedSelectors) {
+        if (mockedSelectors.hasOwnProperty(key) && key === selector) {
+          var observable = emptyStream;
+          if (mockedSelectors[key].hasOwnProperty('observable')) {
+            observable = mockedSelectors[key].observable;
+          }
+          return {
+            observable: observable,
+            events: getEventsStreamForSelector(mockedSelectors[key])
+          };
+        }
+      }
+      return {
+        observable: emptyStream,
+        events: function events() {
+          return emptyStream;
+        }
+      };
+    }
+  };
+}
+
+exports.mockDOMSource = mockDOMSource;
+},{"most":89}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var raf = undefined;
+if (typeof window !== 'undefined') {
+  raf = window && window.requestAnimationFrame || setTimeout;
+} else {
+  raf = setTimeout;
+}
+
+var nextFrame = function nextFrame(fn) {
+  return raf(function () {
+    return raf(fn);
+  });
+};
+/* eslint-disable */
+function setNextFrame(obj, prop, val) {
+  nextFrame(function () {
+    obj[prop] = val;
+  });
+}
+
+function getTextNodeRect(textNode) {
+  var rect;
+  if (document.createRange) {
+    var range = document.createRange();
+    range.selectNodeContents(textNode);
+    if (range.getBoundingClientRect) {
+      rect = range.getBoundingClientRect();
+    }
+  }
+  return rect;
+}
+
+function calcTransformOrigin(isTextNode, textRect, boundingRect) {
+  if (isTextNode) {
+    if (textRect) {
+      //calculate pixels to center of text from left edge of bounding box
+      var relativeCenterX = textRect.left + textRect.width / 2 - boundingRect.left;
+      var relativeCenterY = textRect.top + textRect.height / 2 - boundingRect.top;
+      return relativeCenterX + 'px ' + relativeCenterY + 'px';
+    }
+  }
+  return '0 0'; //top left
+}
+
+function getTextDx(oldTextRect, newTextRect) {
+  if (oldTextRect && newTextRect) {
+    return oldTextRect.left + oldTextRect.width / 2 - (newTextRect.left + newTextRect.width / 2);
+  }
+  return 0;
+}
+function getTextDy(oldTextRect, newTextRect) {
+  if (oldTextRect && newTextRect) {
+    return oldTextRect.top + oldTextRect.height / 2 - (newTextRect.top + newTextRect.height / 2);
+  }
+  return 0;
+}
+
+function isTextElement(elm) {
+  return elm.childNodes.length === 1 && elm.childNodes[0].nodeType === 3;
+}
+
+var removed, created;
+
+function pre(oldVnode, vnode) {
+  removed = {};
+  created = [];
+}
+
+function create(oldVnode, vnode) {
+  var hero = vnode.data.hero;
+  if (hero && hero.id) {
+    created.push(hero.id);
+    created.push(vnode);
+  }
+}
+
+function destroy(vnode) {
+  var hero = vnode.data.hero;
+  if (hero && hero.id) {
+    var elm = vnode.elm;
+    vnode.isTextNode = isTextElement(elm); //is this a text node?
+    vnode.boundingRect = elm.getBoundingClientRect(); //save the bounding rectangle to a new property on the vnode
+    vnode.textRect = vnode.isTextNode ? getTextNodeRect(elm.childNodes[0]) : null; //save bounding rect of inner text node
+    var computedStyle = window.getComputedStyle(elm, null); //get current styles (includes inherited properties)
+    vnode.savedStyle = JSON.parse(JSON.stringify(computedStyle)); //save a copy of computed style values
+    removed[hero.id] = vnode;
+  }
+}
+
+function post() {
+  var i, id, newElm, oldVnode, oldElm, hRatio, wRatio, oldRect, newRect, dx, dy, origTransform, origTransition, newStyle, oldStyle, newComputedStyle, isTextNode, newTextRect, oldTextRect;
+  for (i = 0; i < created.length; i += 2) {
+    id = created[i];
+    newElm = created[i + 1].elm;
+    oldVnode = removed[id];
+    if (oldVnode) {
+      isTextNode = oldVnode.isTextNode && isTextElement(newElm); //Are old & new both text?
+      newStyle = newElm.style;
+      newComputedStyle = window.getComputedStyle(newElm, null); //get full computed style for new element
+      oldElm = oldVnode.elm;
+      oldStyle = oldElm.style;
+      //Overall element bounding boxes
+      newRect = newElm.getBoundingClientRect();
+      oldRect = oldVnode.boundingRect; //previously saved bounding rect
+      //Text node bounding boxes & distances
+      if (isTextNode) {
+        newTextRect = getTextNodeRect(newElm.childNodes[0]);
+        oldTextRect = oldVnode.textRect;
+        dx = getTextDx(oldTextRect, newTextRect);
+        dy = getTextDy(oldTextRect, newTextRect);
+      } else {
+        //Calculate distances between old & new positions
+        dx = oldRect.left - newRect.left;
+        dy = oldRect.top - newRect.top;
+      }
+      hRatio = newRect.height / Math.max(oldRect.height, 1);
+      wRatio = isTextNode ? hRatio : newRect.width / Math.max(oldRect.width, 1); //text scales based on hRatio
+      // Animate new element
+      origTransform = newStyle.transform;
+      origTransition = newStyle.transition;
+      if (newComputedStyle.display === 'inline') //inline elements cannot be transformed
+        newStyle.display = 'inline-block'; //this does not appear to have any negative side effects
+      newStyle.transition = origTransition + 'transform 0s';
+      newStyle.transformOrigin = calcTransformOrigin(isTextNode, newTextRect, newRect);
+      newStyle.opacity = '0';
+      newStyle.transform = origTransform + 'translate(' + dx + 'px, ' + dy + 'px) ' + 'scale(' + 1 / wRatio + ', ' + 1 / hRatio + ')';
+      setNextFrame(newStyle, 'transition', origTransition);
+      setNextFrame(newStyle, 'transform', origTransform);
+      setNextFrame(newStyle, 'opacity', '1');
+      // Animate old element
+      for (var key in oldVnode.savedStyle) {
+        //re-apply saved inherited properties
+        if (parseInt(key) != key) {
+          var ms = key.substring(0, 2) === 'ms';
+          var moz = key.substring(0, 3) === 'moz';
+          var webkit = key.substring(0, 6) === 'webkit';
+          if (!ms && !moz && !webkit) //ignore prefixed style properties
+            oldStyle[key] = oldVnode.savedStyle[key];
+        }
+      }
+      oldStyle.position = 'absolute';
+      oldStyle.top = oldRect.top + 'px'; //start at existing position
+      oldStyle.left = oldRect.left + 'px';
+      oldStyle.width = oldRect.width + 'px'; //Needed for elements who were sized relative to their parents
+      oldStyle.height = oldRect.height + 'px'; //Needed for elements who were sized relative to their parents
+      oldStyle.margin = 0; //Margin on hero element leads to incorrect positioning
+      oldStyle.transformOrigin = calcTransformOrigin(isTextNode, oldTextRect, oldRect);
+      oldStyle.transform = '';
+      oldStyle.opacity = '1';
+      document.body.appendChild(oldElm);
+      setNextFrame(oldStyle, 'transform', 'translate(' + -dx + 'px, ' + -dy + 'px) scale(' + wRatio + ', ' + hRatio + ')'); //scale must be on far right for translate to be correct
+      setNextFrame(oldStyle, 'opacity', '0');
+      oldElm.addEventListener('transitionend', function (ev) {
+        if (ev.propertyName === 'transform') document.body.removeChild(ev.target);
+      });
+    }
+  }
+  removed = created = undefined;
+}
+/* eslint-enable */
+
+var HeroModule = {
+  pre: pre,
+  create: create,
+  destroy: destroy,
+  post: post
+};
+
+exports.HeroModule = HeroModule;
+},{}],11:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.EventsModule = exports.HeroModule = exports.AttrsModule = exports.PropsModule = exports.ClassModule = exports.StyleModule = undefined;
+
+var _class = require('snabbdom/modules/class');
+
+var _class2 = _interopRequireDefault(_class);
+
+var _props = require('snabbdom/modules/props');
+
+var _props2 = _interopRequireDefault(_props);
+
+var _attributes = require('snabbdom/modules/attributes');
+
+var _attributes2 = _interopRequireDefault(_attributes);
+
+var _eventlisteners = require('snabbdom/modules/eventlisteners');
+
+var _eventlisteners2 = _interopRequireDefault(_eventlisteners);
+
+var _styleModule = require('./style-module');
+
+var _heroModule = require('./hero-module');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = [_styleModule.StyleModule, _class2.default, _props2.default, _attributes2.default];
+exports.StyleModule = _styleModule.StyleModule;
+exports.ClassModule = _class2.default;
+exports.PropsModule = _props2.default;
+exports.AttrsModule = _attributes2.default;
+exports.HeroModule = _heroModule.HeroModule;
+exports.EventsModule = _eventlisteners2.default;
+},{"./hero-module":10,"./style-module":12,"snabbdom/modules/attributes":94,"snabbdom/modules/class":95,"snabbdom/modules/eventlisteners":96,"snabbdom/modules/props":97}],12:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var raf = undefined;
+if (typeof window !== 'undefined') {
+  raf = window && window.requestAnimationFrame || setTimeout;
+} else {
+  raf = setTimeout;
+}
+
+var nextFrame = function nextFrame(fn) {
+  return raf(function () {
+    return raf(fn);
+  });
+};
+
+function setNextFrame(obj, prop, val) {
+  nextFrame(function () {
+    obj[prop] = val;
+  });
+}
+/* eslint-disable */
+function updateStyle(oldVnode, vnode) {
+  var cur,
+      name,
+      elm = vnode.elm,
+      oldStyle = oldVnode.data.style || {},
+      style = vnode.data.style || {},
+      oldHasDel = 'delayed' in oldStyle;
+  for (name in oldStyle) {
+    if (!style[name]) {
+      elm.style[name] = '';
+    }
+  }
+  for (name in style) {
+    cur = style[name];
+    if (name === 'delayed') {
+      for (name in style.delayed) {
+        cur = style.delayed[name];
+        if (!oldHasDel || cur !== oldStyle.delayed[name]) {
+          setNextFrame(elm.style, name, cur);
+        }
+      }
+    } else if (name !== 'remove' && cur !== oldStyle[name]) {
+      elm.style[name] = cur;
+    }
+  }
+}
+
+function applyDestroyStyle(vnode) {
+  var style,
+      name,
+      elm = vnode.elm,
+      s = vnode.data.style;
+  if (!s || !(style = s.destroy)) return;
+  for (name in style) {
+    elm.style[name] = style[name];
+  }
+}
+
+function applyRemoveStyle(vnode, rm) {
+  var s = vnode.data.style;
+  if (!s || !s.remove) {
+    rm();
+    return;
+  }
+  var name,
+      elm = vnode.elm,
+      idx,
+      i = 0,
+      maxDur = 0,
+      compStyle,
+      style = s.remove,
+      amount = 0,
+      applied = [];
+  for (name in style) {
+    applied.push(name);
+    elm.style[name] = style[name];
+  }
+  compStyle = getComputedStyle(elm);
+  var props = compStyle['transition-property'].split(', ');
+  for (; i < props.length; ++i) {
+    if (applied.indexOf(props[i]) !== -1) amount++;
+  }
+  elm.addEventListener('transitionend', function (ev) {
+    if (ev.target === elm) --amount;
+    if (amount === 0) rm();
+  });
+}
+/* eslint-enable */
+
+var StyleModule = {
+  create: updateStyle,
+  update: updateStyle,
+  destroy: applyDestroyStyle,
+  remove: applyRemoveStyle
+};
+
+exports.StyleModule = StyleModule;
+},{}],13:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.makeIsStrictlyInRootScope = exports.makeElementSelector = undefined;
 
 var _events = require('./events');
 
-var _events2 = _interopRequireDefault(_events);
-
 var _isolate = require('./isolate');
-
-var _array = require('fast.js/array');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function makeIsStrictlyInRootScope(namespace) {
   var classIsForeign = function classIsForeign(c) {
@@ -822,7 +1490,7 @@ function makeIsStrictlyInRootScope(namespace) {
     return matched && namespace.indexOf('.' + c) !== -1;
   };
   return function isStrictlyInRootScope(leaf) {
-    for (var el = leaf; el !== null; el = el.parentElement) {
+    for (var el = leaf; el; el = el.parentElement) {
       var split = String.prototype.split;
       var classList = el.classList || split.call(el.className, ' ');
       if (Array.prototype.some.call(classList, classIsDomestic)) {
@@ -836,44 +1504,111 @@ function makeIsStrictlyInRootScope(namespace) {
   };
 }
 
-function makeElementGetter(selector) {
-  return function elemenGetter(rootElement) {
-    if (selector.join('') === '') {
-      return rootElement;
-    }
-    var nodeList = rootElement.querySelectorAll(selector.join(' '));
-    if (nodeList.length === 0) {
-      nodeList = rootElement.querySelectorAll(selector.join(''));
-    }
-    var array = Array.prototype.slice.call(nodeList);
-    return (0, _array.filter)(array, makeIsStrictlyInRootScope(selector));
-  };
+var isValidString = function isValidString(param) {
+  return typeof param === 'string' && param.length > 0;
+};
+var startsWith = function startsWith(string, start) {
+  return string[0] === start;
+};
+var isNotTagName = function isNotTagName(param) {
+  return isValidString(param) && startsWith(param, '.') || startsWith(param, '#') || startsWith(param, ':') || startsWith(param, '*');
+};
+
+function sortNamespace(a, b) {
+  if (isNotTagName(a) && isNotTagName(b)) {
+    return 0;
+  }
+  return isNotTagName(a) ? 1 : -1;
 }
 
 function makeElementSelector(rootElement$) {
-  return function DOMSelect(selector) {
+  return function elementSelector(selector) {
     if (typeof selector !== 'string') {
-      throw new Error('DOM drivers select() expects first argument to be a ' + 'string as a CSS selector');
+      throw new Error('DOM driver\'s select() expects the argument to be a ' + 'string as a CSS selector');
     }
 
     var namespace = this.namespace;
-
-    var scopedSelector = (0, _array.concat)(namespace, selector.trim() === ':root' ? '' : selector.trim());
-
+    var trimmedSelector = selector.trim();
+    var childNamespace = trimmedSelector === ':root' ? namespace : namespace.concat(trimmedSelector).sort(sortNamespace);
+    var element$ = rootElement$.map(function (rootEl) {
+      if (childNamespace.join('') === '') {
+        return rootEl;
+      }
+      var nodeList = rootEl.querySelectorAll(childNamespace.join(' '));
+      if (nodeList.length === 0) {
+        nodeList = rootEl.querySelectorAll(childNamespace.join(''));
+      }
+      var array = Array.prototype.slice.call(nodeList);
+      return array.filter(makeIsStrictlyInRootScope(childNamespace));
+    });
     return {
-      observable: rootElement$.map(makeElementGetter(scopedSelector)),
-      namespace: scopedSelector,
+      observable: element$,
+      namespace: childNamespace,
       select: makeElementSelector(rootElement$),
-      events: (0, _events2.default)(rootElement$, scopedSelector),
+      events: (0, _events.makeEventsSelector)(rootElement$, childNamespace),
       isolateSource: _isolate.isolateSource,
       isolateSink: _isolate.isolateSink
     };
   };
 }
 
-exports.default = makeElementSelector;
+exports.makeElementSelector = makeElementSelector;
 exports.makeIsStrictlyInRootScope = makeIsStrictlyInRootScope;
-},{"./events":4,"./isolate":6,"fast.js/array":19}],9:[function(require,module,exports){
+},{"./events":4,"./isolate":7}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.transposeVTree = undefined;
+
+var _most = require('most');
+
+var _most2 = _interopRequireDefault(_most);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function createVTree(vTree, children) {
+  return {
+    sel: vTree.sel,
+    data: vTree.data,
+    text: vTree.text,
+    elm: vTree.elm,
+    key: vTree.key,
+    children: children
+  };
+}
+
+function transposeVTree(vTree) {
+  if (!vTree) {
+    return null;
+  } else if (vTree && typeof vTree.data === 'object' && vTree.data.static) {
+    return _most2.default.just(vTree);
+  } else if (typeof vTree.observe === 'function') {
+    return vTree.map(transposeVTree).switch();
+  } else if (typeof vTree === 'object') {
+    if (!vTree.children || vTree.children.length === 0) {
+      return _most2.default.just(vTree);
+    }
+
+    var vTreeChildren = vTree.children.map(transposeVTree).filter(function (x) {
+      return x !== null;
+    });
+
+    return vTreeChildren.length === 0 ? _most2.default.just(createVTree(vTree, vTreeChildren)) : _most2.default.combineArray(function () {
+      for (var _len = arguments.length, children = Array(_len), _key = 0; _key < _len; _key++) {
+        children[_key] = arguments[_key];
+      }
+
+      return createVTree(vTree, children);
+    }, vTreeChildren);
+  } else {
+    throw new Error('Unhandled vTree Value');
+  }
+}
+
+exports.transposeVTree = transposeVTree;
+},{"most":89}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -898,68 +1633,7 @@ var domSelectorParser = function domSelectorParser(selectors) {
 
 exports.domSelectorParser = domSelectorParser;
 exports.SCOPE_PREFIX = SCOPE_PREFIX;
-},{}],10:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _most = require('most');
-
-var _most2 = _interopRequireDefault(_most);
-
-var _map = require('fast.js/array/map');
-
-var _map2 = _interopRequireDefault(_map);
-
-var _filter = require('fast.js/array/filter');
-
-var _filter2 = _interopRequireDefault(_filter);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var combineVTreeStreams = function combineVTreeStreams(vTree) {
-  for (var _len = arguments.length, children = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    children[_key - 1] = arguments[_key];
-  }
-
-  return {
-    sel: vTree.sel,
-    data: vTree.data,
-    text: vTree.text,
-    elm: vTree.elm,
-    key: vTree.key,
-    children: children
-  };
-};
-
-var vTreeParser = function vTreeParser(vTree) {
-  if (vTree.data && vTree.data.static) {
-    return _most2.default.just(vTree);
-  } else if (!vTree) {
-    return null;
-  } else if (vTree.observe) {
-    return vTree.map(vTreeParser).switch();
-  } else if ('object' === (typeof vTree === 'undefined' ? 'undefined' : _typeof(vTree))) {
-    var vTree$ = _most2.default.just(vTree);
-    if (vTree.children && vTree.children.length > 0) {
-      return _most2.default.combine.apply(_most2.default, [combineVTreeStreams, vTree$].concat(_toConsumableArray((0, _filter2.default)((0, _map2.default)(vTree.children, vTreeParser), function (x) {
-        return x !== null;
-      }))));
-    }
-    return vTree$;
-  } else {
-    throw new Error('Unhandled tree value');
-  }
-};
-
-exports.default = vTreeParser;
-},{"fast.js/array/filter":17,"fast.js/array/map":22,"most":100}],11:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1006,7 +1680,7 @@ exports['default'] = function (h) {
 
 module.exports = exports['default'];
 
-},{}],12:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /*!
  * Cross-Browser Split 1.1.1
  * Copyright 2007-2012 Steven Levithan <stevenlevithan.com>
@@ -1114,468 +1788,100 @@ module.exports = (function split(undef) {
   return self;
 })();
 
-},{}],13:[function(require,module,exports){
-'use strict';
+},{}],18:[function(require,module,exports){
+// shim for using process in browser
 
-/**
- * # Clone Array
- *
- * Clone an array or array like object (e.g. `arguments`).
- * This is the equivalent of calling `Array.prototype.slice.call(arguments)`, but
- * significantly faster.
- *
- * @param  {Array} input The array or array-like object to clone.
- * @return {Array}       The cloned array.
- */
-module.exports = function fastCloneArray (input) {
-  var length = input.length,
-      sliced = new Array(length),
-      i;
-  for (i = 0; i < length; i++) {
-    sliced[i] = input[i];
-  }
-  return sliced;
-};
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
 
-},{}],14:[function(require,module,exports){
-'use strict';
-
-/**
- * # Concat
- *
- * Concatenate multiple arrays.
- *
- * > Note: This function is effectively identical to `Array.prototype.concat()`.
- *
- *
- * @param  {Array|mixed} item, ... The item(s) to concatenate.
- * @return {Array}                 The array containing the concatenated items.
- */
-module.exports = function fastConcat () {
-  var length = arguments.length,
-      arr = [],
-      i, item, childLength, j;
-
-  for (i = 0; i < length; i++) {
-    item = arguments[i];
-    if (Array.isArray(item)) {
-      childLength = item.length;
-      for (j = 0; j < childLength; j++) {
-        arr.push(item[j]);
-      }
+function cleanUpNextTick() {
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
     }
-    else {
-      arr.push(item);
+    if (queue.length) {
+        drainQueue();
     }
-  }
-  return arr;
-};
+}
 
-},{}],15:[function(require,module,exports){
-'use strict';
-
-var bindInternal3 = require('../function/bindInternal3');
-
-/**
- * # Every
- *
- * A fast `.every()` implementation.
- *
- * @param  {Array}    subject     The array (or array-like) to iterate over.
- * @param  {Function} fn          The visitor function.
- * @param  {Object}   thisContext The context for the visitor.
- * @return {Boolean}              true if all items in the array passes the truth test.
- */
-module.exports = function fastEvery (subject, fn, thisContext) {
-  var length = subject.length,
-      iterator = thisContext !== undefined ? bindInternal3(fn, thisContext) : fn,
-      i;
-  for (i = 0; i < length; i++) {
-    if (!iterator(subject[i], i, subject)) {
-      return false;
+function drainQueue() {
+    if (draining) {
+        return;
     }
-  }
-  return true;
-};
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
 
-},{"../function/bindInternal3":27}],16:[function(require,module,exports){
-'use strict';
-
-/**
- * # Fill
- * Fill an array with values, optionally starting and stopping at a given index.
- *
- * > Note: unlike the specced Array.prototype.fill(), this version does not support
- * > negative start / end arguments.
- *
- * @param  {Array}   subject The array to fill.
- * @param  {mixed}   value   The value to insert.
- * @param  {Integer} start   The start position, defaults to 0.
- * @param  {Integer} end     The end position, defaults to subject.length
- * @return {Array}           The now filled subject.
- */
-module.exports = function fastFill (subject, value, start, end) {
-  var length = subject.length,
-      i;
-  if (start === undefined) {
-    start = 0;
-  }
-  if (end === undefined) {
-    end = length;
-  }
-  for (i = start; i < end; i++) {
-    subject[i] = value;
-  }
-  return subject;
-};
-},{}],17:[function(require,module,exports){
-'use strict';
-
-var bindInternal3 = require('../function/bindInternal3');
-
-/**
- * # Filter
- *
- * A fast `.filter()` implementation.
- *
- * @param  {Array}    subject     The array (or array-like) to filter.
- * @param  {Function} fn          The filter function.
- * @param  {Object}   thisContext The context for the filter.
- * @return {Array}                The array containing the results.
- */
-module.exports = function fastFilter (subject, fn, thisContext) {
-  var length = subject.length,
-      result = [],
-      iterator = thisContext !== undefined ? bindInternal3(fn, thisContext) : fn,
-      i;
-  for (i = 0; i < length; i++) {
-    if (iterator(subject[i], i, subject)) {
-      result.push(subject[i]);
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
     }
-  }
-  return result;
-};
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
 
-},{"../function/bindInternal3":27}],18:[function(require,module,exports){
-'use strict';
-
-var bindInternal3 = require('../function/bindInternal3');
-
-/**
- * # For Each
- *
- * A fast `.forEach()` implementation.
- *
- * @param  {Array}    subject     The array (or array-like) to iterate over.
- * @param  {Function} fn          The visitor function.
- * @param  {Object}   thisContext The context for the visitor.
- */
-module.exports = function fastForEach (subject, fn, thisContext) {
-  var length = subject.length,
-      iterator = thisContext !== undefined ? bindInternal3(fn, thisContext) : fn,
-      i;
-  for (i = 0; i < length; i++) {
-    iterator(subject[i], i, subject);
-  }
-};
-
-},{"../function/bindInternal3":27}],19:[function(require,module,exports){
-'use strict';
-
-exports.clone = require('./clone');
-exports.concat = require('./concat');
-exports.every = require('./every');
-exports.filter = require('./filter');
-exports.forEach = require('./forEach');
-exports.indexOf = require('./indexOf');
-exports.lastIndexOf = require('./lastIndexOf');
-exports.map = require('./map');
-exports.pluck = require('./pluck');
-exports.reduce = require('./reduce');
-exports.reduceRight = require('./reduceRight');
-exports.some = require('./some');
-exports.fill = require('./fill');
-},{"./clone":13,"./concat":14,"./every":15,"./fill":16,"./filter":17,"./forEach":18,"./indexOf":20,"./lastIndexOf":21,"./map":22,"./pluck":23,"./reduce":24,"./reduceRight":25,"./some":26}],20:[function(require,module,exports){
-'use strict';
-
-/**
- * # Index Of
- *
- * A faster `Array.prototype.indexOf()` implementation.
- *
- * @param  {Array}  subject   The array (or array-like) to search within.
- * @param  {mixed}  target    The target item to search for.
- * @param  {Number} fromIndex The position to start searching from, if known.
- * @return {Number}           The position of the target in the subject, or -1 if it does not exist.
- */
-module.exports = function fastIndexOf (subject, target, fromIndex) {
-  var length = subject.length,
-      i = 0;
-
-  if (typeof fromIndex === 'number') {
-    i = fromIndex;
-    if (i < 0) {
-      i += length;
-      if (i < 0) {
-        i = 0;
-      }
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
     }
-  }
-
-  for (; i < length; i++) {
-    if (subject[i] === target) {
-      return i;
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
     }
-  }
-  return -1;
 };
 
-},{}],21:[function(require,module,exports){
-'use strict';
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
 
-/**
- * # Last Index Of
- *
- * A faster `Array.prototype.lastIndexOf()` implementation.
- *
- * @param  {Array}  subject The array (or array-like) to search within.
- * @param  {mixed}  target  The target item to search for.
- * @param  {Number} fromIndex The position to start searching backwards from, if known.
- * @return {Number}         The last position of the target in the subject, or -1 if it does not exist.
- */
-module.exports = function fastLastIndexOf (subject, target, fromIndex) {
-  var length = subject.length,
-      i = length - 1;
+function noop() {}
 
-  if (typeof fromIndex === 'number') {
-    i = fromIndex;
-    if (i < 0) {
-      i += length;
-    }
-  }
-  for (; i >= 0; i--) {
-    if (subject[i] === target) {
-      return i;
-    }
-  }
-  return -1;
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
 };
 
-},{}],22:[function(require,module,exports){
-'use strict';
-
-var bindInternal3 = require('../function/bindInternal3');
-
-/**
- * # Map
- *
- * A fast `.map()` implementation.
- *
- * @param  {Array}    subject     The array (or array-like) to map over.
- * @param  {Function} fn          The mapper function.
- * @param  {Object}   thisContext The context for the mapper.
- * @return {Array}                The array containing the results.
- */
-module.exports = function fastMap (subject, fn, thisContext) {
-  var length = subject.length,
-      result = new Array(length),
-      iterator = thisContext !== undefined ? bindInternal3(fn, thisContext) : fn,
-      i;
-  for (i = 0; i < length; i++) {
-    result[i] = iterator(subject[i], i, subject);
-  }
-  return result;
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
 };
+process.umask = function() { return 0; };
 
-},{"../function/bindInternal3":27}],23:[function(require,module,exports){
-'use strict';
-
-/**
- * # Pluck
- * Pluck the property with the given name from an array of objects.
- *
- * @param  {Array}  input The values to pluck from.
- * @param  {String} field The name of the field to pluck.
- * @return {Array}        The plucked array of values.
- */
-module.exports = function fastPluck (input, field) {
-  var length = input.length,
-      plucked = [],
-      count = 0,
-      value, i;
-
-  for (i = 0; i < length; i++) {
-    value = input[i];
-    if (value != null && value[field] !== undefined) {
-      plucked[count++] = value[field];
-    }
-  }
-  return plucked;
-};
-},{}],24:[function(require,module,exports){
-'use strict';
-
-var bindInternal4 = require('../function/bindInternal4');
-
-/**
- * # Reduce
- *
- * A fast `.reduce()` implementation.
- *
- * @param  {Array}    subject      The array (or array-like) to reduce.
- * @param  {Function} fn           The reducer function.
- * @param  {mixed}    initialValue The initial value for the reducer, defaults to subject[0].
- * @param  {Object}   thisContext  The context for the reducer.
- * @return {mixed}                 The final result.
- */
-module.exports = function fastReduce (subject, fn, initialValue, thisContext) {
-  var length = subject.length,
-      iterator = thisContext !== undefined ? bindInternal4(fn, thisContext) : fn,
-      i, result;
-
-  if (initialValue === undefined) {
-    i = 1;
-    result = subject[0];
-  }
-  else {
-    i = 0;
-    result = initialValue;
-  }
-
-  for (; i < length; i++) {
-    result = iterator(result, subject[i], i, subject);
-  }
-
-  return result;
-};
-
-},{"../function/bindInternal4":28}],25:[function(require,module,exports){
-'use strict';
-
-var bindInternal4 = require('../function/bindInternal4');
-
-/**
- * # Reduce Right
- *
- * A fast `.reduceRight()` implementation.
- *
- * @param  {Array}    subject      The array (or array-like) to reduce.
- * @param  {Function} fn           The reducer function.
- * @param  {mixed}    initialValue The initial value for the reducer, defaults to subject[0].
- * @param  {Object}   thisContext  The context for the reducer.
- * @return {mixed}                 The final result.
- */
-module.exports = function fastReduce (subject, fn, initialValue, thisContext) {
-  var length = subject.length,
-      iterator = thisContext !== undefined ? bindInternal4(fn, thisContext) : fn,
-      i, result;
-
-  if (initialValue === undefined) {
-    i = length - 2;
-    result = subject[length - 1];
-  }
-  else {
-    i = length - 1;
-    result = initialValue;
-  }
-
-  for (; i >= 0; i--) {
-    result = iterator(result, subject[i], i, subject);
-  }
-
-  return result;
-};
-
-},{"../function/bindInternal4":28}],26:[function(require,module,exports){
-'use strict';
-
-var bindInternal3 = require('../function/bindInternal3');
-
-/**
- * # Some
- *
- * A fast `.some()` implementation.
- *
- * @param  {Array}    subject     The array (or array-like) to iterate over.
- * @param  {Function} fn          The visitor function.
- * @param  {Object}   thisContext The context for the visitor.
- * @return {Boolean}              true if at least one item in the array passes the truth test.
- */
-module.exports = function fastSome (subject, fn, thisContext) {
-  var length = subject.length,
-      iterator = thisContext !== undefined ? bindInternal3(fn, thisContext) : fn,
-      i;
-  for (i = 0; i < length; i++) {
-    if (iterator(subject[i], i, subject)) {
-      return true;
-    }
-  }
-  return false;
-};
-
-},{"../function/bindInternal3":27}],27:[function(require,module,exports){
-'use strict';
-
-/**
- * Internal helper to bind a function known to have 3 arguments
- * to a given context.
- */
-module.exports = function bindInternal3 (func, thisContext) {
-  return function (a, b, c) {
-    return func.call(thisContext, a, b, c);
-  };
-};
-
-},{}],28:[function(require,module,exports){
-'use strict';
-
-/**
- * Internal helper to bind a function known to have 4 arguments
- * to a given context.
- */
-module.exports = function bindInternal4 (func, thisContext) {
-  return function (a, b, c, d) {
-    return func.call(thisContext, a, b, c, d);
-  };
-};
-
-},{}],29:[function(require,module,exports){
-'use strict';
-
-/**
- * Analogue of Object.assign().
- * Copies properties from one or more source objects to
- * a target object. Existing keys on the target object will be overwritten.
- *
- * > Note: This differs from spec in some important ways:
- * > 1. Will throw if passed non-objects, including `undefined` or `null` values.
- * > 2. Does not support the curious Exception handling behavior, exceptions are thrown immediately.
- * > For more details, see:
- * > https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
- *
- *
- *
- * @param  {Object} target      The target object to copy properties to.
- * @param  {Object} source, ... The source(s) to copy properties from.
- * @return {Object}             The updated target object.
- */
-module.exports = function fastAssign (target) {
-  var totalArgs = arguments.length,
-      source, i, totalKeys, keys, key, j;
-
-  for (i = 1; i < totalArgs; i++) {
-    source = arguments[i];
-    keys = Object.keys(source);
-    totalKeys = keys.length;
-    for (j = 0; j < totalKeys; j++) {
-      key = keys[j];
-      target[key] = source[key];
-    }
-  }
-  return target;
-};
-
-},{}],30:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -1904,7 +2210,7 @@ delay: function delay(x, mon) {
 }
 
 
-},{}],31:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var proto = Element.prototype;
@@ -1934,7 +2240,7 @@ function match(el, selector) {
   }
   return false;
 }
-},{}],32:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2081,7 +2387,7 @@ function runProducer(t, buffer, sink) {
     }
   }
 }
-},{"most":100,"most/lib/disposable/dispose":68,"most/lib/scheduler/PropagateTask":76,"most/lib/source/MulticastSource":87}],33:[function(require,module,exports){
+},{"most":89,"most/lib/disposable/dispose":57,"most/lib/scheduler/PropagateTask":65,"most/lib/source/MulticastSource":76}],22:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2170,7 +2476,7 @@ function tryEnd(sink, scheduler, event) {
 }
 
 exports.Subscription = Subscription;
-},{}],34:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2231,7 +2537,7 @@ function holdSubject() {
 
 exports.subject = subject;
 exports.holdSubject = holdSubject;
-},{"./ReplaySource":32,"./Subscription":33,"@most/hold":2,"most":100,"most/lib/source/MulticastSource":87}],35:[function(require,module,exports){
+},{"./ReplaySource":21,"./Subscription":22,"@most/hold":2,"most":89,"most/lib/source/MulticastSource":76}],24:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2309,7 +2615,7 @@ LinkedList.prototype.dispose = function() {
 	return Promise.all(promises);
 };
 
-},{}],36:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2320,7 +2626,7 @@ function isPromise(p) {
 	return p !== null && typeof p === 'object' && typeof p.then === 'function';
 }
 
-},{}],37:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2387,7 +2693,7 @@ function copy(src, srcIndex, dst, dstIndex, len) {
 }
 
 
-},{}],38:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2398,7 +2704,7 @@ function Stream(source) {
 	this.source = source;
 }
 
-},{}],39:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2565,7 +2871,7 @@ function isArrayLike(x){
    return x != null && typeof x.length === 'number' && typeof x !== 'function';
 }
 
-},{}],40:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2648,7 +2954,7 @@ AccumulateSink.prototype.end = function(t) {
 	this.sink.end(t, this.value);
 };
 
-},{"../Stream":38,"../base":39,"../runSource":75,"../sink/Pipe":84,"./build":42}],41:[function(require,module,exports){
+},{"../Stream":27,"../base":28,"../runSource":64,"../sink/Pipe":73,"./build":31}],30:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2672,7 +2978,7 @@ function ap(fs, xs) {
 	return combine(apply, fs, xs);
 }
 
-},{"../base":39,"./combine":43}],42:[function(require,module,exports){
+},{"../base":28,"./combine":32}],31:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2716,7 +3022,7 @@ function cycle(stream) {
 	}, stream);
 }
 
-},{"../source/core":89,"./continueWith":45}],43:[function(require,module,exports){
+},{"../source/core":78,"./continueWith":34}],32:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2793,7 +3099,7 @@ CombineSink.prototype.end = function(t, indexedValue) {
 	}
 };
 
-},{"../Stream":38,"../base":39,"../disposable/dispose":68,"../invoke":73,"../sink/IndexSink":82,"../sink/Pipe":84,"../source/core":89,"./merge":52,"./transform":63}],44:[function(require,module,exports){
+},{"../Stream":27,"../base":28,"../disposable/dispose":57,"../invoke":62,"../sink/IndexSink":71,"../sink/Pipe":73,"../source/core":78,"./merge":41,"./transform":52}],33:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2818,7 +3124,7 @@ function concatMap(f, stream) {
 	return mergeConcurrently(1, map(f, stream));
 }
 
-},{"./mergeConcurrently":53,"./transform":63}],45:[function(require,module,exports){
+},{"./mergeConcurrently":42,"./transform":52}],34:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2887,7 +3193,7 @@ ContinueWithSink.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../Promise":36,"../Stream":38,"../disposable/dispose":68,"../sink/Pipe":84}],46:[function(require,module,exports){
+},{"../Promise":25,"../Stream":27,"../disposable/dispose":57,"../sink/Pipe":73}],35:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2942,7 +3248,7 @@ DelaySink.prototype.end = function(t, x) {
 
 DelaySink.prototype.error = Sink.prototype.error;
 
-},{"../Stream":38,"../disposable/dispose":68,"../scheduler/PropagateTask":76,"../sink/Pipe":84}],47:[function(require,module,exports){
+},{"../Stream":27,"../disposable/dispose":57,"../scheduler/PropagateTask":65,"../sink/Pipe":73}],36:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3029,7 +3335,7 @@ RecoverWithSink.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../Stream":38,"../base":39,"../disposable/dispose":68,"../source/ValueSource":88,"../source/tryEvent":98}],48:[function(require,module,exports){
+},{"../Stream":27,"../base":28,"../disposable/dispose":57,"../source/ValueSource":77,"../source/tryEvent":87}],37:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3105,7 +3411,7 @@ function same(a, b) {
 	return a === b;
 }
 
-},{"../Stream":38,"../fusion/Filter":70,"../sink/Pipe":84}],49:[function(require,module,exports){
+},{"../Stream":27,"../fusion/Filter":59,"../sink/Pipe":73}],38:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3137,7 +3443,7 @@ function join(stream) {
 	return mergeConcurrently(Infinity, stream);
 }
 
-},{"./mergeConcurrently":53,"./transform":63}],50:[function(require,module,exports){
+},{"./mergeConcurrently":42,"./transform":52}],39:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3249,7 +3555,7 @@ DebounceSink.prototype._clearTimer = function() {
 	return true;
 };
 
-},{"../Stream":38,"../disposable/dispose":68,"../scheduler/PropagateTask":76,"../sink/Pipe":84}],51:[function(require,module,exports){
+},{"../Stream":27,"../disposable/dispose":57,"../scheduler/PropagateTask":65,"../sink/Pipe":73}],40:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3302,7 +3608,7 @@ LoopSink.prototype.end = function(t) {
 	this.sink.end(t, this.seed);
 };
 
-},{"../Stream":38,"../sink/Pipe":84}],52:[function(require,module,exports){
+},{"../Stream":27,"../sink/Pipe":73}],41:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3391,7 +3697,7 @@ MergeSink.prototype.end = function(t, indexedValue) {
 	}
 };
 
-},{"../Stream":38,"../base":39,"../disposable/dispose":68,"../sink/IndexSink":82,"../sink/Pipe":84,"../source/core":89}],53:[function(require,module,exports){
+},{"../Stream":27,"../base":28,"../disposable/dispose":57,"../sink/IndexSink":71,"../sink/Pipe":73,"../source/core":78}],42:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3501,7 +3807,7 @@ Inner.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../LinkedList":35,"../Stream":38,"../disposable/dispose":68}],54:[function(require,module,exports){
+},{"../LinkedList":24,"../Stream":27,"../disposable/dispose":57}],43:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3526,7 +3832,7 @@ function multicast(stream) {
 		: new Stream(new MulticastSource(source));
 }
 
-},{"../Stream":38,"../source/MulticastSource":87}],55:[function(require,module,exports){
+},{"../Stream":27,"../source/MulticastSource":76}],44:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3558,7 +3864,7 @@ function drain(stream) {
 	return runSource.withDefaultScheduler(noop, stream.source);
 }
 
-},{"../base":39,"../runSource":75}],56:[function(require,module,exports){
+},{"../base":28,"../runSource":64}],45:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3691,7 +3997,7 @@ AwaitSink.prototype._end = function(x) {
 	return Promise.resolve(x).then(this._endBound);
 };
 
-},{"../Stream":38,"../fatalError":69}],57:[function(require,module,exports){
+},{"../Stream":27,"../fatalError":58}],46:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3804,7 +4110,7 @@ function getValue(hold) {
 	return hold.value;
 }
 
-},{"../Stream":38,"../base":39,"../disposable/dispose":68,"../invoke":73,"../sink/Pipe":84}],58:[function(require,module,exports){
+},{"../Stream":27,"../base":28,"../disposable/dispose":57,"../invoke":62,"../sink/Pipe":73}],47:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3968,7 +4274,7 @@ SkipWhileSink.prototype.event = function(t, x) {
 	this.sink.event(t, x);
 };
 
-},{"../Stream":38,"../disposable/dispose":68,"../sink/Pipe":84,"../source/core":89}],59:[function(require,module,exports){
+},{"../Stream":27,"../disposable/dispose":57,"../sink/Pipe":73,"../source/core":78}],48:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -3997,7 +4303,7 @@ function switchLatest(stream) {
 	}
 }
 
-},{"../Stream":38,"../source/MulticastSource":87,"./mergeConcurrently":53,"./timeslice":60,"./transform":63}],60:[function(require,module,exports){
+},{"../Stream":27,"../source/MulticastSource":76,"./mergeConcurrently":42,"./timeslice":49,"./transform":52}],49:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4114,7 +4420,7 @@ UpperBound.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../Stream":38,"../base":39,"../combinator/flatMap":49,"../disposable/dispose":68,"../sink/Pipe":84}],61:[function(require,module,exports){
+},{"../Stream":27,"../base":28,"../combinator/flatMap":38,"../disposable/dispose":57,"../sink/Pipe":73}],50:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4147,7 +4453,7 @@ TimestampSink.prototype.event = function(t, x) {
 	this.sink.event(t, { time: t, value: x });
 };
 
-},{"../Stream":38,"../sink/Pipe":84}],62:[function(require,module,exports){
+},{"../Stream":27,"../sink/Pipe":73}],51:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4272,7 +4578,7 @@ LegacyTxAdapter.prototype.getResult = function(x) {
 	return x.value;
 };
 
-},{"../Stream":38}],63:[function(require,module,exports){
+},{"../Stream":27}],52:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4320,7 +4626,7 @@ function tap(f, stream) {
 	}, stream);
 }
 
-},{"../Stream":38,"../fusion/Map":72}],64:[function(require,module,exports){
+},{"../Stream":27,"../fusion/Map":61}],53:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4455,7 +4761,7 @@ function ready(buffers) {
 	return true;
 }
 
-},{"../Queue":37,"../Stream":38,"../base":39,"../disposable/dispose":68,"../invoke":73,"../sink/IndexSink":82,"../sink/Pipe":84,"../source/core":89,"./transform":63}],65:[function(require,module,exports){
+},{"../Queue":26,"../Stream":27,"../base":28,"../disposable/dispose":57,"../invoke":62,"../sink/IndexSink":71,"../sink/Pipe":73,"../source/core":78,"./transform":52}],54:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4474,7 +4780,7 @@ function runTask(task) {
 	}
 }
 
-},{}],66:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4496,7 +4802,7 @@ Disposable.prototype.dispose = function() {
 	return this._dispose(this._data);
 };
 
-},{}],67:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4540,7 +4846,7 @@ SettableDisposable.prototype.dispose = function() {
 	return this.result;
 };
 
-},{}],68:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4669,7 +4975,7 @@ function memoized(disposable) {
 	return { disposed: false, disposable: disposable, value: void 0 };
 }
 
-},{"../Promise":36,"../base":39,"./Disposable":66,"./SettableDisposable":67}],69:[function(require,module,exports){
+},{"../Promise":25,"../base":28,"./Disposable":55,"./SettableDisposable":56}],58:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4682,7 +4988,7 @@ function fatalError (e) {
 	}, 0);
 }
 
-},{}],70:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4733,7 +5039,7 @@ function and(p, q) {
 	};
 }
 
-},{"../sink/Pipe":84}],71:[function(require,module,exports){
+},{"../sink/Pipe":73}],60:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4767,7 +5073,7 @@ FilterMapSink.prototype.event = function(t, x) {
 FilterMapSink.prototype.end = Pipe.prototype.end;
 FilterMapSink.prototype.error = Pipe.prototype.error;
 
-},{"../sink/Pipe":84}],72:[function(require,module,exports){
+},{"../sink/Pipe":73}],61:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4824,7 +5130,7 @@ MapSink.prototype.event = function(t, x) {
 	this.sink.event(t, f(x));
 };
 
-},{"../base":39,"../sink/Pipe":84,"./Filter":70,"./FilterMap":71}],73:[function(require,module,exports){
+},{"../base":28,"../sink/Pipe":73,"./Filter":59,"./FilterMap":60}],62:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4845,7 +5151,7 @@ function invoke(f, args) {
 	}
 }
 
-},{}],74:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4878,7 +5184,7 @@ function makeIterable(f, o) {
 	return o;
 }
 
-},{}],75:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4907,7 +5213,7 @@ function runSource(f, source, scheduler, resolve, reject) {
 	disposable.setDisposable(source.run(observer, scheduler));
 }
 
-},{"./disposable/dispose":68,"./scheduler/defaultScheduler":78,"./sink/Observer":83}],76:[function(require,module,exports){
+},{"./disposable/dispose":57,"./scheduler/defaultScheduler":67,"./sink/Observer":72}],65:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4965,7 +5271,7 @@ function end(t, x, sink) {
 	sink.end(t, x);
 }
 
-},{"../fatalError":69}],77:[function(require,module,exports){
+},{"../fatalError":58}],66:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5181,7 +5487,7 @@ function newTimeslot(t, events) {
 	return { time: t, events: events };
 }
 
-},{"./../base":39}],78:[function(require,module,exports){
+},{"./../base":28}],67:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
@@ -5197,7 +5503,7 @@ var isNode = typeof process === 'object'
 module.exports = new Scheduler(isNode ? nodeTimer : setTimeoutTimer);
 
 }).call(this,require('_process'))
-},{"./Scheduler":77,"./nodeTimer":79,"./timeoutTimer":80,"_process":112}],79:[function(require,module,exports){
+},{"./Scheduler":66,"./nodeTimer":68,"./timeoutTimer":69,"_process":18}],68:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5243,7 +5549,7 @@ module.exports = {
 	}
 };
 
-},{"../defer":65}],80:[function(require,module,exports){
+},{"../defer":54}],69:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5260,7 +5566,7 @@ module.exports = {
 	}
 };
 
-},{}],81:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5349,7 +5655,7 @@ ErrorTask.prototype.error = function(e) {
 	throw e;
 };
 
-},{"../defer":65}],82:[function(require,module,exports){
+},{"../defer":54}],71:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5391,7 +5697,7 @@ IndexSink.prototype.end = function(t, x) {
 
 IndexSink.prototype.error = Sink.prototype.error;
 
-},{"./Pipe":84}],83:[function(require,module,exports){
+},{"./Pipe":73}],72:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5437,7 +5743,7 @@ function disposeThen(end, error, disposable, x) {
 	}, error);
 }
 
-},{}],84:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5466,7 +5772,7 @@ Pipe.prototype.error = function(t, e) {
 	return this.sink.error(t, e);
 };
 
-},{}],85:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5513,7 +5819,7 @@ function disposeEventEmitter(info) {
 	target.source.removeListener(target.event, info.addEvent);
 }
 
-},{"../disposable/dispose":68,"../sink/DeferredSink":81,"./tryEvent":98}],86:[function(require,module,exports){
+},{"../disposable/dispose":57,"../sink/DeferredSink":70,"./tryEvent":87}],75:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5545,7 +5851,7 @@ function disposeEventTarget(info) {
 	target.source.removeEventListener(target.event, info.addEvent, target.capture);
 }
 
-},{"../disposable/dispose":68,"./tryEvent":98}],87:[function(require,module,exports){
+},{"../disposable/dispose":57,"./tryEvent":87}],76:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5636,7 +5942,7 @@ MulticastSource.prototype.error = function(t, e) {
 	}
 };
 
-},{"../base":39}],88:[function(require,module,exports){
+},{"../base":28}],77:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5663,7 +5969,7 @@ ValueProducer.prototype.dispose = function() {
 	return this.task.dispose();
 };
 
-},{"../scheduler/PropagateTask":76}],89:[function(require,module,exports){
+},{"../scheduler/PropagateTask":65}],78:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5730,7 +6036,7 @@ NeverSource.prototype.run = function() {
 
 var NEVER = new Stream(new NeverSource());
 
-},{"../Stream":38,"../disposable/dispose":68,"../scheduler/PropagateTask":76,"../source/ValueSource":88}],90:[function(require,module,exports){
+},{"../Stream":27,"../disposable/dispose":57,"../scheduler/PropagateTask":65,"../source/ValueSource":77}],79:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5808,7 +6114,7 @@ Subscription.prototype.dispose = function() {
 	}
 };
 
-},{"../Stream":38,"../sink/DeferredSink":81,"./MulticastSource":87,"./tryEvent":98}],91:[function(require,module,exports){
+},{"../Stream":27,"../sink/DeferredSink":70,"./MulticastSource":76,"./tryEvent":87}],80:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5832,7 +6138,7 @@ function from(a) {
 	throw new TypeError('not iterable: ' + a);
 }
 
-},{"../base":39,"../iterable":74,"./fromArray":92,"./fromIterable":94}],92:[function(require,module,exports){
+},{"../base":28,"../iterable":63,"./fromArray":81,"./fromIterable":83}],81:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5880,7 +6186,7 @@ function produce(task, array, sink) {
 	}
 }
 
-},{"../Stream":38,"../scheduler/PropagateTask":76}],93:[function(require,module,exports){
+},{"../Stream":27,"../scheduler/PropagateTask":65}],82:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5916,7 +6222,7 @@ function fromEvent(event, source /*, useCapture = false */) {
 	return new Stream(s);
 }
 
-},{"../Stream":38,"./EventEmitterSource":85,"./EventTargetSource":86,"./MulticastSource":87}],94:[function(require,module,exports){
+},{"../Stream":27,"./EventEmitterSource":74,"./EventTargetSource":75,"./MulticastSource":76}],83:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5961,7 +6267,7 @@ function runProducer(t, producer, sink) {
 	producer.scheduler.asap(producer.task);
 }
 
-},{"../Stream":38,"../iterable":74,"../scheduler/PropagateTask":76}],95:[function(require,module,exports){
+},{"../Stream":27,"../iterable":63,"../scheduler/PropagateTask":65}],84:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -6033,7 +6339,7 @@ Generate.prototype.dispose = function() {
 	this.active = false;
 };
 
-},{"../Stream":38,"../base":39}],96:[function(require,module,exports){
+},{"../Stream":27,"../base":28}],85:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -6103,7 +6409,7 @@ function continueIterate(iterate, x) {
 	return !iterate.active ? iterate.value : stepIterate(iterate, x);
 }
 
-},{"../Stream":38}],97:[function(require,module,exports){
+},{"../Stream":27}],86:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -6143,7 +6449,7 @@ function emit(t, x, sink) {
 	sink.event(t, x);
 }
 
-},{"../Stream":38,"../disposable/dispose":68,"../scheduler/PropagateTask":76,"./MulticastSource":87}],98:[function(require,module,exports){
+},{"../Stream":27,"../disposable/dispose":57,"../scheduler/PropagateTask":65,"./MulticastSource":76}],87:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -6167,7 +6473,7 @@ function tryEnd(t, x, sink) {
 	}
 }
 
-},{}],99:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -6242,7 +6548,7 @@ function continueUnfold(unfold, tuple) {
 	return stepUnfold(unfold, tuple.seed);
 }
 
-},{"../Stream":38}],100:[function(require,module,exports){
+},{"../Stream":27}],89:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -6923,7 +7229,7 @@ Stream.prototype.multicast = function() {
 	return multicast(this);
 };
 
-},{"./lib/Stream":38,"./lib/base":39,"./lib/combinator/accumulate":40,"./lib/combinator/applicative":41,"./lib/combinator/build":42,"./lib/combinator/combine":43,"./lib/combinator/concatMap":44,"./lib/combinator/continueWith":45,"./lib/combinator/delay":46,"./lib/combinator/errors":47,"./lib/combinator/filter":48,"./lib/combinator/flatMap":49,"./lib/combinator/limit":50,"./lib/combinator/loop":51,"./lib/combinator/merge":52,"./lib/combinator/mergeConcurrently":53,"./lib/combinator/multicast":54,"./lib/combinator/observe":55,"./lib/combinator/promises":56,"./lib/combinator/sample":57,"./lib/combinator/slice":58,"./lib/combinator/switch":59,"./lib/combinator/timeslice":60,"./lib/combinator/timestamp":61,"./lib/combinator/transduce":62,"./lib/combinator/transform":63,"./lib/combinator/zip":64,"./lib/source/core":89,"./lib/source/create":90,"./lib/source/from":91,"./lib/source/fromEvent":93,"./lib/source/generate":95,"./lib/source/iterate":96,"./lib/source/periodic":97,"./lib/source/unfold":99}],101:[function(require,module,exports){
+},{"./lib/Stream":27,"./lib/base":28,"./lib/combinator/accumulate":29,"./lib/combinator/applicative":30,"./lib/combinator/build":31,"./lib/combinator/combine":32,"./lib/combinator/concatMap":33,"./lib/combinator/continueWith":34,"./lib/combinator/delay":35,"./lib/combinator/errors":36,"./lib/combinator/filter":37,"./lib/combinator/flatMap":38,"./lib/combinator/limit":39,"./lib/combinator/loop":40,"./lib/combinator/merge":41,"./lib/combinator/mergeConcurrently":42,"./lib/combinator/multicast":43,"./lib/combinator/observe":44,"./lib/combinator/promises":45,"./lib/combinator/sample":46,"./lib/combinator/slice":47,"./lib/combinator/switch":48,"./lib/combinator/timeslice":49,"./lib/combinator/timestamp":50,"./lib/combinator/transduce":51,"./lib/combinator/transform":52,"./lib/combinator/zip":53,"./lib/source/core":78,"./lib/source/create":79,"./lib/source/from":80,"./lib/source/fromEvent":82,"./lib/source/generate":84,"./lib/source/iterate":85,"./lib/source/periodic":86,"./lib/source/unfold":88}],90:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6963,7 +7269,7 @@ function classNameFromVNode(vNode) {
 
   return cn.trim();
 }
-},{"./selectorParser":102}],102:[function(require,module,exports){
+},{"./selectorParser":91}],91:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7021,7 +7327,7 @@ function selectorParser() {
     className: classes.join(' ')
   };
 }
-},{"browser-split":12}],103:[function(require,module,exports){
+},{"browser-split":17}],92:[function(require,module,exports){
 var VNode = require('./vnode');
 var is = require('./is');
 
@@ -7056,13 +7362,13 @@ module.exports = function h(sel, b, c) {
   return VNode(sel, data, children, text, undefined);
 };
 
-},{"./is":104,"./vnode":111}],104:[function(require,module,exports){
+},{"./is":93,"./vnode":100}],93:[function(require,module,exports){
 module.exports = {
   array: Array.isArray,
   primitive: function(s) { return typeof s === 'string' || typeof s === 'number'; },
 };
 
-},{}],105:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 var booleanAttrs = ["allowfullscreen", "async", "autofocus", "autoplay", "checked", "compact", "controls", "declare", 
                 "default", "defaultchecked", "defaultmuted", "defaultselected", "defer", "disabled", "draggable", 
                 "enabled", "formnovalidate", "hidden", "indeterminate", "inert", "ismap", "itemscope", "loop", "multiple", 
@@ -7103,7 +7409,7 @@ function updateAttrs(oldVnode, vnode) {
 
 module.exports = {create: updateAttrs, update: updateAttrs};
 
-},{}],106:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 function updateClass(oldVnode, vnode) {
   var cur, name, elm = vnode.elm,
       oldClass = oldVnode.data.class || {},
@@ -7123,7 +7429,50 @@ function updateClass(oldVnode, vnode) {
 
 module.exports = {create: updateClass, update: updateClass};
 
-},{}],107:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
+var is = require('../is');
+
+function arrInvoker(arr) {
+  return function() {
+    // Special case when length is two, for performance
+    arr.length === 2 ? arr[0](arr[1]) : arr[0].apply(undefined, arr.slice(1));
+  };
+}
+
+function fnInvoker(o) {
+  return function(ev) { o.fn(ev); };
+}
+
+function updateEventListeners(oldVnode, vnode) {
+  var name, cur, old, elm = vnode.elm,
+      oldOn = oldVnode.data.on || {}, on = vnode.data.on;
+  if (!on) return;
+  for (name in on) {
+    cur = on[name];
+    old = oldOn[name];
+    if (old === undefined) {
+      if (is.array(cur)) {
+        elm.addEventListener(name, arrInvoker(cur));
+      } else {
+        cur = {fn: cur};
+        on[name] = cur;
+        elm.addEventListener(name, fnInvoker(cur));
+      }
+    } else if (is.array(old)) {
+      // Deliberately modify old array since it's captured in closure created with `arrInvoker`
+      old.length = cur.length;
+      for (var i = 0; i < old.length; ++i) old[i] = cur[i];
+      on[name]  = old;
+    } else {
+      old.fn = cur;
+      on[name] = old;
+    }
+  }
+}
+
+module.exports = {create: updateEventListeners, update: updateEventListeners};
+
+},{"../is":93}],97:[function(require,module,exports){
 function updateProps(oldVnode, vnode) {
   var key, cur, old, elm = vnode.elm,
       oldProps = oldVnode.data.props || {}, props = vnode.data.props || {};
@@ -7143,73 +7492,7 @@ function updateProps(oldVnode, vnode) {
 
 module.exports = {create: updateProps, update: updateProps};
 
-},{}],108:[function(require,module,exports){
-var raf = (window && window.requestAnimationFrame) || setTimeout;
-var nextFrame = function(fn) { raf(function() { raf(fn); }); };
-
-function setNextFrame(obj, prop, val) {
-  nextFrame(function() { obj[prop] = val; });
-}
-
-function updateStyle(oldVnode, vnode) {
-  var cur, name, elm = vnode.elm,
-      oldStyle = oldVnode.data.style || {},
-      style = vnode.data.style || {},
-      oldHasDel = 'delayed' in oldStyle;
-  for (name in oldStyle) {
-    if (!style[name]) {
-      elm.style[name] = '';
-    }
-  }
-  for (name in style) {
-    cur = style[name];
-    if (name === 'delayed') {
-      for (name in style.delayed) {
-        cur = style.delayed[name];
-        if (!oldHasDel || cur !== oldStyle.delayed[name]) {
-          setNextFrame(elm.style, name, cur);
-        }
-      }
-    } else if (name !== 'remove' && cur !== oldStyle[name]) {
-      elm.style[name] = cur;
-    }
-  }
-}
-
-function applyDestroyStyle(vnode) {
-  var style, name, elm = vnode.elm, s = vnode.data.style;
-  if (!s || !(style = s.destroy)) return;
-  for (name in style) {
-    elm.style[name] = style[name];
-  }
-}
-
-function applyRemoveStyle(vnode, rm) {
-  var s = vnode.data.style;
-  if (!s || !s.remove) {
-    rm();
-    return;
-  }
-  var name, elm = vnode.elm, idx, i = 0, maxDur = 0,
-      compStyle, style = s.remove, amount = 0, applied = [];
-  for (name in style) {
-    applied.push(name);
-    elm.style[name] = style[name];
-  }
-  compStyle = getComputedStyle(elm);
-  var props = compStyle['transition-property'].split(', ');
-  for (; i < props.length; ++i) {
-    if(applied.indexOf(props[i]) !== -1) amount++;
-  }
-  elm.addEventListener('transitionend', function(ev) {
-    if (ev.target === elm) --amount;
-    if (amount === 0) rm();
-  });
-}
-
-module.exports = {create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle};
-
-},{}],109:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 // jshint newcap: false
 /* global require, module, document, Element */
 'use strict';
@@ -7444,7 +7727,7 @@ function init(modules) {
 
 module.exports = {init: init};
 
-},{"./is":104,"./vnode":111}],110:[function(require,module,exports){
+},{"./is":93,"./vnode":100}],99:[function(require,module,exports){
 var h = require('./h');
 
 function init(thunk) {
@@ -7479,137 +7762,43 @@ module.exports = function(name, fn /* args */) {
   });
 };
 
-},{"./h":103}],111:[function(require,module,exports){
+},{"./h":92}],100:[function(require,module,exports){
 module.exports = function(sel, data, children, text, elm) {
   var key = data === undefined ? undefined : data.key;
   return {sel: sel, data: data, children: children,
           text: text, elm: elm, key: key};
 };
 
-},{}],112:[function(require,module,exports){
-// shim for using process in browser
+},{}],101:[function(require,module,exports){
+'use strict';
 
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],113:[function(require,module,exports){
-"use strict";
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _snabbdom = require('snabbdom');
-
-var _snabbdom2 = _interopRequireDefault(_snabbdom);
-
-var _snabbdomH = require('snabbdom/h');
-
-var _snabbdomH2 = _interopRequireDefault(_snabbdomH);
+var _motorcycleDom = require('@motorcycle/dom');
 
 var Group = 'solo';
 var Name = 'Fred';
 
-var monads = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class Monad {\n    var _this = this; \n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = function (func, ...args) {\n        return func(_this.x, ...args);\n      };\n\n      this.ret = function (a) {\n        _this.x = a;\n        return _this;\n      };\n    }\n  };\n\n  class MonadIter {\n    var _this = this;                  \n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return _this.p();\n      }\n \n      this.bnd = function (func) {\n          _this.p = func;\n      }\n    }\n  }\n');
+var monads = (0, _motorcycleDom.h)('pre', '  class Monad {\n    var _this = this; \n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = function (func, ...args) {\n        return func(_this.x, ...args);\n      };\n\n      this.ret = function (a) {\n        _this.x = a;\n        return _this;\n      };\n    }\n  };\n\n  class MonadIter {\n    var _this = this;                  \n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return _this.p();\n      }\n \n      this.bnd = function (func) {\n          _this.p = func;\n      }\n    }\n  } ');
 
-var fib = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  var fib = function fib(x,k) {\n  let j = k;\n\n  while (j > 0) {\n    x = [x[1], x[0] + x[1]];\n    j -= 1;\n  }\n  return ret(\'fibonacci \' + k + \' = \' + x[0]);\n}\n');
+var fib = (0, _motorcycleDom.h)('pre', '  var fib = function fib(x,k) {\n    let j = k;\n    while (j > 0) {\n      x = [x[1], x[0] + x[1]];\n      j -= 1;\n    }\n    return ret(\'fibonacci \' + k + \' = \' + x[0]);   // An anonymous monad holding the result.\n  }\n');
 
-var monadIter2 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n');
+var driver = (0, _motorcycleDom.h)('pre', '  var websocketsDriver = function () {\n      return create((add) => {\n        socket.onmessage = msg => add(msg)\n      })\n  }\n');
 
-var monadIter3 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n');
+var main = (0, _motorcycleDom.h)('pre', '  function main(sources) {\n  const messages$ = (sources.WS).map(e => \n    mMar.ret(e.data.split(\',\'))\n    .bnd(array => mMscores.ret(array[3].split("<br>"))\n    .bnd(() => mMname.ret(mMar.x[2])\n    .bnd(() => mMprefix.ret(mMar.x[0])\n      .bnd(next, \'CA#$42\', mMZ10)\n      .bnd(next, \'CB#$42\', mMZ11)\n      .bnd(next, \'CC#$42\', mMZ12)\n      .bnd(next, \'CD#$42\', mMZ13)\n      .bnd(next, \'CE#$42\', mMZ14)\n      .bnd(next, \'EE#$42\', mMZ15)))));\n    mMmain.bnd(() =>\n    (mMZ10.bnd(() => mMmain\n      .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])\n      .bnd(displayInline,\'1\')\n      .bnd(displayInline,\'2\')\n      .bnd(displayInline,\'3\')))),\n    (mMZ11.bnd(() => mMmain\n      .bnd(map, mMscbd.ret(mMscores.x)\n      .bnd(updateScoreboard)\n      .bnd(() => mM3.ret([])\n      .bnd(() => mM8.ret(0) ))))),\n    (mMZ12.bnd(() => mMmain   \n       .bnd(map, mM6.ret( mMname.x + \' successfully logged in.\')))),\n    (mMZ13.bnd(() => mMar\n      .bnd(splice, 0 ,3)\n      .bnd(reduce, (a,b) => a + ", " + b)\n      .bnd(() => mMmsg\n      .bnd(push, mMname.x + \': \' + mMar.x)\n      .bnd(updateMessages)))),\n    (mMZ14.bnd(() => mMmain\n      .bnd(map, mMgoals2.ret(\'The winner is \' + mMname.x )))), \n    (mMZ15.bnd(() => mMmain\n      .bnd(map, mMgoals2.ret(\'A player named \' + \n        mMname.x + \'is currently logged in. Page will refresh in 4 seconds.\')\n      .bnd(refresh))))) ');
 
-var monadIter4 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n');
+var next = (0, _motorcycleDom.h)('pre', '  var next = function next(x, y, mon2) {\n    if (x === y) {\n      mon2.release();\n    }\n    return ret(x);  // An anonymous monad with the value of the calling monad.\n  } ');
 
-var monadIter5 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n');
+var game = (0, _motorcycleDom.h)('pre', '  const numClick$ = sources.DOM\n    .select(\'.num\').events(\'click\');\n     \n  const numClickAction$ = numClick$.map(e => {\n    mM3\n    .bnd(push,e.target.textContent)\n    .bnd(() => {mM1.x[e.target.id] = "";})\n    if (mM3.x.length === 2 && mM8.x !== 0) {updateCalc();}\n  }).startWith(mM1.x[0]);\n\n  const opClick$ = sources.DOM\n    .select(\'.op\').events(\'click\');\n\n  const opClickAction$ = opClick$.map(e => {\n    mM8.ret(e.target.textContent);\n    if (mM3.x.length === 2) {updateCalc();}\n  })\n\n  const rollClick$ = sources.DOM\n    .select(\'.roll\').events(\'click\');\n\n  const rollClickAction$ = rollClick$.map(e => {  \n    mM13.ret(mM13.x - 1);\n    socket.send(\'CG#$42,\' + Group + \',\' + Name + \',\' + -1 + \',\' + 0);\n    socket.send(`CA#$42,' + Group + ',' + Name + ',6,6,12,20`);\n  });   ');
 
-var monadIter6 = (0, _snabbdomH2['default'])('pre', { style: { color: '#AFEEEE' } }, '  class MonadIter {\n');
+var updateCalc = (0, _motorcycleDom.h)('pre', '  function updateCalc() { \n  mMcalc.bnd(() => (\n      (mMZ2.bnd(() => mM13\n                    .bnd(score, 1)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.\n                    .bnd(newRoll)) ),\n      (mMZ4.bnd(() => mM13\n                    .bnd(score, 3)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                    .bnd(newRoll)) ),\n          (mMZ5.bnd(() => mM13   // Released when the result mod 5 is 0.\n                        .bnd(score,5)\n                        .bnd(v => mM13.ret(v)\n                        .bnd(next, 25, mMZ6))) ),\n              (mMZ6.bnd(() => mM9.bnd(score2)  // Released when the score is 25 \n                            .bnd(next,3,mMZ7)) ),\n                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                \n      (mM3.bnd(x => mM7\n                    .ret(calc(x[0], mM8.x, x[1]))\n                    .bnd(next, 18, mMZ4)  // Releases mMZ4.\n                    .bnd(next, 20, mMZ2) \n                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.\n                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad\'s value.\n                    .bnd(displayOff, ((mM1.x.length)+\'\'))\n                    .bnd(() => mM3\n                    .ret([])\n                    .bnd(() => mM4\n                    .ret(0).bnd(mM8.ret))))) ) \n  ))\n}  ');
 
-},{"snabbdom":109,"snabbdom/h":103}],114:[function(require,module,exports){
+exports['default'] = { monads: monads, fib: fib, driver: driver, main: main, next: next, game: game, updateCalc: updateCalc };
+module.exports = exports['default'];
+
+},{"@motorcycle/dom":6}],102:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -7624,16 +7813,14 @@ var _motorcycleDom = require('@motorcycle/dom');
 
 var _most = require('most');
 
-var _cow = require('./cow');
+var _code = require('./code');
 
-var _cow2 = _interopRequireDefault(_cow);
+var _code2 = _interopRequireDefault(_code);
 
 var Group = 'solo';
 var Goals = 0;
 var Name;
 var FIB = 'waiting';
-var EVAL = 'waiting';
-var Result = '';
 var tempStyle = { display: 'inline' };
 var tempStyle2 = { display: 'none' };
 _jsMonads.mM6.ret('');
@@ -7773,28 +7960,11 @@ function main(sources) {
     if (e.keyCode == 13 && !Number.isInteger(v * 1)) FIB = "You didn't provide an integer";
   });
 
-  var evalPress$ = sources.DOM.select('input#inputEval').events('keydown');
-
-  var evalPressAction$ = evalPress$.map(function (e) {
-    var v = e.target.value;
-    if (v == '') {
-      return;
-    }
-    if (e.keyCode == 13) try {
-      EVAL = eval(v);
-      if (!(typeof EVAL === 'number' || typeof EVAL === 'string' || Arran.isArray(v))) {
-        EVAL = 'Maybe you should add ".x" at the end';
-      }
-    } catch (e) {
-      EVAL = 'ERROR ' + e;
-    };
-  });
-
-  var calcStream$ = (0, _most.merge)(evalPressAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  var calcStream$ = (0, _most.merge)(fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: calcStream$.map(function () {
-      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', _jsMonads.mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', _jsMonads.mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', _jsMonads.mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', _jsMonads.mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', _jsMonads.mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', _jsMonads.mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', _jsMonads.mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + _jsMonads.mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', _jsMonads.mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), (0, _motorcycleDom.h)('pre', '  class Monad {\n    var _this = this; \n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = function (func, ...args) {\n        return func(_this.x, ...args);\n      };\n\n      this.ret = function (a) {\n        _this.x = a;\n        return _this;\n      };\n    }\n  };\n\n  class MonadIter {\n    var _this = this;                  \n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return _this.p();\n      }\n \n      this.bnd = function (func) {\n          _this.p = func;\n      }\n    }\n  } '), (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), (0, _motorcycleDom.h)('pre', '  var fib = function fib(x,k) {\n    let j = k;\n    while (j > 0) {\n      x = [x[1], x[0] + x[1]];\n      j -= 1;\n    }\n    return ret(\'fibonacci \' + k + \' = \' + x[0]);   // An anonymous monad holding the result.\n  }\n'), (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', FIB), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), (0, _motorcycleDom.h)('pre', '  var websocketsDriver = function () {\n      return create((add) => {\n        socket.onmessage = msg => add(msg)\n      })\n  }\n'), (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), (0, _motorcycleDom.h)('pre', '  function main(sources) {\n  const messages$ = (sources.WS).map(e => \n    mMar.ret(e.data.split(\',\'))\n    .bnd(array => mMscores.ret(array[3].split("<br>"))\n    .bnd(() => mMname.ret(mMar.x[2])\n    .bnd(() => mMprefix.ret(mMar.x[0])\n      .bnd(next, \'CA#$42\', mMZ10)\n      .bnd(next, \'CB#$42\', mMZ11)\n      .bnd(next, \'CC#$42\', mMZ12)\n      .bnd(next, \'CD#$42\', mMZ13)\n      .bnd(next, \'CE#$42\', mMZ14)\n      .bnd(next, \'EE#$42\', mMZ15)))));\n    mMmain.bnd(() =>\n    (mMZ10.bnd(() => mMmain\n      .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])\n      .bnd(displayInline,\'1\')\n      .bnd(displayInline,\'2\')\n      .bnd(displayInline,\'3\')))),\n    (mMZ11.bnd(() => mMmain\n      .bnd(map, mMscbd.ret(mMscores.x)\n      .bnd(updateScoreboard)\n      .bnd(() => mM3.ret([])\n      .bnd(() => mM8.ret(0) ))))),\n    (mMZ12.bnd(() => mMmain   \n       .bnd(map, mM6.ret( mMname.x + \' successfully logged in.\')))),\n    (mMZ13.bnd(() => mMar\n      .bnd(splice, 0 ,3)\n      .bnd(reduce, (a,b) => a + ", " + b)\n      .bnd(() => mMmsg\n      .bnd(push, mMname.x + \': \' + mMar.x)\n      .bnd(updateMessages)))),\n    (mMZ14.bnd(() => mMmain\n      .bnd(map, mMgoals2.ret(\'The winner is \' + mMname.x )))), \n    (mMZ15.bnd(() => mMmain\n      .bnd(map, mMgoals2.ret(\'A player named \' + \n        mMname.x + \'is currently logged in. Page will refresh in 4 seconds.\')\n      .bnd(refresh))))) '), (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which which comes after the call to its "bnd" method. Here is its definition of "next": '), (0, _motorcycleDom.h)('pre', '  var next = function next(x, y, mon2) {\n    if (x === y) {\n      mon2.release();\n    }\n    return ret(x);  // An anonymous monad with the value of the calling monad.\n  } '), (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), (0, _motorcycleDom.h)('pre', '  const numClick$ = sources.DOM\n    .select(\'.num\').events(\'click\');\n     \n  const numClickAction$ = numClick$.map(e => {\n    mM3\n    .bnd(push,e.target.textContent)\n    .bnd(() => {mM1.x[e.target.id] = "";})\n    if (mM3.x.length === 2 && mM8.x !== 0) {updateCalc();}\n  }).startWith(mM1.x[0]);\n\n  const opClick$ = sources.DOM\n    .select(\'.op\').events(\'click\');\n\n  const opClickAction$ = opClick$.map(e => {\n    mM8.ret(e.target.textContent);\n    if (mM3.x.length === 2) {updateCalc();}\n  })\n\n  const rollClick$ = sources.DOM\n    .select(\'.roll\').events(\'click\');\n\n  const rollClickAction$ = rollClick$.map(e => {  \n    mM13.ret(mM13.x - 1);\n    socket.send(\'CG#$42,\' + Group + \',\' + Name + \',\' + -1 + \',\' + 0);\n    socket.send(`CA#$42,' + Group + ',' + Name + ',6,6,12,20`);\n  });   '), (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), (0, _motorcycleDom.h)('pre', '  function updateCalc() { \n  mMcalc.bnd(() => (\n      ( mMZ2.bnd(() => mM13\n                    .bnd(score, 1)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.\n                    .bnd(newRoll)) ),\n      ( mMZ4.bnd(() => mM13\n                    .bnd(score, 3)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                    .bnd(newRoll)) ),\n          ( mMZ5.bnd(() => mM13   // Released when the result mod 5 is 0.\n                        .bnd(score,5)\n                        .bnd(v => mM13.ret(v)\n                        .bnd(next, 25, mMZ6))) ),\n              ( mMZ6.bnd(() => mM9.bnd(score2)  // Released when the score is 25 \n                            .bnd(next,3,mMZ7)) ),\n                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                \n      (mM3.bnd(x => mM7\n                    .ret(calc(x[0], mM8.x, x[1]))\n                    .bnd(next, 18, mMZ4)  // Releases mMZ4.\n                    .bnd(next, 20, mMZ2) \n                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.\n                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad\'s value.\n                    .bnd(displayOff, ((mM1.x.length)+\'\'))\n                    .bnd(() => mM3\n                    .ret([])\n                    .bnd(() => mM4\n                    .ret(0).bnd(mM8.ret))))) ) \n  ))\n}  '), (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
+      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', _jsMonads.mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', _jsMonads.mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', _jsMonads.mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', _jsMonads.mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', _jsMonads.mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', _jsMonads.mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', _jsMonads.mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + _jsMonads.mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', _jsMonads.mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), _code2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _code2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', FIB), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), _code2['default'].driver, (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), _code2['default'].main, (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _code2['default'].next, (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), _code2['default'].game, (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), _code2['default'].updateCalc, (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
     })
   };
 }
@@ -7910,4 +8080,4 @@ function fromInput(input) {
 
 _motorcycleCore2['default'].run(main, sources);
 
-},{"./cow":113,"@motorcycle/core":3,"@motorcycle/dom":5,"js-monads":30,"most":100}]},{},[114]);
+},{"./code":101,"@motorcycle/core":3,"@motorcycle/dom":6,"js-monads":19,"most":89}]},{},[102]);
