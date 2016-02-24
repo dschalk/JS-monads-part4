@@ -11,8 +11,6 @@ var Name;
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
 mM6.ret('');
-var M3;
-var M8;
 
 function createWebSocket(path) {
     let host = window.location.hostname;
@@ -248,9 +246,10 @@ function main(sources) {
       code.updateCalc,
       h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. ' ),  
       h('hr',),  
+      h('div.caption', 'Name Spaces'  ),
       h('p', 'The monads can serve as name spaces. In the next example, we create a monad named "mMmult" and perform a computation in its value. Here is the code: '  ),
       code.mult,
-      h('p', 'We then display mMmult.x in a div element.'  ),
+      h('p', 'We then display mMmult.x in the div element below.'  ),
       h('div#add', mMmult.x ),  
       h('p', 'Enter two numbers, then press SPACE or ENTER to see the result. '  ),
       h('input#addA',  ),
@@ -268,8 +267,6 @@ function main(sources) {
 }  
 
 function updateCalc() { 
-  M3 = mM3.x[0] + ' ' + mM3.x[1];
-  M8 = mM8.x + '';
   mMcalc.bnd(() => (
        (mMZ2.bnd(() => mM13
                     .bnd(score, 1)

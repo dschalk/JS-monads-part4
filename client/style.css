@@ -12,6 +12,12 @@ body {
     font-size: 22px;
 } 
 
+.caption {
+  font-size: 36px;
+  color: #ffb600;
+  text-align: center
+}
+
 button:hover {
   background-color: blue;
   text-align: left;
