@@ -139,6 +139,7 @@ mMprefix: new Monad('', 'mMprefix'),
 mMfib: new Monad([0,1], 'mMfib'),
 mMmain: new Monad(null, 'mMmain'),
 mMcalc: new Monad(null, 'mMcalc'),
+mMadd: new Monad(0, 'mMadd'),
 
 mMZ1: new MonadIter(),
 mMZ2: new MonadIter(),

@@ -124,14 +124,26 @@ h3 {
   color: #FF0000;
 }
 
-#inputEval {
-  width: 1200px;
-  font-size: 28px;
-}
-
-#eval {
-  font-size: 28px;
+#add {
   color: #FF0000;
+  font-size: 24px;
+  font-style: bold;
 }
 
+#addA {
+  width: 80px;
+  font-size: 24px;
+  color: #0000FF;
+  font-style: bold;
+}
 
+#addB {
+  width: 80px;
+  font-size: 24px;
+  color: #0000FF;
+  font-style: bold;
+}
+
+.spacer {
+  width: 150px;
+}

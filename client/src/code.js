@@ -128,7 +128,7 @@ var game = h('pre',`  const numClick$ = sources.DOM
     socket.send(\`CA#$42,${Group},${Name},6,6,12,20\`);
   });   `  )
 
-var updateCalc = h('pre', `  function updateCalc() { 
+var updateCalc = h('pre',  `  function updateCalc() { 
   mMcalc.bnd(() => (
       (mMZ2.bnd(() => mM13
                     .bnd(score, 1)
@@ -159,4 +159,16 @@ var updateCalc = h('pre', `  function updateCalc() {
   ))
 }  `  )
 
-export default {monads, fib, driver, main, next, game, updateCalc}
+var mult = h('pre',  `
+  const mMmult = new Monad(0, 'add');
+
+  const addA$ = sources.DOM
+    .select('input#addA').events('keydown');
+
+  const addB$ = sources.DOM
+    .select('input#addB').events('keydown');
+ 
+  mMmult.ret(combine((a,b) => a.target.value * b.target.value, addA$, addB$).map(v => mMmult.ret(v)));
+  `  )
+
+export default {monads, fib, driver, main, next, game, updateCalc, mult}

@@ -8,7 +8,6 @@ import code from './code';
 var Group = 'solo';
 var Goals = 0;
 var Name;
-var FIB = 'waiting';
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
 mM6.ret('');
@@ -105,6 +104,16 @@ function main(sources) {
       socket.send(`CO#$42,${e.target.value},${Name},${e.target.value}`);
   });
 
+  const mMmult = new Monad(0, 'add');
+
+  const addA$ = sources.DOM
+    .select('input#addA').events('keydown');
+
+  const addB$ = sources.DOM
+    .select('input#addB').events('keydown');
+ 
+  mMmult.ret(combine((a,b) => a.target.value * b.target.value, addA$, addB$).map(v => mMmult.ret(v)));
+
   const messagePress$ = sources.DOM
     .select('input.inputMessage').events('keydown');
 
@@ -150,11 +159,14 @@ function main(sources) {
     if (v == '' ) {
       return;
     } 
-    if( e.keyCode == 13 && Number.isInteger(v*1) ) FIB = mMfib.bnd(fib,v).x;
-    if( e.keyCode == 13 && !Number.isInteger(v*1) ) FIB = "You didn't provide an integer";
+    if( e.keyCode == 13 && Number.isInteger(v*1) ) {
+      var result = mMfib.bnd(fib,v).x;
+      mM19.ret(result);
+    }
+    if( e.keyCode == 13 && !Number.isInteger(v*1) ) mM19.ret("You didn't provide an integer");
   });
 
-  const calcStream$ = merge(fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const calcStream$ = merge(mMmult.x, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -217,7 +229,7 @@ function main(sources) {
       h('p',   'The result will be displayed undernieth the input box. ' ),
       h('br'),
       h('input#code', ),  
-      h('p#code2', FIB ),  
+      h('p#code2', mM19.x ),  
       h('hr', ),  
       h('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '  ),  
       h('a', {props: {href: 'https://github.com/dschalk/JS-monads-part4'}, style: {color: '#EECCFF'}},  'https://github.com/dschalk/JS-monads-part4'  ),
@@ -235,9 +247,15 @@ function main(sources) {
       h('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: ' ),  
       code.updateCalc,
       h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. ' ),  
-      h('br'),
       h('hr',),  
-      h('p', ),  
+      h('p', 'The monads can serve as name spaces. In the next example, we create a monad named "mMmult" and perform a computation in its value. Here is the code: '  ),
+      code.mult,
+      h('p', 'We then display mMmult.x in a div element.'  ),
+      h('div#add', mMmult.x ),  
+      h('p', 'Enter two numbers, then press SPACE or ENTER to see the result. '  ),
+      h('input#addA',  ),
+      h('span', ' * '   ),
+      h('input#addB',  ),
       h('p', ),  
       h('p', ),  
       h('p', ),  
@@ -352,12 +370,6 @@ var refresh = function() {
 const sources = {
   DOM: makeDOMDriver('#main-container'),
   WS: websocketsDriver
-}
-
-function fromInput(input) {
-    return most.fromEvent('change', input)
-        .map(function(e) { return e.target.value })
-        .map(Number);
 }
 
 Cycle.run(main, sources);
