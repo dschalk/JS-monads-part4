@@ -159,16 +159,21 @@ var updateCalc = h('pre',  `  function updateCalc() {
   ))
 }  `  )
 
-var mult = h('pre',  `
-  const mMmult = new Monad(0, 'add');
+var mult = h('pre',  `  const mMmult = new Monad({}, 'mMmult')
 
-  const addA$ = sources.DOM
-    .select('input#addA').events('keydown');
+  mMmult.x.addA = sources.DOM.select('input#addA').events('input'),
+  mMmult.x.addB = sources.DOM.select('input#addB').events('input'),
+  mMmult.x.product = 0;
+  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)
 
-  const addB$ = sources.DOM
-    .select('input#addB').events('keydown');
- 
-  mMmult.ret(combine((a,b) => a.target.value * b.target.value, addA$, addB$).map(v => mMmult.ret(v)));
+  const mult$ = mMmult.x.result.map(v => {
+    mMmult.x.product = v;
+  });
   `  )
 
-export default {monads, fib, driver, main, next, game, updateCalc, mult}
+var add = h('pre',  `  var addS = function addS (x,y) {
+   return ret(x.product + y);
+  }
+  `  )
+
+export default {monads, fib, driver, main, next, game, updateCalc, mult, add}

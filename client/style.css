@@ -18,6 +18,10 @@ body {
   text-align: center
 }
 
+.add {
+  color: #ff7b00;
+}
+
 button:hover {
   background-color: blue;
   text-align: left;

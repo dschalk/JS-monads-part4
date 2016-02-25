@@ -102,16 +102,21 @@ function main(sources) {
       socket.send(`CO#$42,${e.target.value},${Name},${e.target.value}`);
   });
 
-  const mMmult = new Monad(0, 'add');
+  const mMmult = new Monad({}, 'mMmult')
 
-  const addA$ = sources.DOM
-    .select('input#addA').events('keydown');
+  mMmult.x.addA = sources.DOM.select('input#addA').events('input'),
+  mMmult.x.addB = sources.DOM.select('input#addB').events('input'),
+  mMmult.x.product = 0;
+  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)
 
-  const addB$ = sources.DOM
-    .select('input#addB').events('keydown');
- 
-  mMmult.ret(combine((a,b) => a.target.value * b.target.value, addA$, addB$).map(v => mMmult.ret(v)));
+  const mult$ = mMmult.x.result.map(v => {
+    mMmult.x.product = v;
+  });
 
+  var addS = function addS (x,y) {
+   return ret(x.product + y);
+  }
+  
   const messagePress$ = sources.DOM
     .select('input.inputMessage').events('keydown');
 
@@ -164,7 +169,7 @@ function main(sources) {
     if( e.keyCode == 13 && !Number.isInteger(v*1) ) mM19.ret("You didn't provide an integer");
   });
 
-  const calcStream$ = merge(mMmult.x, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const calcStream$ = merge(mult$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -247,16 +252,21 @@ function main(sources) {
       h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. ' ),  
       h('hr',),  
       h('div.caption', 'Name Spaces'  ),
-      h('p', 'The monads can serve as name spaces. In the next example, we create a monad named "mMmult" and perform a computation in its value. Here is the code: '  ),
+      h('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation. Here is the code: '  ),
       code.mult,
-      h('p', 'We then display mMmult.x in the div element below.'  ),
-      h('div#add', mMmult.x ),  
-      h('p', 'Enter two numbers, then press SPACE or ENTER to see the result. '  ),
-      h('input#addA',  ),
+      h('p', 'mult$ merges into the stream that initiates each new cycle of the virtual DOM. "mMmult.x.product" is displayed in the paragraph directly below this one.'  ),
+      h('p#add', mMmult.x.product ),  
+      h('p', 'Enter two numbers below. '  ),
+      h('input#addA'  ),
       h('span', ' * '   ),
-      h('input#addB',  ),
+      h('input#addB'  ),
+      h('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by using mMmult\'s bnd or ret methods.' ),  
+      h('p.add', mMmult.bnd(addS, 1000).x ),  
+      h('p', 'mMmult can launch subsequent computations after the product of the two inputs is calculated. The paragraph above contains "mMmult.bnd(addS, 1000).x. addS is defined as follows: ' ),  
+      code.add,
       h('p', ),  
       h('p', ),  
+      h('hr', ),  
       h('p', ),  
       h('p', ),  
       h('p', ),  
