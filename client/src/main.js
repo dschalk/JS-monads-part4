@@ -262,7 +262,7 @@ function main(sources) {
       h('input#addB'  ),
       h('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by using mMmult\'s bnd or ret methods.' ),  
       h('p.add', mMmult.bnd(addS, 1000).x ),  
-      h('p', 'mMmult can launch subsequent computations after the product of the two inputs is calculated. The paragraph above contains "mMmult.bnd(addS, 1000).x. addS is defined as follows: ' ),  
+      h('p', 'mMmult can launch subsequent computations after the product of the two inputs is calculated. The paragraph above contains "mMmult.bnd(addS, 1000).x". addS is defined as follows: ' ),  
       code.add,
       h('p', ),  
       h('p', ),  
