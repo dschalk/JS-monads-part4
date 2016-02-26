@@ -172,7 +172,13 @@ var mult = h('pre',  `  const mMmult = new Monad({}, 'mMmult')
   `  )
 
 var add = h('pre',  `  var addS = function addS (x,y) {
-   return ret(x.product + y);
+    if (typeof x === 'number') {
+      return ret(x + y);
+    }
+    else if (typeof x.product === 'number') {
+      return ret(x.product + y);
+    }
+    else console.log('Problem in addS');
   }
   `  )
 

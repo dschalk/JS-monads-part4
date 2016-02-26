@@ -89,6 +89,10 @@ cube: function(v) {
   return ret(v*v*v);
 },
 
+double: function(v) {
+  return ret(v+v);
+},
+
 add: function(a,b) {
   return ret(a+b);
 },

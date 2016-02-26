@@ -1,5 +1,5 @@
 import Cycle from '@motorcycle/core';
-import {Monad, mM1, mM2, mM3, mM4, mM5, mM6, mM7, mM8, mM9, mM10, mM11, mM12, mM13, mM14, mM15, mM16, mM17, mM18, mM19, mMZ1, mMZ2, mMZ3, mMZ4, mMZ5, mMZ6, mMZ7, mMZ8, mMZ9, mMZ10, mMZ11, mMZ12, mMZ13, mMZ14, mMZ15, mMZ16, mMZ17, mMZ18, mMZ19, mMZ20, mMZ21, mMZ22, mMZ23, mMZ24, mMZ25, mMZ26, mMZ27, mMZ28, mMZ29, calc, next, next2, M, MI, mMscbd, mMscoreboard, mMmsg, mMmessages, mMgoals, mMgoals2, mMfib, mMname, mMmain, mMar, mMprefix, mMscores, fib, ret, map, push, unshift, splice, reduce, mMcalc, log} from 'js-monads'; 
+import {Monad, mM1, mM2, mM3, mM4, mM5, mM6, mM7, mM8, mM9, mM10, mM11, mM12, mM13, mM14, mM15, mM16, mM17, mM18, mM19, mM20, mM21, mM22, mMZ1, mMZ2, mMZ3, mMZ4, mMZ5, mMZ6, mMZ7, mMZ8, mMZ9, mMZ10, mMZ11, mMZ12, mMZ13, mMZ14, mMZ15, mMZ16, mMZ17, mMZ18, mMZ19, mMZ20, mMZ21, mMZ22, mMZ23, mMZ24, mMZ25, mMZ26, mMZ27, mMZ28, mMZ29, calc, next, next2, M, MI, mMscbd, mMscoreboard, mMmsg, mMmessages, mMgoals, mMgoals2, mMfib, mMname, mMmain, mMar, mMprefix, mMscores, fib, ret, map, push, unshift, splice, reduce, mMcalc, log, add, cube, double, pause} from './index.js'; 
 import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom'; 
 import {just, create, merge, combine, fromEvent} from 'most'; 
 import code from './code'; 
@@ -114,7 +114,13 @@ function main(sources) {
   });
 
   var addS = function addS (x,y) {
-   return ret(x.product + y);
+    if (typeof x === 'number') {
+      return ret(x + y);
+    }
+    else if (typeof x.product === 'number') {
+      return ret(x.product + y);
+    }
+    else console.log('Problem in addS');
   }
   
   const messagePress$ = sources.DOM
@@ -252,7 +258,7 @@ function main(sources) {
       h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. ' ),  
       h('hr',),  
       h('div.caption', 'Name Spaces'  ),
-      h('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation. Here is the code: '  ),
+      h('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation in which two numbers are multiplied and added to the number 1. Here is the the monad "mMmult" being provided with methods and a number attribute, along with the the "mult$" stream and the functions addS and add.  '  ),
       code.mult,
       h('p', 'mult$ merges into the stream that initiates each new cycle of the virtual DOM. "mMmult.x.product" is displayed in the paragraph directly below this one.'  ),
       h('p#add', mMmult.x.product ),  
@@ -260,9 +266,11 @@ function main(sources) {
       h('input#addA'  ),
       h('span', ' * '   ),
       h('input#addB'  ),
-      h('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by using mMmult\'s bnd or ret methods.' ),  
-      h('p.add', mMmult.bnd(addS, 1000).x ),  
-      h('p', 'mMmult can launch subsequent computations after the product of the two inputs is calculated. The paragraph above contains "mMmult.bnd(addS, 1000).x". addS is defined as follows: ' ),  
+      h('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraph below contains the result of a computation flowing out of mMmult:' ),
+      h('p.add', mMmult.bnd(addS, 10000).bnd(addS, 1).bnd(double).x    ),  
+      h('p', 'It is the result of placing this in the above paragraph'  ),
+      h('pre', `mMmult.bnd(addS, 10000).bbd(addS, 1).bnd(double).x` ),  
+      h('p', 'Of course it would have been more efficient to add 1001 in the first place, but this is a demonstration. Here is the definition of the polymorphic function addS: '   ),
       code.add,
       h('p', ),  
       h('p', ),  
