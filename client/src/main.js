@@ -4,7 +4,6 @@ import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '
 import {just, create, merge, combine, fromEvent} from 'most'; 
 import code from './code'; 
 
-
 var Group = 'solo';
 var Goals = 0;
 var Name;
@@ -34,6 +33,7 @@ mM3.ret([]);
 function main(sources) {
   mMfib.ret([0,1]);
   console.log(ret);
+
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
     .bnd(array => mMscores.ret(array[3].split("<br>"))
@@ -46,30 +46,28 @@ function main(sources) {
       .bnd(next, 'CE#$42', mMZ14)
       .bnd(next, 'EE#$42', mMZ15)))));
     mMmain.bnd(() =>
-    (mMZ10.bnd(() => mMmain
-      .bnd(map, mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
+    (mMZ10.bnd(() => mM1
+      .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
       .bnd(displayInline,'3')))),
-    (mMZ11.bnd(() => mMmain
-      .bnd(map, mMscbd.ret(mMscores.x)
+    (mMZ11.bnd(() => mMscbd
+      .ret(mMscores.x)
       .bnd(updateScoreboard)
       .bnd(() => mM3.ret([])
-      .bnd(() => mM8.ret(0) ))))),
-    (mMZ12.bnd(() => mMmain   
-       .bnd(map, mM6.ret( mMname.x + ' successfully logged in.')))),
+      .bnd(() => mM8.ret(0) )))),
+    (mMZ12.bnd(() => mM6
+      .ret( mMname.x + ' successfully logged in.'))),
     (mMZ13.bnd(() => mMar
       .bnd(splice, 0 ,3)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
       .bnd(push, mMname.x + ': ' + mMar.x)
       .bnd(updateMessages)))),
-    (mMZ14.bnd(() => mMmain
-      .bnd(map, mMgoals2.ret('The winner is ' + mMname.x )))), 
-    (mMZ15.bnd(() => mMmain
-      .bnd(map, mMgoals2.ret('A player named ' + 
+    (mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ))), 
+    (mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
         mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
-      .bnd(refresh)))))
+      .bnd(refresh)))
   
   const loginPress$ = sources.DOM
     .select('input.login').events('keydown');

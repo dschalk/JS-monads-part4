@@ -8978,6 +8978,7 @@ _indexJs.mM3.ret([]);
 function main(sources) {
   _indexJs.mMfib.ret([0, 1]);
   console.log(_indexJs.ret);
+
   var messages$ = sources.WS.map(function (e) {
     return _indexJs.mMar.ret(e.data.split(',')).bnd(function (array) {
       return _indexJs.mMscores.ret(array[3].split("<br>")).bnd(function () {
@@ -8989,16 +8990,16 @@ function main(sources) {
   });
   _indexJs.mMmain.bnd(function () {
     return _indexJs.mMZ10.bnd(function () {
-      return _indexJs.mMmain.bnd(_indexJs.map, _indexJs.mM1.ret([_indexJs.mMar.x[3], _indexJs.mMar.x[4], _indexJs.mMar.x[5], _indexJs.mMar.x[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3'));
+      return _indexJs.mM1.ret([_indexJs.mMar.x[3], _indexJs.mMar.x[4], _indexJs.mMar.x[5], _indexJs.mMar.x[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3');
     });
-  }, _indexJs.mMZ11.bnd(function () {
-    return _indexJs.mMmain.bnd(_indexJs.map, _indexJs.mMscbd.ret(_indexJs.mMscores.x).bnd(updateScoreboard).bnd(function () {
+  }), _indexJs.mMZ11.bnd(function () {
+    return _indexJs.mMscbd.ret(_indexJs.mMscores.x).bnd(updateScoreboard).bnd(function () {
       return _indexJs.mM3.ret([]).bnd(function () {
         return _indexJs.mM8.ret(0);
       });
-    }));
+    });
   }), _indexJs.mMZ12.bnd(function () {
-    return _indexJs.mMmain.bnd(_indexJs.map, _indexJs.mM6.ret(_indexJs.mMname.x + ' successfully logged in.'));
+    return _indexJs.mM6.ret(_indexJs.mMname.x + ' successfully logged in.');
   }), _indexJs.mMZ13.bnd(function () {
     return _indexJs.mMar.bnd(_indexJs.splice, 0, 3).bnd(_indexJs.reduce, function (a, b) {
       return a + ", " + b;
@@ -9006,10 +9007,10 @@ function main(sources) {
       return _indexJs.mMmsg.bnd(_indexJs.push, _indexJs.mMname.x + ': ' + _indexJs.mMar.x).bnd(updateMessages);
     });
   }), _indexJs.mMZ14.bnd(function () {
-    return _indexJs.mMmain.bnd(_indexJs.map, _indexJs.mMgoals2.ret('The winner is ' + _indexJs.mMname.x));
+    return _indexJs.mMgoals2.ret('The winner is ' + _indexJs.mMname.x);
   }), _indexJs.mMZ15.bnd(function () {
-    return _indexJs.mMmain.bnd(_indexJs.map, _indexJs.mMgoals2.ret('A player named ' + _indexJs.mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh));
-  }));
+    return _indexJs.mMgoals2.ret('A player named ' + _indexJs.mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh);
+  });
 
   var loginPress$ = sources.DOM.select('input.login').events('keydown');
 
