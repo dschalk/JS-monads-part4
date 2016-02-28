@@ -40,3 +40,56 @@ Refactored the JS-monads-part3 game to use [Motorcyclejs](https://github.com/mot
 ```
 
 Motorcyclejs is a most remarkable library. And it plays so nicely with the monads. 
+
+Here is how the monad instances are constructed:
+
+```javascript
+  class Monad {
+    var _this = this; 
+    constructor(z,g) {
+
+      this.x = z;
+      if (arguments.length === 1) {this.id = 'anonymous'}
+      else {this.id = g}
+
+      this.bnd = function (func, ...args) {
+        return func(_this.x, ...args);
+      };
+
+      this.ret = function (a) {
+        _this.x = a;
+        return _this;
+      };
+    }
+  };
+
+  class MonadIter {
+    var _this = this;                  
+    constructor() {
+
+      this.p = function() {};
+
+      this.release = function () {
+        return _this.p();
+      }
+ 
+      this.bnd = function (func) {
+          _this.p = func;
+      }
+    }
+  } 
+```
+And this is the definition of "next":
+
+```javascript
+  var next = function next(x, y, mon2) {
+    if (x === y) {
+      mon2.release();
+    }
+    return ret(x);  // An anonymous monad with the value of the calling monad.
+  } 
+```
+
+
+
+
