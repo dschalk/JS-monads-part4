@@ -256,7 +256,7 @@ function main(sources) {
       h('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. ' ),  
       h('hr',),  
       h('div.caption', 'Name Spaces'  ),
-      h('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation in which two numbers are multiplied and added to the number 1. Here is the the monad "mMmult" being provided with methods and a number attribute, along with the the "mult$" stream and the functions addS and add.  '  ),
+      h('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation in which two numbers are multiplied and added to the number 1. The following snippet shows monad "mMmult" being created and provided with methods and a number attribute. It also shows the definition of mult$.  '  ),
       code.mult,
       h('p', 'mult$ merges into the stream that initiates each new cycle of the virtual DOM. "mMmult.x.product" is displayed in the paragraph directly below this one.'  ),
       h('p#add', mMmult.x.product ),  
