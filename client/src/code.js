@@ -181,7 +181,8 @@ var add = h('pre',  `  var addS = function addS (x,y) {
   }
   `  )
 
-var product2 = h('pre',  `  const unitDriver = function () {
+var product2 = h('pre',  `  
+  const unitDriver = function () {
     return periodic(1000, 1);  // Creates a stream of 1-1-1-1..., in one-second intervals.
   }
   
@@ -204,7 +205,7 @@ var product2 = h('pre',  `  const unitDriver = function () {
     let mMtemp = new Monad(v);
     mMZ26.bnd(() => mMtemp.bnd(add, 1000).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
     mMZ27.bnd(() => mMtemp.bnd(double).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
-    mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x)); 
+    mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(x => mMmult.x.product2 = x)); 
     mMunit.ret(0);
   })
   `  )

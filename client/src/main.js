@@ -130,7 +130,7 @@ function main(sources) {
     let mMtemp = new Monad(v);
     mMZ26.bnd(() => mMtemp.bnd(add, 1000).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
     mMZ27.bnd(() => mMtemp.bnd(double).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
-    mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x)); 
+    mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(x => mMmult.x.product2 = x)); 
     mMunit.ret(0);
   })
 
