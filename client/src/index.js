@@ -156,6 +156,8 @@ mMmain: new Monad(null, 'mMmain'),
 mMcalc: new Monad(null, 'mMcalc'),
 mMadd: new Monad(0, 'mMadd'),
 mMunit: new Monad(0, 'mMunit'),
+mMprod: new Monad(0, 'mMprod'),
+mMmult: new Monad({}, 'mMmult'),
 
 mMZ1: new MonadIter(),
 mMZ2: new MonadIter(),

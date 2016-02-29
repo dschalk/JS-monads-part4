@@ -36,7 +36,7 @@ var monads = h('pre', `  class Monad {
           _this.p = func;
       }
     }
-  } ` )
+  }; ` )
 
 var fib = h('pre', `  var fib = function fib(x,k) {
     let j = k;
@@ -45,7 +45,7 @@ var fib = h('pre', `  var fib = function fib(x,k) {
       j -= 1;
     }
     return ret('fibonacci ' + k + ' = ' + x[0]);   // An anonymous monad holding the result.
-  }
+  };
 ` )  
 
 
@@ -53,7 +53,7 @@ var driver = h('pre', `  var websocketsDriver = function () {
       return create((add) => {
         socket.onmessage = msg => add(msg)
       })
-  }
+  };
 ` )
 
 var main = h('pre', `  function main(sources) {
@@ -154,7 +154,7 @@ var updateCalc = h('pre',  `  function updateCalc() {
                     .ret([])
                     .bnd(() => mM4
                     .ret(0).bnd(mM8.ret))))) ) 
-  ))
+  ));
 }  `  )
 
 var mult = h('pre',  `  const mMmult = new Monad({}, 'mMmult')
@@ -178,7 +178,7 @@ var add = h('pre',  `  var addS = function addS (x,y) {
       return ret(x.product + y);
     }
     else console.log('Problem in addS');
-  }
+  };
   `  )
 
 var product2 = h('pre',  `  
@@ -192,13 +192,12 @@ var product2 = h('pre',  `
     UNIT: unitDriver           // Added unitDriver to the sources object.
   }
 
-  const unitAction$ = sources.UNIT.map(v => {  // unitDriver, cycled back around from "run".
+  const unitAction$ = sources.UNIT.map(v => {  // unitDriver, cycled back inside of "run".
       mMunit.ret(mMunit.x + v)  // mMunit is a monad dedicated to calling "next" with its bnd method.
       .bnd(next, 2, mMZ26)  // Releases mMZ26 (below) after two seconds.
       .bnd(next, 4, mMZ27)
       .bnd(next, 6, mMZ28)
-      console.log('mMunit.x ', mMunit.x)
-  })
+  });
 
   const mult2$ = mMmult.x.result.map(v => {
     mMmult.x.product2 = v;
@@ -207,7 +206,7 @@ var product2 = h('pre',  `
     mMZ27.bnd(() => mMtemp.bnd(double).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
     mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(x => mMmult.x.product2 = x)); 
     mMunit.ret(0);
-  })
+  });
   `  )
 
 export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2}
