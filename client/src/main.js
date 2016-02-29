@@ -289,7 +289,7 @@ function main(sources) {
       h('input#addB'  ),
       h('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraph below contains mMmult.x.product2:' ),
       h('p.add', mMmult.x.product2    ),  
-      h('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after two-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. But Motorcycle.js is a whirling wonder, awe-inspiring to behold and to use. Here is what is involved in assigning mMmult.x.product2 to the computation results: '  ),
+      h('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after two-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. But Motorcycle.js is a whirling wonder, awe-inspiring to behold and to use. Here is what is involved in assigning the computation results to mMmult.x.product2: '  ),
       code.product2,
       h('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '  ),  
       h('p', ),  
