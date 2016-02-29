@@ -8569,11 +8569,13 @@ var game = (0, _motorcycleDom.h)('pre', '  const numClick$ = sources.DOM\n    .s
 
 var updateCalc = (0, _motorcycleDom.h)('pre', '  function updateCalc() { \n  mMcalc.bnd(() => (\n      (mMZ2.bnd(() => mM13\n                    .bnd(score, 1)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5)  // Releases mMZ5.\n                    .bnd(newRoll)) ),\n      (mMZ4.bnd(() => mM13\n                    .bnd(score, 3)\n                    .bnd(next2, (mM13.x % 5 === 0), mMZ5) \n                    .bnd(newRoll)) ),\n          (mMZ5.bnd(() => mM13   // Released when the result mod 5 is 0.\n                        .bnd(score,5)\n                        .bnd(v => mM13.ret(v)\n                        .bnd(next, 25, mMZ6))) ),\n              (mMZ6.bnd(() => mM9.bnd(score2)  // Released when the score is 25 \n                            .bnd(next,3,mMZ7)) ),\n                  (mMZ7.bnd(() => mM13.bnd(winner)) ),                \n      (mM3.bnd(x => mM7\n                    .ret(calc(x[0], mM8.x, x[1]))\n                    .bnd(next, 18, mMZ4)  // Releases mMZ4.\n                    .bnd(next, 20, mMZ2) \n                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.\n                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad\'s value.\n                    .bnd(displayOff, ((mM1.x.length)+\'\'))\n                    .bnd(() => mM3\n                    .ret([])\n                    .bnd(() => mM4\n                    .ret(0).bnd(mM8.ret))))) ) \n  ))\n}  ');
 
-var mult = (0, _motorcycleDom.h)('pre', '  const mMmult = new Monad({}, \'mMmult\')\n\n  mMmult.x.addA = sources.DOM.select(\'input#addA\').events(\'input\'),\n  mMmult.x.addB = sources.DOM.select(\'input#addB\').events(\'input\'),\n  mMmult.x.product = 0;\n  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)\n\n  const mult$ = mMmult.x.result.map(v => {\n    mMmult.x.product = v;\n  });\n  ');
+var mult = (0, _motorcycleDom.h)('pre', '  const mMmult = new Monad({}, \'mMmult\')\n\n  mMmult.x.addA = sources.DOM.select(\'input#addA\').events(\'input\'),\n  mMmult.x.addB = sources.DOM.select(\'input#addB\').events(\'input\'),\n  mMmult.x.product = 0;\n  mMmult.x.product2 = 0;\n  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)\n\n  const mult$ = mMmult.x.result.map(v => {\n    mMmult.x.product = v;\n  });\n  ');
 
 var add = (0, _motorcycleDom.h)('pre', '  var addS = function addS (x,y) {\n    if (typeof x === \'number\') {\n      return ret(x + y);\n    }\n    else if (typeof x.product === \'number\') {\n      return ret(x.product + y);\n    }\n    else console.log(\'Problem in addS\');\n  }\n  ');
 
-exports['default'] = { monads: monads, fib: fib, driver: driver, main: main, next: next, game: game, updateCalc: updateCalc, mult: mult, add: add };
+var product2 = (0, _motorcycleDom.h)('pre', '  const unitDriver = function () {\n    return periodic(1000, 1);  // Creates a stream of 1-1-1-1..., in one-second intervals.\n  }\n  \n  const sources = {\n    DOM: makeDOMDriver(\'#main-container\'),\n    WS: websocketsDriver,\n    UNIT: unitDriver           // Added unitDriver to the sources object.\n  }\n\n  const unitAction$ = sources.UNIT.map(v => {  // unitDriver, cycled back around from "run".\n      mMunit.ret(mMunit.x + v)  // mMunit is a monad dedicated to calling "next" with its bnd method.\n      .bnd(next, 2, mMZ26)  // Releases mMZ26 (below) after two seconds.\n      .bnd(next, 4, mMZ27)\n      .bnd(next, 6, mMZ28)\n      console.log(\'mMunit.x \', mMunit.x)\n  })\n\n  const mult2$ = mMmult.x.result.map(v => {\n    mMmult.x.product2 = v;\n    let mMtemp = new Monad(v);\n    mMZ26.bnd(() => mMtemp.bnd(add, 1000).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));\n    mMZ27.bnd(() => mMtemp.bnd(double).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));\n    mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x)); \n    mMunit.ret(0);\n  })\n  ');
+
+exports['default'] = { monads: monads, fib: fib, driver: driver, main: main, next: next, game: game, updateCalc: updateCalc, mult: mult, add: add, product2: product2 };
 module.exports = exports['default'];
 
 },{"@motorcycle/dom":74}],168:[function(require,module,exports){
@@ -8590,6 +8592,7 @@ var MonadIter = function MonadIter() {
   this.p = function () {};
 
   this.release = function () {
+    console.log('this.p ', this.p);
     return _this.p();
   };
 
@@ -8710,6 +8713,16 @@ module.exports = {
   mM17: new Monad(0, 'mM17'),
   mM18: new Monad(0, 'mM18'),
   mM19: new Monad(0, 'mM19'),
+  mM20: new Monad(0, 'mM20'),
+  mM21: new Monad(0, 'mM21'),
+  mM22: new Monad(0, 'mM22'),
+  mM23: new Monad(0, 'mM23'),
+  mM24: new Monad(0, 'mM24'),
+  mM25: new Monad(0, 'mM25'),
+  mM26: new Monad(0, 'mM26'),
+  mM27: new Monad(0, 'mM27'),
+  mM28: new Monad(0, 'mM28'),
+  mM29: new Monad(0, 'mM29'),
   mMscbd: new Monad([], 'mMscbd'),
   mMmessages: new Monad([], 'mMmessages'),
   mMscoreboard: new Monad([], 'mMscoreboard'),
@@ -8726,6 +8739,7 @@ module.exports = {
   mMmain: new Monad(null, 'mMmain'),
   mMcalc: new Monad(null, 'mMcalc'),
   mMadd: new Monad(0, 'mMadd'),
+  mMunit: new Monad(0, 'mMunit'),
 
   mMZ1: new MonadIter(),
   mMZ2: new MonadIter(),
@@ -8943,9 +8957,9 @@ var _motorcycleDom = require('@motorcycle/dom');
 
 var _most = require('most');
 
-var _code = require('./code');
+var _codeJs = require('./code.js');
 
-var _code2 = _interopRequireDefault(_code);
+var _codeJs2 = _interopRequireDefault(_codeJs);
 
 var Group = 'solo';
 var Goals = 0;
@@ -8964,12 +8978,17 @@ function createWebSocket(path) {
 
 var socket = createWebSocket('/');
 
+// const unit$ = periodic(1000, 1);
 var websocketsDriver = function websocketsDriver() {
   return (0, _most.create)(function (add) {
     socket.onmessage = function (msg) {
       return add(msg);
     };
   });
+};
+
+var unitDriver = function unitDriver() {
+  return (0, _most.periodic)(1000, 1);
 };
 
 _indexJs.mM1.ret([0, 0, 0, 0]);
@@ -9012,6 +9031,11 @@ function main(sources) {
     return _indexJs.mMgoals2.ret('A player named ' + _indexJs.mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh);
   });
 
+  var unitAction$ = sources.UNIT.map(function (v) {
+    _indexJs.mMunit.ret(_indexJs.mMunit.x + v).bnd(_indexJs.next, 2, _indexJs.mMZ26).bnd(_indexJs.next, 4, _indexJs.mMZ27).bnd(_indexJs.next, 6, _indexJs.mMZ28);
+    console.log('mMunit.x ', _indexJs.mMunit.x);
+  });
+
   var loginPress$ = sources.DOM.select('input.login').events('keydown');
 
   var loginPressAction$ = loginPress$.map(function (e) {
@@ -9043,12 +9067,34 @@ function main(sources) {
   var mMmult = new _indexJs.Monad({}, 'mMmult');
 
   mMmult.x.addA = sources.DOM.select('input#addA').events('input'), mMmult.x.addB = sources.DOM.select('input#addB').events('input'), mMmult.x.product = 0;
+  mMmult.x.product2 = 0;
   mMmult.x.result = (0, _most.combine)(function (a, b) {
     return a.target.value * b.target.value;
   }, mMmult.x.addA, mMmult.x.addB);
 
   var mult$ = mMmult.x.result.map(function (v) {
     mMmult.x.product = v;
+  });
+
+  var mult2$ = mMmult.x.result.map(function (v) {
+    mMmult.x.product2 = v;
+    var mMtemp = new _indexJs.Monad(v);
+    _indexJs.mMZ26.bnd(function () {
+      return mMtemp.bnd(_indexJs.add, 1000).bnd(mMtemp.ret).bnd(function (x) {
+        return mMmult.x.product2 = x;
+      });
+    });
+    _indexJs.mMZ27.bnd(function () {
+      return mMtemp.bnd(_indexJs.double).bnd(mMtemp.ret).bnd(function (x) {
+        return mMmult.x.product2 = x;
+      });
+    });
+    _indexJs.mMZ28.bnd(function () {
+      return mMtemp.bnd(_indexJs.add, 1).bnd(mMtemp.ret).bnd(function (x) {
+        return mMmult.x.product2 = x;
+      });
+    });
+    _indexJs.mMunit.ret(0);
   });
 
   var addS = function addS(x, y) {
@@ -9110,11 +9156,11 @@ function main(sources) {
     if (e.keyCode == 13 && !Number.isInteger(v * 1)) _indexJs.mM19.ret("You didn't provide an integer");
   });
 
-  var calcStream$ = (0, _most.merge)(mult$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  var calcStream$ = (0, _most.merge)(mult$, unitAction$, mult2$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: calcStream$.map(function () {
-      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', _indexJs.mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', _indexJs.mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', _indexJs.mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', _indexJs.mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', _indexJs.mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', _indexJs.mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', _indexJs.mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + _indexJs.mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', _indexJs.mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), _code2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _code2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', _indexJs.mM19.x), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), _code2['default'].driver, (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), _code2['default'].main, (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _code2['default'].next, (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), _code2['default'].game, (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), _code2['default'].updateCalc, (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('div.caption', 'Name Spaces'), (0, _motorcycleDom.h)('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation in which two numbers are multiplied and added to the number 1. The following snippet shows monad "mMmult" being created and provided with methods and a number attribute. It also shows the definition of mult$.  '), _code2['default'].mult, (0, _motorcycleDom.h)('p', 'mult$ merges into the stream that initiates each new cycle of the virtual DOM. "mMmult.x.product" is displayed in the paragraph directly below this one.'), (0, _motorcycleDom.h)('p#add', mMmult.x.product), (0, _motorcycleDom.h)('p', 'Enter two numbers below. '), (0, _motorcycleDom.h)('input#addA'), (0, _motorcycleDom.h)('span', ' * '), (0, _motorcycleDom.h)('input#addB'), (0, _motorcycleDom.h)('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraph below contains the result of a computation flowing out of mMmult:'), (0, _motorcycleDom.h)('p.add', mMmult.bnd(addS, 10000).bnd(addS, 1).bnd(_indexJs.double).x), (0, _motorcycleDom.h)('p', 'It is the result of placing this in the above paragraph'), (0, _motorcycleDom.h)('pre', 'mMmult.bnd(addS, 10000).bbd(addS, 1).bnd(double).x'), (0, _motorcycleDom.h)('p', 'Of course it would have been more efficient to add 1001 in the first place, but this is a demonstration. Here is the definition of the polymorphic function addS: '), _code2['default'].add, (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
+      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', _indexJs.mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', _indexJs.mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', _indexJs.mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', _indexJs.mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', _indexJs.mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', _indexJs.mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', _indexJs.mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + _indexJs.mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', _indexJs.mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), _codeJs2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _codeJs2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', _indexJs.mM19.x), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), _codeJs2['default'].driver, (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), _codeJs2['default'].main, (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _codeJs2['default'].next, (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), _codeJs2['default'].game, (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), _codeJs2['default'].updateCalc, (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('div.caption', 'Name Spaces'), (0, _motorcycleDom.h)('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation in which two numbers are multiplied and added to the number 1. The following snippet shows monad "mMmult" being created and provided with methods and a number attribute. It also shows the definition of mult$.  '), _codeJs2['default'].mult, (0, _motorcycleDom.h)('p', 'mult$ merges into the stream that initiates each new cycle of the virtual DOM. "mMmult.x.product" is displayed in the paragraph directly below this one.'), (0, _motorcycleDom.h)('p#add', mMmult.x.product), (0, _motorcycleDom.h)('p', 'Enter two numbers below. '), (0, _motorcycleDom.h)('input#addA'), (0, _motorcycleDom.h)('span', ' * '), (0, _motorcycleDom.h)('input#addB'), (0, _motorcycleDom.h)('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraph below contains mMmult.x.product2:'), (0, _motorcycleDom.h)('p.add', mMmult.x.product2), (0, _motorcycleDom.h)('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after two-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. But Motorcycle.js is a whirling wonder, awe-inspiring to behold and to use. Here is what is involved in assigning mMmult.x.product2 to the computation results: '), _codeJs2['default'].product2, (0, _motorcycleDom.h)('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
     })
   };
 }
@@ -9217,9 +9263,10 @@ var refresh = function refresh() {
 
 var sources = {
   DOM: (0, _motorcycleDom.makeDOMDriver)('#main-container'),
-  WS: websocketsDriver
+  WS: websocketsDriver,
+  UNIT: unitDriver
 };
 
 _motorcycleCore2['default'].run(main, sources);
 
-},{"./code":167,"./index.js":168,"@motorcycle/core":1,"@motorcycle/dom":74,"most":165}]},{},[169]);
+},{"./code.js":167,"./index.js":168,"@motorcycle/core":1,"@motorcycle/dom":74,"most":165}]},{},[169]);

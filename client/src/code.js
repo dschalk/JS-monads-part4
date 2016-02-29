@@ -162,6 +162,7 @@ var mult = h('pre',  `  const mMmult = new Monad({}, 'mMmult')
   mMmult.x.addA = sources.DOM.select('input#addA').events('input'),
   mMmult.x.addB = sources.DOM.select('input#addB').events('input'),
   mMmult.x.product = 0;
+  mMmult.x.product2 = 0;
   mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)
 
   const mult$ = mMmult.x.result.map(v => {
@@ -180,4 +181,32 @@ var add = h('pre',  `  var addS = function addS (x,y) {
   }
   `  )
 
-export default {monads, fib, driver, main, next, game, updateCalc, mult, add}
+var product2 = h('pre',  `  const unitDriver = function () {
+    return periodic(1000, 1);  // Creates a stream of 1-1-1-1..., in one-second intervals.
+  }
+  
+  const sources = {
+    DOM: makeDOMDriver('#main-container'),
+    WS: websocketsDriver,
+    UNIT: unitDriver           // Added unitDriver to the sources object.
+  }
+
+  const unitAction$ = sources.UNIT.map(v => {  // unitDriver, cycled back around from "run".
+      mMunit.ret(mMunit.x + v)  // mMunit is a monad dedicated to calling "next" with its bnd method.
+      .bnd(next, 2, mMZ26)  // Releases mMZ26 (below) after two seconds.
+      .bnd(next, 4, mMZ27)
+      .bnd(next, 6, mMZ28)
+      console.log('mMunit.x ', mMunit.x)
+  })
+
+  const mult2$ = mMmult.x.result.map(v => {
+    mMmult.x.product2 = v;
+    let mMtemp = new Monad(v);
+    mMZ26.bnd(() => mMtemp.bnd(add, 1000).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
+    mMZ27.bnd(() => mMtemp.bnd(double).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
+    mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x)); 
+    mMunit.ret(0);
+  })
+  `  )
+
+export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2}

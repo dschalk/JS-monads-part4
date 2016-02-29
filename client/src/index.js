@@ -8,6 +8,7 @@ var MonadIter = function MonadIter() {
   this.p = function () {};
 
   this.release = function () {
+    console.log('this.p ', this.p)
     return _this.p();
   };
 
@@ -128,6 +129,16 @@ mM16: new Monad(0,'mM16'),
 mM17: new Monad(0,'mM17'),
 mM18: new Monad(0,'mM18'),
 mM19: new Monad(0,'mM19'),
+mM20: new Monad(0,'mM20'),
+mM21: new Monad(0,'mM21'),
+mM22: new Monad(0,'mM22'),
+mM23: new Monad(0,'mM23'),
+mM24: new Monad(0,'mM24'),
+mM25: new Monad(0,'mM25'),
+mM26: new Monad(0,'mM26'),
+mM27: new Monad(0,'mM27'),
+mM28: new Monad(0,'mM28'),
+mM29: new Monad(0,'mM29'),
 mMscbd: new Monad([],'mMscbd'),
 mMmessages: new Monad([],'mMmessages'),
 mMscoreboard: new Monad([],'mMscoreboard'),
@@ -144,6 +155,7 @@ mMfib: new Monad([0,1], 'mMfib'),
 mMmain: new Monad(null, 'mMmain'),
 mMcalc: new Monad(null, 'mMcalc'),
 mMadd: new Monad(0, 'mMadd'),
+mMunit: new Monad(0, 'mMunit'),
 
 mMZ1: new MonadIter(),
 mMZ2: new MonadIter(),
