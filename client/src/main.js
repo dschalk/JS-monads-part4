@@ -1,5 +1,5 @@
 import Cycle from '@motorcycle/core';
-import {Monad, mM1, mM2, mM3, mM4, mM5, mM6, mM7, mM8, mM9, mM10, mM11, mM12, mM13, mM14, mM15, mM16, mM17, mM18, mM19, mM20, mM21, mM22,mM23, mM24, mM25, mM26, mM27, mM28, mM29, mMZ1, mMZ2, mMZ3, mMZ4, mMZ5, mMZ6, mMZ7, mMZ8, mMZ9, mMZ10, mMZ11, mMZ12, mMZ13, mMZ14, mMZ15, mMZ16, mMZ17, mMZ18, mMZ19, mMZ20, mMZ21, mMZ22, mMZ23, mMZ24, mMZ25, mMZ26, mMZ27, mMZ28, mMZ29, calc, next, next2, M, MI, mMscbd, mMscoreboard, mMmsg, mMmessages, mMgoals, mMgoals2, mMfib, mMname, mMmain, mMar, mMprefix, mMscores, fib, ret, map, push, unshift, splice, reduce, mMcalc, log, add, cube, double, pause, mMunit} from './index.js'; 
+import {Monad, mMP7, mM1, mM2, mM3, mM4, mM5, mM6, mM7, mM8, mM9, mM10, mM11, mM12, mM13, mM14, mM15, mM16, mM17, mM18, mM19, mM20, mM21, mM22,mM23, mM24, mM25, mM26, mM27, mM28, mM29, mMZ1, mMZ2, mMZ3, mMZ4, mMZ5, mMZ6, mMZ7, mMZ8, mMZ9, mMZ10, mMZ11, mMZ12, mMZ13, mMZ14, mMZ15, mMZ16, mMZ17, mMZ18, mMZ19, mMZ20, mMZ21, mMZ22, mMZ23, mMZ24, mMZ25, mMZ26, mMZ27, mMZ28, mMZ29, calc, next, next2, M, MI, mMscbd, mMscoreboard, mMmsg, mMmessages, mMgoals, mMgoals2, mMfib, mMname, mMmain, mMar, mMprefix, mMscores, fib, ret, map, push, unshift, splice, reduce, mMcalc, log, add, cube, double, pause, mMunit, mMpause, mMmult, mMtem} from './index.js'; 
 import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom'; 
 import {just, create, merge, combine, fromEvent, periodic, observe} from 'most'; 
 import code from './code.js'; 
@@ -7,6 +7,7 @@ import code from './code.js';
 var Group = 'solo';
 var Goals = 0;
 var Name;
+
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
 mM6.ret('');
@@ -37,7 +38,7 @@ mM3.ret([]);
 
 function main(sources) {
   mMfib.ret([0,1]);
-  console.log(ret);
+  mMpause.ret(0);
 
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
@@ -76,10 +77,9 @@ function main(sources) {
   
   const unitAction$ = sources.UNIT.map(v => {
       mMunit.ret(mMunit.x + v)
-      .bnd(next, 2, mMZ26)
-      .bnd(next, 4, mMZ27)
-      .bnd(next, 6, mMZ28)
-      console.log('mMunit.x ', mMunit.x)
+      .bnd(next, 1, mMZ26)
+      .bnd(next, 2, mMZ27)
+      .bnd(next, 3, mMZ28)
   })
 
   const loginPress$ = sources.DOM
@@ -113,12 +113,11 @@ function main(sources) {
       socket.send(`CO#$42,${e.target.value},${Name},${e.target.value}`);
   });
 
-  const mMmult = new Monad({}, 'mMmult')
-
   mMmult.x.addA = sources.DOM.select('input#addA').events('input'),
   mMmult.x.addB = sources.DOM.select('input#addB').events('input'),
   mMmult.x.product = 0;
   mMmult.x.product2 = 0;
+  mMmult.x.product3 = 0;
   mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)
 
   const mult$ = mMmult.x.result.map(v => {
@@ -196,7 +195,26 @@ function main(sources) {
     if( e.keyCode == 13 && !Number.isInteger(v*1) ) mM19.ret("You didn't provide an integer");
   });
 
-  const calcStream$ = merge(mult$, unitAction$, mult2$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const mult3$ = mMmult.x.result.map(v => {
+    mMtem.ret(v)
+    mMmult.x.product3 = v;
+    mMpause.ret(0);
+  })
+
+  const mult4$ = sources.UNIT.map(v => {
+      mMpause.ret(mMpause.x + v)
+      if(mMpause.x ===1) {
+        mMtem.bnd(add, 1000).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
+      }
+      if(mMpause.x === 2) {
+        mMtem.bnd(double).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
+      }
+      if(mMpause.x === 3) {
+        mMtem.bnd(add, 1).bnd(x => mMmult.x.product3 = x) 
+      }
+    })
+
+  const calcStream$ = merge(mult$, unitAction$, mult2$, mult3$, mult4$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -287,11 +305,15 @@ function main(sources) {
       h('input#addA'  ),
       h('span', ' * '   ),
       h('input#addB'  ),
-      h('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraph below contains mMmult.x.product2:' ),
-      h('p.add', mMmult.x.product2    ),  
-      h('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after two-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. But Motorcycle.js is a whirling wonder, awe-inspiring to behold and to use. Here is what is involved in assigning the computation results to mMmult.x.product2: '  ),
+      h('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraphs below contains mMmult.x.product2 and then mMmult.x.product3:' ),
+      h('p.add', 'mMmult.x.product2: ' + mMmult.x.product2    ),  
+      h('p.add', 'mMmult.x.product3: ' + mMmult.x.product3   ),  
+      h('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run in Motorcycle, it needs to blend into cycle. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. We provide two streams to calcStream in order to assign timed computation results to mMmult.x.product2; one for incrementally releasing computation steps, and one for assigning the results to mMmult.x.product2. Here is how a computation is performed, and how the sequential results are assigned to mMmult.x.product2: '  ),
       code.product2,
       h('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '  ),  
+      h('p', 'This is how the same results are calculated and assigned to mMmult.x.product3. '  ),  
+      code.product3,
+      h('p', ),  
       h('p', ),  
       h('hr',),  
       h('p', ),  

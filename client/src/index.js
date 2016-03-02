@@ -2,13 +2,11 @@
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-
 var MonadIter = function MonadIter() {
   var _this = this;
   this.p = function () {};
 
   this.release = function () {
-    console.log('this.p ', this.p)
     return _this.p();
   };
 
@@ -32,20 +30,20 @@ var Monad = function Monad(z, g) {
     }
 
     return func.apply(undefined, [_this.x].concat(args));
-  };
+  },
 
   this.ret = function (a) {
     _this.x = a;
     return _this;
-  }
-}
+  };
+};
 
 var ret = function ret(v) {
   return new Monad(v);
-}
+};
 
 module.exports = {
-
+  
 MonadIter: function MonadIter() {
   var _this = this;
   this.p = function () {};
@@ -158,6 +156,8 @@ mMadd: new Monad(0, 'mMadd'),
 mMunit: new Monad(0, 'mMunit'),
 mMprod: new Monad(0, 'mMprod'),
 mMmult: new Monad({}, 'mMmult'),
+mMpause: new Monad(0, 'mMpause'),
+mMtem: new Monad(0, 'mMtem'),
 
 mMZ1: new MonadIter(),
 mMZ2: new MonadIter(),

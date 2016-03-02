@@ -4,7 +4,7 @@ var Group = 'solo';
 var Name = 'Fred';
 
 var monads = h('pre', `  class Monad {
-    var _this = this; 
+
     constructor(z,g) {
 
       this.x = z;
@@ -12,28 +12,28 @@ var monads = h('pre', `  class Monad {
       else {this.id = g}
 
       this.bnd = function (func, ...args) {
-        return func(_this.x, ...args);
+        return func(this.x, ...args);
       };
 
       this.ret = function (a) {
-        _this.x = a;
-        return _this;
+        this.x = a;
+        return this;
       };
     }
   };
 
-  class MonadIter {
-    var _this = this;                  
+  class MonadIter {                
+
     constructor() {
 
       this.p = function() {};
 
       this.release = function () {
-        return _this.p();
+        return this.p();
       }
  
       this.bnd = function (func) {
-          _this.p = func;
+          this.p = func;
       }
     }
   }; ` )
@@ -181,8 +181,7 @@ var add = h('pre',  `  var addS = function addS (x,y) {
   };
   `  )
 
-var product2 = h('pre',  `  
-  const unitDriver = function () {
+var product2 = h('pre',  `  const unitDriver = function () {
     return periodic(1000, 1);  // Creates a stream of 1-1-1-1..., in one-second intervals.
   }
   
@@ -194,9 +193,9 @@ var product2 = h('pre',  `
 
   const unitAction$ = sources.UNIT.map(v => {  // unitDriver, cycled back inside of "run".
       mMunit.ret(mMunit.x + v)  // mMunit is a monad dedicated to calling "next" with its bnd method.
-      .bnd(next, 2, mMZ26)  // Releases mMZ26 (below) after two seconds.
-      .bnd(next, 4, mMZ27)
-      .bnd(next, 6, mMZ28)
+      .bnd(next, 1, mMZ26)  // Releases mMZ26 (below) after two seconds.
+      .bnd(next, 2, mMZ27)
+      .bnd(next, 3, mMZ28)
   });
 
   const mult2$ = mMmult.x.result.map(v => {
@@ -209,4 +208,27 @@ var product2 = h('pre',  `
   });
   `  )
 
-export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2}
+
+var product3 = h('pre',  `  const mult3$ = mMmult.x.result.map(v => {
+    mMtem.ret(v)
+    mMmult.x.product3 = v;
+    mMpause.ret(0);
+  })
+
+  const mult4$ = sources.UNIT.map(v => {
+      mMpause.ret(mMpause.x + v)
+      if(mMpause.x ===1) {
+        mMtem.bnd(add, 1000).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
+      }
+      if(mMpause.x === 2) {
+        mMtem.bnd(double).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
+      }
+      if(mMpause.x === 3) {
+        mMtem.bnd(add, 1).bnd(x => mMmult.x.product3 = x) 
+      }
+    })
+  `  )
+
+
+
+export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2, product3}
