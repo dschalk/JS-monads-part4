@@ -1,10 +1,10 @@
 import Cycle from '@motorcycle/core';
-import {Monad, mMP7, mM1, mM2, mM3, mM4, mM5, mM6, mM7, mM8, mM9, mM10, mM11, mM12, mM13, mM14, mM15, mM16, mM17, mM18, mM19, mM20, mM21, mM22,mM23, mM24, mM25, mM26, mM27, mM28, mM29, mMZ1, mMZ2, mMZ3, mMZ4, mMZ5, mMZ6, mMZ7, mMZ8, mMZ9, mMZ10, mMZ11, mMZ12, mMZ13, mMZ14, mMZ15, mMZ16, mMZ17, mMZ18, mMZ19, mMZ20, mMZ21, mMZ22, mMZ23, mMZ24, mMZ25, mMZ26, mMZ27, mMZ28, mMZ29, calc, next, next2, M, MI, mMscbd, mMscoreboard, mMmsg, mMmessages, mMgoals, mMgoals2, mMfib, mMname, mMmain, mMar, mMprefix, mMscores, fib, ret, map, push, unshift, splice, reduce, mMcalc, log, add, cube, double, pause, mMunit, mMpause, mMmult, mMtem} from './index.js'; 
+import {Monad, mMP7, mM1, mM2, mM3, mM4, mM5, mM6, mM7, mM8, mM9, mM10, mM11, mM12, mM13, mM14, mM15, mM16, mM17, mM18, mM19, mM20, mM21, mM22,mM23, mM24, mM25, mM26, mM27, mM28, mM29, mMZ1, mMZ2, mMZ3, mMZ4, mMZ5, mMZ6, mMZ7, mMZ8, mMZ9, mMZ10, mMZ11, mMZ12, mMZ13, mMZ14, mMZ15, mMZ16, mMZ17, mMZ18, mMZ19, mMZ20, mMZ21, mMZ22, mMZ23, mMZ24, mMZ25, mMZ26, mMZ27, mMZ28, mMZ29, calc, next, next2, M, MI, mMscbd, mMscoreboard, mMmsg, mMmessages, mMgoals, mMgoals2, mMfib, mMname, mMmain, mMar, mMprefix, mMscores, fib, ret, map, push, unshift, splice, reduce, mMcalc, log, add, cube, double, pause, mMunit, mMpause, mMmult, mMtem} from 'js-monads'; 
 import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom'; 
-import {just, create, merge, combine, fromEvent, periodic, observe} from 'most'; 
+import {just, create, merge, combine, fromEvent, periodic, observe, delay, filter} from 'most'; 
 import code from './code.js'; 
 
-var Group = 'solo';
+var Group = 'solo';  // These global variables will eventually be eliminated.
 var Goals = 0;
 var Name;
 
@@ -133,6 +133,37 @@ function main(sources) {
     mMunit.ret(0);
   })
 
+  const mult3$ = mMmult.x.result.map(v => {
+    mMtem.ret(v)
+    mMmult.x.product3 = v;
+    mMpause.ret(0);
+  })
+
+  const mult4$ = sources.UNIT.map(v => {
+      mMpause.ret(mMpause.x + v)
+      if(mMpause.x ===1) {
+        mMtem.bnd(add, 1000).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
+      }
+      if(mMpause.x === 2) {
+        mMtem.bnd(double).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
+      }
+      if(mMpause.x === 3) {
+        mMtem.bnd(add, 1).bnd(x => mMmult.x.product3 = x) 
+      }
+    })
+
+  const mMtem2 = new Monad(0, 'mMtem2');
+  const mMpause2 = new Monad(0, 'mMpause2');
+  
+  const mult5$ = mMmult.x.result
+  .debounce(3200).map(v => {mM27.ret(v)}).delay(1000)
+  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).delay(1000)
+  .map(() => mM27.bnd(double).bnd(mM27.ret)).delay(1000)
+  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).delay(1000)
+  
+  //.then(
+    //mM27.bnd(add, 1).bnd(mM27.ret)) 
+
   var addS = function addS (x,y) {
     if (typeof x === 'number') {
       return ret(x + y);
@@ -195,26 +226,7 @@ function main(sources) {
     if( e.keyCode == 13 && !Number.isInteger(v*1) ) mM19.ret("You didn't provide an integer");
   });
 
-  const mult3$ = mMmult.x.result.map(v => {
-    mMtem.ret(v)
-    mMmult.x.product3 = v;
-    mMpause.ret(0);
-  })
-
-  const mult4$ = sources.UNIT.map(v => {
-      mMpause.ret(mMpause.x + v)
-      if(mMpause.x ===1) {
-        mMtem.bnd(add, 1000).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
-      }
-      if(mMpause.x === 2) {
-        mMtem.bnd(double).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
-      }
-      if(mMpause.x === 3) {
-        mMtem.bnd(add, 1).bnd(x => mMmult.x.product3 = x) 
-      }
-    })
-
-  const calcStream$ = merge(mult$, unitAction$, mult2$, mult3$, mult4$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const calcStream$ = merge(mult$, unitAction$, mult2$, mult3$, mult4$, mult5$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -308,13 +320,15 @@ function main(sources) {
       h('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraphs below contains mMmult.x.product2 and then mMmult.x.product3:' ),
       h('p.add', 'mMmult.x.product2: ' + mMmult.x.product2    ),  
       h('p.add', 'mMmult.x.product3: ' + mMmult.x.product3   ),  
+      h('p.add', 'mM27.x: ' + mM27.x   ),  
       h('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run in Motorcycle, it needs to blend into cycle. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. We provide two streams to calcStream in order to assign timed computation results to mMmult.x.product2; one for incrementally releasing computation steps, and one for assigning the results to mMmult.x.product2. Here is how a computation is performed, and how the sequential results are assigned to mMmult.x.product2: '  ),
       code.product2,
       h('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '  ),  
       h('p', 'This is how the same results are calculated and assigned to mMmult.x.product3. '  ),  
       code.product3,
-      h('p', ),  
-      h('p', ),  
+      h('p', 'The final display in the list (above) shows the result of this computation:' ),  
+      code.product4,  
+      h('p', '"debounce" causes a 3,200 millisecond delay. The delay allows time for any previously started computations to complete, thereby avoiding the possiblility of unexpected results stemming from two or more simultaneously running computation chains. I don\'t know of any way to abort a computation once it has begun. When I experimented with setTimeout, I discovered that clearTimeout did not stop ongoing timeouts in this Motorcycle.js application. As is the case here, reliable results could be obtained only by allowing time for any pending timeouts to complete. Using the stream of 1\'s consistently provides correct results, with new computations overriding and nullifying any previously started computations. ' ),  
       h('hr',),  
       h('p', ),  
       h('p', ),  

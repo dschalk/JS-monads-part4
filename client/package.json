@@ -11,7 +11,8 @@
     "@motorcycle/core": "^1.1.0",
     "@motorcycle/dom": "^1.1.0",
     "babel-loader": "^6.2.2",
-    "js-monads": "1.0.1",
+    "immutable": "3.7.6",
+    "js-monads": "1.0.3",
     "most": "^0.18.0",
     "rx": "4.0.6",
     "watchify": "^3.7.0"

@@ -229,6 +229,13 @@ var product3 = h('pre',  `  const mult3$ = mMmult.x.result.map(v => {
     })
   `  )
 
+var product4 = h('pre',  `  const mult5$ = mMmult.x.result
+  .debounce(3200).map(v => {mM27.ret(v)}).delay(1000)
+  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).delay(1000)
+  .map(() => mM27.bnd(double).bnd(mM27.ret)).delay(1000)
+  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).delay(1000)
+  `  )
 
 
-export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2, product3}
+
+export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2, product3, product4}
