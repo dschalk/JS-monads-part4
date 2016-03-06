@@ -16,7 +16,8 @@ var MonadIter = function MonadIter() {
 };
 
 var Monad = function Monad(z, g) {
-  var _this = this;  
+  var _this = this;
+
   this.x = z;
   if (arguments.length === 1) {
     this.id = 'anonymous';
@@ -30,11 +31,11 @@ var Monad = function Monad(z, g) {
     }
 
     return func.apply(undefined, [_this.x].concat(args));
-  },
+  };
 
   this.ret = function (a) {
-    _this.x = a;
-    return _this;
+    monads[_this.id] = new Monad(a, _this.id);
+    return monads[_this.id];
   };
 };
 
@@ -42,8 +43,32 @@ var ret = function ret(v) {
   return new Monad(v);
 };
 
-module.exports = {
+var monads = {
   
+Monad: function Monad(z, g) {
+  var _this = this;
+
+  this.x = z;
+  if (arguments.length === 1) {
+    this.id = 'anonymous';
+  } else {
+    this.id = g;
+  }
+
+  this.bnd = function (func) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return func.apply(undefined, [_this.x].concat(args));
+  };
+
+  this.ret = function (a) {
+    monads[_this.id] = new Monad(a, _this.id);
+    return monads[_this.id];
+  };
+},
+
 MonadIter: function MonadIter() {
   var _this = this;
   this.p = function () {};
@@ -54,29 +79,6 @@ MonadIter: function MonadIter() {
 
   this.bnd = function (func) {
     _this.p = func;
-  };
-},
-
-Monad: function Monad(z, g) {
-  var _this = this;  
-  this.x = z;
-  if (arguments.length === 1) {
-    this.id = 'anonymous';
-  } else {
-    this.id = g;
-  }
-
-  this.bnd = function (func) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    return func.apply(undefined, [_this.x].concat(args));
-  },
-
-  this.ret = function (a) {
-    _this.x = a;
-    return _this;
   };
 },
 

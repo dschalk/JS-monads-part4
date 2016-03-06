@@ -3452,7 +3452,7 @@ var isNode = typeof process === 'object'
 module.exports = new Scheduler(isNode ? nodeTimer : setTimeoutTimer);
 
 }).call(this,require('_process'))
-},{"./Scheduler":48,"./nodeTimer":50,"./timeoutTimer":51,"_process":167}],50:[function(require,module,exports){
+},{"./Scheduler":48,"./nodeTimer":50,"./timeoutTimer":51,"_process":166}],50:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5817,7 +5817,7 @@ function mockDOMSource() {
 }
 
 exports.mockDOMSource = mockDOMSource;
-},{"most":166}],78:[function(require,module,exports){
+},{"most":165}],78:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6300,7 +6300,7 @@ function transposeVTree(vTree) {
 }
 
 exports.transposeVTree = transposeVTree;
-},{"most":166}],83:[function(require,module,exports){
+},{"most":165}],83:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6652,9 +6652,9 @@ exports.SCOPE_PREFIX = SCOPE_PREFIX;
     exports.touchcancel = touchcancel;
 });
 
-},{"most":166}],85:[function(require,module,exports){
+},{"most":165}],85:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"dup":2,"most/lib/source/MulticastSource":153}],86:[function(require,module,exports){
+},{"dup":2,"most/lib/source/MulticastSource":152}],86:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7380,368 +7380,20 @@ module.exports = function(sel, data, children, text, elm) {
 };
 
 },{}],100:[function(require,module,exports){
-'use strict';
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var MonadIter = function MonadIter() {
-  var _this = this;
-  this.p = function () {};
-
-  this.release = function () {
-    return _this.p();
-  };
-
-  this.bnd = function (func) {
-    _this.p = func;
-  };
-};
-
-var Monad = function Monad(z, g) {
-  var _this = this;  
-  this.x = z;
-  if (arguments.length === 1) {
-    this.id = 'anonymous';
-  } else {
-    this.id = g;
-  }
-
-  this.bnd = function (func) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    return func.apply(undefined, [_this.x].concat(args));
-  },
-
-  this.ret = function (a) {
-    _this.x = a;
-    return _this;
-  };
-};
-
-var ret = function ret(v) {
-  return new Monad(v);
-};
-
-module.exports = {
-  
-MonadIter: function MonadIter() {
-  var _this = this;
-  this.p = function () {};
-
-  this.release = function () {
-    return _this.p();
-  };
-
-  this.bnd = function (func) {
-    _this.p = func;
-  };
-},
-
-Monad: function Monad(z, g) {
-  var _this = this;  
-  this.x = z;
-  if (arguments.length === 1) {
-    this.id = 'anonymous';
-  } else {
-    this.id = g;
-  }
-
-  this.bnd = function (func) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    return func.apply(undefined, [_this.x].concat(args));
-  },
-
-  this.ret = function (a) {
-    _this.x = a;
-    return _this;
-  };
-},
-
-ret: function(v) {
-  return new Monad(v);
-},
-
-cube: function(v) {
-  return ret(v*v*v);
-},
-
-double: function(v) {
-  return ret(v+v);
-},
-
-add: function(a,b) {
-  return ret(a+b);
-},
-
-addAr: function(a,b) {
-  return ret(a.map(v => v*1 + b*1));
-},
-
-M: function M(a,b) {
-  return new Monad(a,b);
-},
-
-MI: function MI() {
-  return new MonadIter();
-},
-
-mM1: new Monad([],'mM1'),
-mM2: new Monad(0,'mM2'),
-mM3: new Monad(0,'mM3'),
-mM4: new Monad([],'mM4'),
-mM5: new Monad(0,'mM5'),
-mM6: new Monad(0,'mM6'),
-mM7: new Monad(0,'mM7'),
-mM8: new Monad(0,'mM8'),
-mM9: new Monad(0,'mM9'),
-mM10: new Monad(0,'mM10'),
-mM11: new Monad([],'mM11'),
-mM12: new Monad(0,'mM12'),
-mM13: new Monad(0,'mM13'),
-mM14: new Monad(0,'mM14'),
-mM15: new Monad(0,'mM15'),
-mM16: new Monad(0,'mM16'),
-mM17: new Monad(0,'mM17'),
-mM18: new Monad(0,'mM18'),
-mM19: new Monad(0,'mM19'),
-mM20: new Monad(0,'mM20'),
-mM21: new Monad(0,'mM21'),
-mM22: new Monad(0,'mM22'),
-mM23: new Monad(0,'mM23'),
-mM24: new Monad(0,'mM24'),
-mM25: new Monad(0,'mM25'),
-mM26: new Monad(0,'mM26'),
-mM27: new Monad(0,'mM27'),
-mM28: new Monad(0,'mM28'),
-mM29: new Monad(0,'mM29'),
-mMscbd: new Monad([],'mMscbd'),
-mMmessages: new Monad([],'mMmessages'),
-mMscoreboard: new Monad([],'mMscoreboard'),
-mMmsg: new Monad([],'mMmsg'),
-mMgoals: new Monad(0,'mMgoals'),
-mMgoals2: new Monad('','mMgoals2'),
-mMnbrs: new Monad([],'mMnbrs'),
-mMnumbers: new Monad([],'mMnumbers'),
-mMname: new Monad('', 'mMname'),
-mMar: new Monad([1,2,3,4,5], 'mMar'),
-mMscores: new Monad('', 'mMscores'),
-mMprefix: new Monad('', 'mMprefix'),
-mMfib: new Monad([0,1], 'mMfib'),
-mMmain: new Monad(null, 'mMmain'),
-mMcalc: new Monad(null, 'mMcalc'),
-mMadd: new Monad(0, 'mMadd'),
-mMunit: new Monad(0, 'mMunit'),
-mMprod: new Monad(0, 'mMprod'),
-mMmult: new Monad({}, 'mMmult'),
-mMpause: new Monad(0, 'mMpause'),
-mMtem: new Monad(0, 'mMtem'),
-
-mMZ1: new MonadIter(),
-mMZ2: new MonadIter(),
-mMZ3: new MonadIter(),
-mMZ4: new MonadIter(),
-mMZ5: new MonadIter(),
-mMZ6: new MonadIter(),
-mMZ7: new MonadIter(),
-mMZ8: new MonadIter(),
-mMZ9: new MonadIter(),
-
-mMZ10: new MonadIter(),
-mMZ11: new MonadIter(),
-mMZ12: new MonadIter(),
-mMZ13: new MonadIter(),
-mMZ14: new MonadIter(),
-mMZ15: new MonadIter(),
-mMZ16: new MonadIter(),
-mMZ17: new MonadIter(),
-mMZ18: new MonadIter(),
-mMZ19: new MonadIter(),
-
-mMZ20: new MonadIter(),
-mMZ21: new MonadIter(),
-mMZ22: new MonadIter(),
-mMZ23: new MonadIter(),
-mMZ24: new MonadIter(),
-mMZ25: new MonadIter(),
-mMZ26: new MonadIter(),
-mMZ27: new MonadIter(),
-mMZ28: new MonadIter(),
-mMZ29: new MonadIter(),
-
-fib: function fib(x,k) {
-  let j = k;
-  while (j > 0) {
-    x = [x[1], x[0] + x[1]];
-    j -= 1;
-  }
-  return ret('fibonacci ' + k + ': ' + x[0]);
-},
-
-toNums: function toNums(x) {
-  let y = x.map(x => parseFloat(x));
-  return ret(y);
-},
-
-calc: function calc(a,op,b) { 
-  var result;
-  switch (op) {
-      case "add": result = (parseFloat(a) + parseFloat(b));
-      break;
-      case "subtract": result = (a - b);
-      break;
-      case "mult": result = (a * b);
-      break;
-      case "div": result = (a / b);
-      break;
-      case "concat": result = (a+""+b)*1.0;
-      break;
-      default : 'Major Malfunction in calc.';
-  }
-  return result;
-},
-
-pause: function(x,t,mon2) {
-  let time = t*1000;
-  setTimeout( function() {
-    mon2.release();
-  },time );
-  return mon2;
-},
-
-wait: function wait(x, y, mon2) {
-  if (x === y) {
-    mon2.release();
-  }
-  return mon2;
-},
-
-unshift: function unshift(x,v) {
-  x.unshift(v);
-  return ret(x);
-},
-
-toFloat: function toFloat(x) {
-  newx: x.map(function (a) {
-    return parseFloat(a);
-  });
-  return ret(newx);
-},
-
-push: function push(x, j) {
-  if (Array.isArray(x)) {
-    return ret(x.push(j));
-  }
-  return ret(x);
-},
-
-push: function push(x,v) {
-  let ar = x;
-  ar.push(v);
-  let cleanX = ar.filter(v => (v !== "" && v !== undefined));
-  return ret(cleanX);
-},
-splice: function splice(x, j, k) {
-  if (Array.isArray(x)) {
-    return ret(x.splice(j,k));
-  }
-  return ret(x);
-},
-
-clean: function clean(x) {
-  return ret(x.filter(v => v !== ""));
-},
-
-filter: function filter(x, condition) {
-  if (Array.isArray(x)) {
-    return ret(x.filter(v => condition))
-  }
-  return ret(x);
-},
-
-map: function map(x, y) {
-  if (Array.isArray(x)) {
-    return ret(x.map(v => y))
-  }
-  return ret(x);
-},
-
-reduce: function reduce(x, y) {
-  if (Array.isArray(x) && x.length > 0) {
-    return ret(x.reduce(y))
-  }
-  return ret(x);
-},
-
-pop: function pop(x) {
-  let v = x[x.length - 1];
-  console.log('In pop. v: ',v);
-  return ret(v);
-},
-
-next: function next(x, y, mon2) {
-  if (x === y) {
-    mon2.release();
-  }
-  return ret(x);
-},
-
-next2: function next(x, condition, mon2) {
-  if (condition) {
-    mon2.release();
-  }
-  return ret(x);
-},
-
-hyp: function hyp(x,y) {
-  return Math.sqrt(x*x + y*y);
-},
-
-doub: function doub(v) {
-  return ret(v + v);
-},
-
-square: function square(v) {
-  return ret(v * v);
-},
-
-mult: function mult(x, y) {
-  return ret(x * y);
-},
-
-log: function log(x,message) {
-  console.log(message);
-  let mon = new Monad(x);
-  return mon;
-},
-
-delay: function delay(x, mon) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(resolve, 2000);
-  });
-}
-}
-
-
-},{}],101:[function(require,module,exports){
 arguments[4][6][0].apply(exports,arguments)
-},{"dup":6}],102:[function(require,module,exports){
+},{"dup":6}],101:[function(require,module,exports){
 arguments[4][7][0].apply(exports,arguments)
-},{"dup":7}],103:[function(require,module,exports){
+},{"dup":7}],102:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],104:[function(require,module,exports){
+},{"dup":8}],103:[function(require,module,exports){
 arguments[4][9][0].apply(exports,arguments)
-},{"dup":9}],105:[function(require,module,exports){
+},{"dup":9}],104:[function(require,module,exports){
 arguments[4][10][0].apply(exports,arguments)
-},{"dup":10}],106:[function(require,module,exports){
+},{"dup":10}],105:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"../Stream":104,"../base":105,"../runSource":141,"../sink/Pipe":150,"./build":108,"dup":11}],107:[function(require,module,exports){
+},{"../Stream":103,"../base":104,"../runSource":140,"../sink/Pipe":149,"./build":107,"dup":11}],106:[function(require,module,exports){
 arguments[4][12][0].apply(exports,arguments)
-},{"../base":105,"./combine":109,"dup":12}],108:[function(require,module,exports){
+},{"../base":104,"./combine":108,"dup":12}],107:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -7786,75 +7438,183 @@ function cycle(stream) {
 	}, stream);
 }
 
-},{"../source/core":155,"./continueWith":111}],109:[function(require,module,exports){
+},{"../source/core":154,"./continueWith":110}],108:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"../Stream":104,"../base":105,"../disposable/dispose":134,"../invoke":139,"../sink/IndexSink":148,"../sink/Pipe":150,"../source/core":155,"./merge":118,"./transform":129,"dup":14}],110:[function(require,module,exports){
+},{"../Stream":103,"../base":104,"../disposable/dispose":133,"../invoke":138,"../sink/IndexSink":147,"../sink/Pipe":149,"../source/core":154,"./merge":117,"./transform":128,"dup":14}],109:[function(require,module,exports){
 arguments[4][15][0].apply(exports,arguments)
-},{"./mergeConcurrently":119,"./transform":129,"dup":15}],111:[function(require,module,exports){
+},{"./mergeConcurrently":118,"./transform":128,"dup":15}],110:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"../Promise":102,"../Stream":104,"../disposable/dispose":134,"../sink/Pipe":150,"dup":16}],112:[function(require,module,exports){
+},{"../Promise":101,"../Stream":103,"../disposable/dispose":133,"../sink/Pipe":149,"dup":16}],111:[function(require,module,exports){
 arguments[4][17][0].apply(exports,arguments)
-},{"../Stream":104,"../disposable/dispose":134,"../scheduler/PropagateTask":142,"../sink/Pipe":150,"dup":17}],113:[function(require,module,exports){
+},{"../Stream":103,"../disposable/dispose":133,"../scheduler/PropagateTask":141,"../sink/Pipe":149,"dup":17}],112:[function(require,module,exports){
 arguments[4][18][0].apply(exports,arguments)
-},{"../Stream":104,"../base":105,"../disposable/dispose":134,"../source/ValueSource":154,"../source/tryEvent":164,"dup":18}],114:[function(require,module,exports){
+},{"../Stream":103,"../base":104,"../disposable/dispose":133,"../source/ValueSource":153,"../source/tryEvent":163,"dup":18}],113:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
-},{"../Stream":104,"../fusion/Filter":136,"../sink/Pipe":150,"dup":19}],115:[function(require,module,exports){
+},{"../Stream":103,"../fusion/Filter":135,"../sink/Pipe":149,"dup":19}],114:[function(require,module,exports){
 arguments[4][20][0].apply(exports,arguments)
-},{"./mergeConcurrently":119,"./transform":129,"dup":20}],116:[function(require,module,exports){
+},{"./mergeConcurrently":118,"./transform":128,"dup":20}],115:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../Stream":104,"../disposable/dispose":134,"../scheduler/PropagateTask":142,"../sink/Pipe":150,"dup":21}],117:[function(require,module,exports){
+},{"../Stream":103,"../disposable/dispose":133,"../scheduler/PropagateTask":141,"../sink/Pipe":149,"dup":21}],116:[function(require,module,exports){
 arguments[4][22][0].apply(exports,arguments)
-},{"../Stream":104,"../sink/Pipe":150,"dup":22}],118:[function(require,module,exports){
+},{"../Stream":103,"../sink/Pipe":149,"dup":22}],117:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"../Stream":104,"../base":105,"../disposable/dispose":134,"../sink/IndexSink":148,"../sink/Pipe":150,"../source/core":155,"dup":23}],119:[function(require,module,exports){
-arguments[4][24][0].apply(exports,arguments)
-},{"../LinkedList":101,"../Stream":104,"../disposable/dispose":134,"dup":24}],120:[function(require,module,exports){
+},{"../Stream":103,"../base":104,"../disposable/dispose":133,"../sink/IndexSink":147,"../sink/Pipe":149,"../source/core":154,"dup":23}],118:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2016 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+var Stream = require('../Stream');
+var dispose = require('../disposable/dispose');
+var LinkedList = require('../LinkedList');
+
+exports.mergeConcurrently = mergeConcurrently;
+
+function mergeConcurrently(concurrency, stream) {
+	return new Stream(new MergeConcurrently(concurrency, stream.source));
+}
+
+function MergeConcurrently(concurrency, source) {
+	this.concurrency = concurrency;
+	this.source = source;
+}
+
+MergeConcurrently.prototype.run = function(sink, scheduler) {
+	return new Outer(this.concurrency, this.source, sink, scheduler);
+};
+
+function Outer(concurrency, source, sink, scheduler) {
+	this.concurrency = concurrency;
+	this.sink = sink;
+	this.scheduler = scheduler;
+	this.pending = [];
+	this.current = new LinkedList();
+	this.disposable = dispose.once(source.run(this, scheduler));
+	this.active = true;
+}
+
+Outer.prototype.event = function(t, x) {
+	this._addInner(t, x);
+};
+
+Outer.prototype._addInner = function(t, stream) {
+	if(this.current.length < this.concurrency) {
+		this._startInner(t, stream);
+	} else {
+		this.pending.push(stream);
+	}
+};
+
+Outer.prototype._startInner = function(t, stream) {
+	var innerSink = new Inner(t, this, this.sink);
+	this.current.add(innerSink);
+	innerSink.disposable = stream.source.run(innerSink, this.scheduler);
+};
+
+Outer.prototype.end = function(t, x) {
+	this.active = false;
+	dispose.tryDispose(t, this.disposable, this.sink);
+	this._checkEnd(t, x);
+};
+
+Outer.prototype.error = function(t, e) {
+	this.active = false;
+	this.sink.error(t, e);
+};
+
+Outer.prototype.dispose = function() {
+	this.active = false;
+	this.pending.length = 0;
+	return Promise.all([this.disposable.dispose(), this.current.dispose()]);
+};
+
+Outer.prototype._endInner = function(t, x, inner) {
+	this.current.remove(inner);
+	dispose.tryDispose(t, inner, this);
+
+	if(this.pending.length === 0) {
+		this._checkEnd(t, x);
+	} else {
+		this._startInner(t, this.pending.shift());
+	}
+};
+
+Outer.prototype._checkEnd = function(t, x) {
+	if(!this.active && this.current.isEmpty()) {
+		this.sink.end(t, x);
+	}
+};
+
+function Inner(time, outer, sink) {
+	this.prev = this.next = null;
+	this.time = time;
+	this.outer = outer;
+	this.sink = sink;
+	this.disposable = void 0;
+}
+
+Inner.prototype.event = function(t, x) {
+	this.sink.event(Math.max(t, this.time), x);
+};
+
+Inner.prototype.end = function(t, x) {
+	this.outer._endInner(Math.max(t, this.time), x, this);
+};
+
+Inner.prototype.error = function(t, e) {
+	this.outer.error(Math.max(t, this.time), e);
+};
+
+Inner.prototype.dispose = function() {
+	return this.disposable.dispose();
+};
+
+},{"../LinkedList":100,"../Stream":103,"../disposable/dispose":133}],119:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"../Stream":104,"../source/MulticastSource":153,"dup":25}],121:[function(require,module,exports){
+},{"../Stream":103,"../source/MulticastSource":152,"dup":25}],120:[function(require,module,exports){
 arguments[4][26][0].apply(exports,arguments)
-},{"../base":105,"../runSource":141,"dup":26}],122:[function(require,module,exports){
+},{"../base":104,"../runSource":140,"dup":26}],121:[function(require,module,exports){
 arguments[4][27][0].apply(exports,arguments)
-},{"../Stream":104,"../fatalError":135,"dup":27}],123:[function(require,module,exports){
+},{"../Stream":103,"../fatalError":134,"dup":27}],122:[function(require,module,exports){
 arguments[4][28][0].apply(exports,arguments)
-},{"../Stream":104,"../base":105,"../disposable/dispose":134,"../invoke":139,"../sink/Pipe":150,"dup":28}],124:[function(require,module,exports){
+},{"../Stream":103,"../base":104,"../disposable/dispose":133,"../invoke":138,"../sink/Pipe":149,"dup":28}],123:[function(require,module,exports){
 arguments[4][29][0].apply(exports,arguments)
-},{"../Stream":104,"../disposable/dispose":134,"../sink/Pipe":150,"../source/core":155,"dup":29}],125:[function(require,module,exports){
+},{"../Stream":103,"../disposable/dispose":133,"../sink/Pipe":149,"../source/core":154,"dup":29}],124:[function(require,module,exports){
 arguments[4][30][0].apply(exports,arguments)
-},{"../Stream":104,"../source/MulticastSource":153,"./mergeConcurrently":119,"./timeslice":126,"./transform":129,"dup":30}],126:[function(require,module,exports){
+},{"../Stream":103,"../source/MulticastSource":152,"./mergeConcurrently":118,"./timeslice":125,"./transform":128,"dup":30}],125:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"../Stream":104,"../base":105,"../combinator/flatMap":115,"../disposable/dispose":134,"../sink/Pipe":150,"dup":31}],127:[function(require,module,exports){
+},{"../Stream":103,"../base":104,"../combinator/flatMap":114,"../disposable/dispose":133,"../sink/Pipe":149,"dup":31}],126:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"../Stream":104,"../sink/Pipe":150,"dup":32}],128:[function(require,module,exports){
+},{"../Stream":103,"../sink/Pipe":149,"dup":32}],127:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"../Stream":104,"dup":33}],129:[function(require,module,exports){
+},{"../Stream":103,"dup":33}],128:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../Stream":104,"../fusion/Map":138,"dup":34}],130:[function(require,module,exports){
+},{"../Stream":103,"../fusion/Map":137,"dup":34}],129:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"../Queue":103,"../Stream":104,"../base":105,"../disposable/dispose":134,"../invoke":139,"../sink/IndexSink":148,"../sink/Pipe":150,"../source/core":155,"./transform":129,"dup":35}],131:[function(require,module,exports){
+},{"../Queue":102,"../Stream":103,"../base":104,"../disposable/dispose":133,"../invoke":138,"../sink/IndexSink":147,"../sink/Pipe":149,"../source/core":154,"./transform":128,"dup":35}],130:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"dup":36}],132:[function(require,module,exports){
+},{"dup":36}],131:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],133:[function(require,module,exports){
+},{"dup":37}],132:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],134:[function(require,module,exports){
+},{"dup":38}],133:[function(require,module,exports){
 arguments[4][39][0].apply(exports,arguments)
-},{"../Promise":102,"../base":105,"./Disposable":132,"./SettableDisposable":133,"dup":39}],135:[function(require,module,exports){
+},{"../Promise":101,"../base":104,"./Disposable":131,"./SettableDisposable":132,"dup":39}],134:[function(require,module,exports){
 arguments[4][40][0].apply(exports,arguments)
-},{"dup":40}],136:[function(require,module,exports){
+},{"dup":40}],135:[function(require,module,exports){
 arguments[4][41][0].apply(exports,arguments)
-},{"../sink/Pipe":150,"dup":41}],137:[function(require,module,exports){
+},{"../sink/Pipe":149,"dup":41}],136:[function(require,module,exports){
 arguments[4][42][0].apply(exports,arguments)
-},{"../sink/Pipe":150,"dup":42}],138:[function(require,module,exports){
+},{"../sink/Pipe":149,"dup":42}],137:[function(require,module,exports){
 arguments[4][43][0].apply(exports,arguments)
-},{"../base":105,"../sink/Pipe":150,"./Filter":136,"./FilterMap":137,"dup":43}],139:[function(require,module,exports){
+},{"../base":104,"../sink/Pipe":149,"./Filter":135,"./FilterMap":136,"dup":43}],138:[function(require,module,exports){
 arguments[4][44][0].apply(exports,arguments)
-},{"dup":44}],140:[function(require,module,exports){
+},{"dup":44}],139:[function(require,module,exports){
 arguments[4][45][0].apply(exports,arguments)
-},{"dup":45}],141:[function(require,module,exports){
+},{"dup":45}],140:[function(require,module,exports){
 arguments[4][46][0].apply(exports,arguments)
-},{"./disposable/dispose":134,"./scheduler/defaultScheduler":144,"./sink/Observer":149,"dup":46}],142:[function(require,module,exports){
+},{"./disposable/dispose":133,"./scheduler/defaultScheduler":143,"./sink/Observer":148,"dup":46}],141:[function(require,module,exports){
 arguments[4][47][0].apply(exports,arguments)
-},{"../fatalError":135,"dup":47}],143:[function(require,module,exports){
+},{"../fatalError":134,"dup":47}],142:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -7944,9 +7704,15 @@ Scheduler.prototype.cancel = function(task) {
 };
 
 Scheduler.prototype.cancelAll = function(f) {
-	this._tasks = base.removeAll(f, this._tasks);
+	for(var i=0; i<this._tasks.length; ++i) {
+		removeAllFrom(f, this._tasks[i]);
+	}
 	this._reschedule();
 };
+
+function removeAllFrom(f, timeslot) {
+	timeslot.events = base.removeAll(f, timeslot.events);
+}
 
 Scheduler.prototype._reschedule = function() {
 	if(this._tasks.length === 0) {
@@ -8072,51 +7838,75 @@ function newTimeslot(t, events) {
 	return { time: t, events: events };
 }
 
-},{"./../base":105}],144:[function(require,module,exports){
+},{"./../base":104}],143:[function(require,module,exports){
 arguments[4][49][0].apply(exports,arguments)
-},{"./Scheduler":143,"./nodeTimer":145,"./timeoutTimer":146,"_process":167,"dup":49}],145:[function(require,module,exports){
+},{"./Scheduler":142,"./nodeTimer":144,"./timeoutTimer":145,"_process":166,"dup":49}],144:[function(require,module,exports){
 arguments[4][50][0].apply(exports,arguments)
-},{"../defer":131,"dup":50}],146:[function(require,module,exports){
+},{"../defer":130,"dup":50}],145:[function(require,module,exports){
 arguments[4][51][0].apply(exports,arguments)
-},{"dup":51}],147:[function(require,module,exports){
+},{"dup":51}],146:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"../defer":131,"dup":52}],148:[function(require,module,exports){
+},{"../defer":130,"dup":52}],147:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"./Pipe":150,"dup":53}],149:[function(require,module,exports){
+},{"./Pipe":149,"dup":53}],148:[function(require,module,exports){
 arguments[4][54][0].apply(exports,arguments)
-},{"dup":54}],150:[function(require,module,exports){
+},{"dup":54}],149:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"dup":55}],151:[function(require,module,exports){
+},{"dup":55}],150:[function(require,module,exports){
 arguments[4][56][0].apply(exports,arguments)
-},{"../disposable/dispose":134,"../sink/DeferredSink":147,"./tryEvent":164,"dup":56}],152:[function(require,module,exports){
+},{"../disposable/dispose":133,"../sink/DeferredSink":146,"./tryEvent":163,"dup":56}],151:[function(require,module,exports){
 arguments[4][57][0].apply(exports,arguments)
-},{"../disposable/dispose":134,"./tryEvent":164,"dup":57}],153:[function(require,module,exports){
+},{"../disposable/dispose":133,"./tryEvent":163,"dup":57}],152:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"../base":105,"dup":58}],154:[function(require,module,exports){
-arguments[4][59][0].apply(exports,arguments)
-},{"../scheduler/PropagateTask":142,"dup":59}],155:[function(require,module,exports){
+},{"../base":104,"dup":58}],153:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2016 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+var PropagateTask = require('../scheduler/PropagateTask');
+
+module.exports = ValueSource;
+
+function ValueSource(emit, x) {
+	this.emit = emit;
+	this.value = x;
+}
+
+ValueSource.prototype.run = function(sink, scheduler) {
+	return new ValueProducer(this.emit, this.value, sink, scheduler);
+};
+
+function ValueProducer(emit, x, sink, scheduler) {
+	this.task = scheduler.asap(new PropagateTask(emit, x, sink));
+}
+
+ValueProducer.prototype.dispose = function() {
+	return this.task.cancel();
+};
+
+},{"../scheduler/PropagateTask":141}],154:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"../Stream":104,"../disposable/dispose":134,"../scheduler/PropagateTask":142,"../source/ValueSource":154,"dup":60}],156:[function(require,module,exports){
+},{"../Stream":103,"../disposable/dispose":133,"../scheduler/PropagateTask":141,"../source/ValueSource":153,"dup":60}],155:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"../Stream":104,"../sink/DeferredSink":147,"./MulticastSource":153,"./tryEvent":164,"dup":61}],157:[function(require,module,exports){
+},{"../Stream":103,"../sink/DeferredSink":146,"./MulticastSource":152,"./tryEvent":163,"dup":61}],156:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../base":105,"../iterable":140,"./fromArray":158,"./fromIterable":160,"dup":62}],158:[function(require,module,exports){
+},{"../base":104,"../iterable":139,"./fromArray":157,"./fromIterable":159,"dup":62}],157:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"../Stream":104,"../scheduler/PropagateTask":142,"dup":63}],159:[function(require,module,exports){
+},{"../Stream":103,"../scheduler/PropagateTask":141,"dup":63}],158:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"../Stream":104,"./EventEmitterSource":151,"./EventTargetSource":152,"./MulticastSource":153,"dup":64}],160:[function(require,module,exports){
+},{"../Stream":103,"./EventEmitterSource":150,"./EventTargetSource":151,"./MulticastSource":152,"dup":64}],159:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"../Stream":104,"../iterable":140,"../scheduler/PropagateTask":142,"dup":65}],161:[function(require,module,exports){
+},{"../Stream":103,"../iterable":139,"../scheduler/PropagateTask":141,"dup":65}],160:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"../Stream":104,"../base":105,"dup":66}],162:[function(require,module,exports){
+},{"../Stream":103,"../base":104,"dup":66}],161:[function(require,module,exports){
 arguments[4][67][0].apply(exports,arguments)
-},{"../Stream":104,"dup":67}],163:[function(require,module,exports){
+},{"../Stream":103,"dup":67}],162:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"../Stream":104,"../disposable/dispose":134,"../scheduler/PropagateTask":142,"./MulticastSource":153,"dup":68}],164:[function(require,module,exports){
+},{"../Stream":103,"../disposable/dispose":133,"../scheduler/PropagateTask":141,"./MulticastSource":152,"dup":68}],163:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"dup":69}],165:[function(require,module,exports){
+},{"dup":69}],164:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"../Stream":104,"dup":70}],166:[function(require,module,exports){
+},{"../Stream":103,"dup":70}],165:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -8798,7 +8588,7 @@ Stream.prototype.multicast = function() {
 	return multicast(this);
 };
 
-},{"./lib/Stream":104,"./lib/base":105,"./lib/combinator/accumulate":106,"./lib/combinator/applicative":107,"./lib/combinator/build":108,"./lib/combinator/combine":109,"./lib/combinator/concatMap":110,"./lib/combinator/continueWith":111,"./lib/combinator/delay":112,"./lib/combinator/errors":113,"./lib/combinator/filter":114,"./lib/combinator/flatMap":115,"./lib/combinator/limit":116,"./lib/combinator/loop":117,"./lib/combinator/merge":118,"./lib/combinator/mergeConcurrently":119,"./lib/combinator/multicast":120,"./lib/combinator/observe":121,"./lib/combinator/promises":122,"./lib/combinator/sample":123,"./lib/combinator/slice":124,"./lib/combinator/switch":125,"./lib/combinator/timeslice":126,"./lib/combinator/timestamp":127,"./lib/combinator/transduce":128,"./lib/combinator/transform":129,"./lib/combinator/zip":130,"./lib/source/core":155,"./lib/source/create":156,"./lib/source/from":157,"./lib/source/fromEvent":159,"./lib/source/generate":161,"./lib/source/iterate":162,"./lib/source/periodic":163,"./lib/source/unfold":165}],167:[function(require,module,exports){
+},{"./lib/Stream":103,"./lib/base":104,"./lib/combinator/accumulate":105,"./lib/combinator/applicative":106,"./lib/combinator/build":107,"./lib/combinator/combine":108,"./lib/combinator/concatMap":109,"./lib/combinator/continueWith":110,"./lib/combinator/delay":111,"./lib/combinator/errors":112,"./lib/combinator/filter":113,"./lib/combinator/flatMap":114,"./lib/combinator/limit":115,"./lib/combinator/loop":116,"./lib/combinator/merge":117,"./lib/combinator/mergeConcurrently":118,"./lib/combinator/multicast":119,"./lib/combinator/observe":120,"./lib/combinator/promises":121,"./lib/combinator/sample":122,"./lib/combinator/slice":123,"./lib/combinator/switch":124,"./lib/combinator/timeslice":125,"./lib/combinator/timestamp":126,"./lib/combinator/transduce":127,"./lib/combinator/transform":128,"./lib/combinator/zip":129,"./lib/source/core":154,"./lib/source/create":155,"./lib/source/from":156,"./lib/source/fromEvent":158,"./lib/source/generate":160,"./lib/source/iterate":161,"./lib/source/periodic":162,"./lib/source/unfold":164}],166:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -8891,7 +8681,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],168:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8903,7 +8693,7 @@ var _motorcycleDom = require('@motorcycle/dom');
 var Group = 'solo';
 var Name = 'Fred';
 
-var monads = (0, _motorcycleDom.h)('pre', '  class Monad {\n\n    constructor(z,g) {\n\n      this.x = z;\n      if (arguments.length === 1) {this.id = \'anonymous\'}\n      else {this.id = g}\n\n      this.bnd = function (func, ...args) {\n        return func(this.x, ...args);\n      };\n\n      this.ret = function (a) {\n        this.x = a;\n        return this;\n      };\n    }\n  };\n\n  class MonadIter {                \n\n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return this.p();\n      }\n \n      this.bnd = function (func) {\n          this.p = func;\n      }\n    }\n  }; ');
+var monads = (0, _motorcycleDom.h)('pre', { style: { color: '#AFEEEE' } }, '  var Monad = function Monad(z, g) {\n    var _this = this;\n\n    this.x = z;\n    if (arguments.length === 1) {\n      this.id = \'anonymous\';\n    } else {\n      this.id = g;\n    };\n\n    this.bnd = function (func, ...args) {\n       return func(_this.x, ...args);\n    };\n\n    this.ret = function (a) {\n      window[_this.id] = new Monad(a, _this.id);\n      return window[_this.id]\n    };\n  };               \n\n  class MonadIter {                \n\n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return this.p();\n      }\n \n      this.bnd = function (func) {\n          this.p = func;\n      }\n    }\n  }; ');
 
 var fib = (0, _motorcycleDom.h)('pre', '  var fib = function fib(x,k) {\n    let j = k;\n    while (j > 0) {\n      x = [x[1], x[0] + x[1]];\n      j -= 1;\n    }\n    return ret(\'fibonacci \' + k + \' = \' + x[0]);   // An anonymous monad holding the result.\n  };\n');
 
@@ -8930,7 +8720,7 @@ var product4 = (0, _motorcycleDom.h)('pre', '  const mult5$ = mMmult.x.result\n 
 exports['default'] = { monads: monads, fib: fib, driver: driver, main: main, next: next, game: game, updateCalc: updateCalc, mult: mult, add: add, product2: product2, product3: product3, product4: product4 };
 module.exports = exports['default'];
 
-},{"@motorcycle/dom":74}],169:[function(require,module,exports){
+},{"@motorcycle/dom":74}],168:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -8939,7 +8729,8 @@ var _motorcycleCore = require('@motorcycle/core');
 
 var _motorcycleCore2 = _interopRequireDefault(_motorcycleCore);
 
-var _jsMonads = require('js-monads');
+/* import {Monad, mMP7, mM1, mM2, mM3, mM4, mM5, mM6, mM7, mM8, mM9, mM10, mM11, mM12, mM13, mM14, mM15, mM16, mM17, mM18, mM19, mM20, mM21, mM22,mM23, mM24, mM25, mM26, mM27, mM28, mM29, mMZ1, mMZ2, mMZ3, mMZ4, mMZ5, mMZ6, mMZ7, mMZ8, mMZ9, mMZ10, mMZ11, mMZ12, mMZ13, mMZ14, mMZ15, mMZ16, mMZ17, mMZ18, mMZ19, mMZ20, mMZ21, mMZ22, mMZ23, mMZ24, mMZ25, mMZ26, mMZ27, mMZ28, mMZ29, calc, next, next2, M, MI, mMscbd, mMscoreboard, mMmsg, mMmessages, mMgoals, mMgoals2, mMfib, mMname, mMmain, mMar, mMprefix, mMscores, fib, ret, map, push, unshift, splice, reduce, mMcalc, log, add, cube, double, pause, mMunit, mMpause, mMmult, mMtem} from './index.js'; 
+*/
 
 var _motorcycleDom = require('@motorcycle/dom');
 
@@ -8949,13 +8740,13 @@ var _codeJs = require('./code.js');
 
 var _codeJs2 = _interopRequireDefault(_codeJs);
 
-var Group = 'solo'; // These global variables will eventually be eliminated.
+var Group = 'solo'; // These mutable global variables will eventually be eliminated.
 var Goals = 0;
 var Name;
 
 var tempStyle = { display: 'inline' };
 var tempStyle2 = { display: 'none' };
-_jsMonads.mM6.ret('');
+mM6.ret('');
 
 function createWebSocket(path) {
   var host = window.location.hostname;
@@ -8967,7 +8758,6 @@ function createWebSocket(path) {
 
 var socket = createWebSocket('/');
 
-// const unit$ = periodic(1000, 1);
 var websocketsDriver = function websocketsDriver() {
   return (0, _most.create)(function (add) {
     socket.onmessage = function (msg) {
@@ -8980,48 +8770,50 @@ var unitDriver = function unitDriver() {
   return (0, _most.periodic)(1000, 1);
 };
 
-_jsMonads.mM1.ret([0, 0, 0, 0]);
-_jsMonads.mM3.ret([]);
+mM1.ret([0, 0, 0, 0]);
+console.log(mM1);
+console.log(mM24.ret([7, 7, 7, 7]).bnd(mM25.ret));
+mM3.ret([]);
 
 function main(sources) {
-  _jsMonads.mMfib.ret([0, 1]);
-  _jsMonads.mMpause.ret(0);
+  mMfib.ret([0, 1]);
+  mMpause.ret(0);
 
   var messages$ = sources.WS.map(function (e) {
-    return _jsMonads.mMar.ret(e.data.split(',')).bnd(function (array) {
-      return _jsMonads.mMscores.ret(array[3].split("<br>")).bnd(function () {
-        return _jsMonads.mMname.ret(_jsMonads.mMar.x[2]).bnd(function () {
-          return _jsMonads.mMprefix.ret(_jsMonads.mMar.x[0]).bnd(_jsMonads.next, 'CA#$42', _jsMonads.mMZ10).bnd(_jsMonads.next, 'CB#$42', _jsMonads.mMZ11).bnd(_jsMonads.next, 'CC#$42', _jsMonads.mMZ12).bnd(_jsMonads.next, 'CD#$42', _jsMonads.mMZ13).bnd(_jsMonads.next, 'CE#$42', _jsMonads.mMZ14).bnd(_jsMonads.next, 'EE#$42', _jsMonads.mMZ15);
+    return mMar.ret(e.data.split(',')).bnd(function (array) {
+      return mMscores.ret(array[3].split("<br>")).bnd(function () {
+        return mMname.ret(mMar.x[2]).bnd(function () {
+          return mMprefix.ret(mMar.x[0]).bnd(next, 'CA#$42', mMZ10).bnd(next, 'CB#$42', mMZ11).bnd(next, 'CC#$42', mMZ12).bnd(next, 'CD#$42', mMZ13).bnd(next, 'CE#$42', mMZ14).bnd(next, 'EE#$42', mMZ15);
         });
       });
     });
   });
-  _jsMonads.mMmain.bnd(function () {
-    return _jsMonads.mMZ10.bnd(function () {
-      return _jsMonads.mM1.ret([_jsMonads.mMar.x[3], _jsMonads.mMar.x[4], _jsMonads.mMar.x[5], _jsMonads.mMar.x[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3');
+  mMmain.bnd(function () {
+    return mMZ10.bnd(function () {
+      return mM1.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]).bnd(displayInline, '1').bnd(displayInline, '2').bnd(displayInline, '3');
     });
-  }), _jsMonads.mMZ11.bnd(function () {
-    return _jsMonads.mMscbd.ret(_jsMonads.mMscores.x).bnd(updateScoreboard).bnd(function () {
-      return _jsMonads.mM3.ret([]).bnd(function () {
-        return _jsMonads.mM8.ret(0);
+  }), mMZ11.bnd(function () {
+    return mMscbd.ret(mMscores.x).bnd(updateScoreboard).bnd(function () {
+      return mM3.ret([]).bnd(function () {
+        return mM8.ret(0);
       });
     });
-  }), _jsMonads.mMZ12.bnd(function () {
-    return _jsMonads.mM6.ret(_jsMonads.mMname.x + ' successfully logged in.');
-  }), _jsMonads.mMZ13.bnd(function () {
-    return _jsMonads.mMar.bnd(_jsMonads.splice, 0, 3).bnd(_jsMonads.reduce, function (a, b) {
+  }), mMZ12.bnd(function () {
+    return mM6.ret(mMname.x + ' successfully logged in.');
+  }), mMZ13.bnd(function () {
+    return mMar.bnd(splice, 0, 3).bnd(reduce, function (a, b) {
       return a + ", " + b;
     }).bnd(function () {
-      return _jsMonads.mMmsg.bnd(_jsMonads.push, _jsMonads.mMname.x + ': ' + _jsMonads.mMar.x).bnd(updateMessages);
+      return mMmsg.bnd(push, mMname.x + ': ' + mMar.x).bnd(updateMessages);
     });
-  }), _jsMonads.mMZ14.bnd(function () {
-    return _jsMonads.mMgoals2.ret('The winner is ' + _jsMonads.mMname.x);
-  }), _jsMonads.mMZ15.bnd(function () {
-    return _jsMonads.mMgoals2.ret('A player named ' + _jsMonads.mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh);
+  }), mMZ14.bnd(function () {
+    return mMgoals2.ret('The winner is ' + mMname.x);
+  }), mMZ15.bnd(function () {
+    return mMgoals2.ret('A player named ' + mMname.x + 'is currently logged in. Page will refresh in 4 seconds.').bnd(refresh);
   });
 
   var unitAction$ = sources.UNIT.map(function (v) {
-    _jsMonads.mMunit.ret(_jsMonads.mMunit.x + v).bnd(_jsMonads.next, 1, _jsMonads.mMZ26).bnd(_jsMonads.next, 2, _jsMonads.mMZ27).bnd(_jsMonads.next, 3, _jsMonads.mMZ28);
+    mMunit.ret(mMunit.x + v).bnd(next, 1, mMZ26).bnd(next, 2, mMZ27).bnd(next, 3, mMZ28);
   });
 
   var loginPress$ = sources.DOM.select('input.login').events('keydown');
@@ -9034,7 +8826,7 @@ function main(sources) {
     if (e.keyCode == 13) {
       socket.send("CC#$42" + v);
       Name = v;
-      _jsMonads.mM3.ret([]).bnd(_jsMonads.mM2.ret);
+      mM3.ret([]).bnd(mM2.ret);
       e.target.value = '';
       tempStyle = { display: 'none' };
       tempStyle2 = { display: 'inline' };
@@ -9052,74 +8844,50 @@ function main(sources) {
     socket.send('CO#$42,' + e.target.value + ',' + Name + ',' + e.target.value);
   });
 
-  _jsMonads.mMmult.x.addA = sources.DOM.select('input#addA').events('input'), _jsMonads.mMmult.x.addB = sources.DOM.select('input#addB').events('input'), _jsMonads.mMmult.x.product = 0;
-  _jsMonads.mMmult.x.product2 = 0;
-  _jsMonads.mMmult.x.product3 = 0;
-  _jsMonads.mMmult.x.result = (0, _most.combine)(function (a, b) {
+  mMmult.x.addA = sources.DOM.select('input#addA').events('input'), mMmult.x.addB = sources.DOM.select('input#addB').events('input'), mMmult.x.result = (0, _most.combine)(function (a, b) {
     return a.target.value * b.target.value;
-  }, _jsMonads.mMmult.x.addA, _jsMonads.mMmult.x.addB);
+  }, mMmult.x.addA, mMmult.x.addB);
 
-  var mult$ = _jsMonads.mMmult.x.result.map(function (v) {
-    _jsMonads.mMmult.x.product = v;
+  var mult$ = mMmult.x.result.map(function (v) {
+    mMmult2.ret(v);
+    mMtem.ret(v);
+    mMpause.ret(0);
   });
 
-  var mult2$ = _jsMonads.mMmult.x.result.map(function (v) {
-    _jsMonads.mMmult.x.product2 = v;
-    var mMtemp = new _jsMonads.Monad(v);
-    _jsMonads.mMZ26.bnd(function () {
-      return mMtemp.bnd(_jsMonads.add, 1000).bnd(mMtemp.ret).bnd(function (x) {
-        return _jsMonads.mMmult.x.product2 = x;
-      });
+  var mult2$ = mMmult.x.result.map(function (v) {
+    mMZ26.bnd(function () {
+      return mMmult2.bnd(add, 1000).bnd(mMmult2.ret);
     });
-    _jsMonads.mMZ27.bnd(function () {
-      return mMtemp.bnd(_jsMonads.double).bnd(mMtemp.ret).bnd(function (x) {
-        return _jsMonads.mMmult.x.product2 = x;
-      });
+    mMZ27.bnd(function () {
+      return mMmult2.bnd(double).bnd(mMmult2.ret);
     });
-    _jsMonads.mMZ28.bnd(function () {
-      return mMtemp.bnd(_jsMonads.add, 1).bnd(function (x) {
-        return _jsMonads.mMmult.x.product2 = x;
-      });
+    mMZ28.bnd(function () {
+      return mMmult2.bnd(add, 1).bnd(mMmult2.ret);
     });
-    _jsMonads.mMunit.ret(0);
-  });
-
-  var mult3$ = _jsMonads.mMmult.x.result.map(function (v) {
-    _jsMonads.mMtem.ret(v);
-    _jsMonads.mMmult.x.product3 = v;
-    _jsMonads.mMpause.ret(0);
+    mMunit.ret(0);
   });
 
   var mult4$ = sources.UNIT.map(function (v) {
-    _jsMonads.mMpause.ret(_jsMonads.mMpause.x + v);
-    if (_jsMonads.mMpause.x === 1) {
-      _jsMonads.mMtem.bnd(_jsMonads.add, 1000).bnd(_jsMonads.mMtem.ret).bnd(function (x) {
-        return _jsMonads.mMmult.x.product3 = x;
-      });
+    mMpause.ret(mMpause.x + v);
+    if (mMpause.x === 1) {
+      mMtem.bnd(add, 1000).bnd(mMtem.ret);
     }
-    if (_jsMonads.mMpause.x === 2) {
-      _jsMonads.mMtem.bnd(_jsMonads.double).bnd(_jsMonads.mMtem.ret).bnd(function (x) {
-        return _jsMonads.mMmult.x.product3 = x;
-      });
+    if (mMpause.x === 2) {
+      mMtem.bnd(double).bnd(mMtem.ret);
     }
-    if (_jsMonads.mMpause.x === 3) {
-      _jsMonads.mMtem.bnd(_jsMonads.add, 1).bnd(function (x) {
-        return _jsMonads.mMmult.x.product3 = x;
-      });
+    if (mMpause.x === 3) {
+      mMtem.bnd(add, 1).bnd(mMtem.ret);
     }
   });
 
-  var mMtem2 = new _jsMonads.Monad(0, 'mMtem2');
-  var mMpause2 = new _jsMonads.Monad(0, 'mMpause2');
-
-  var mult5$ = _jsMonads.mMmult.x.result.debounce(3200).map(function (v) {
-    _jsMonads.mM27.ret(v);
+  var mult5$ = mMmult.x.result.debounce(3200).map(function (v) {
+    mM27.ret(v);
   }).delay(1000).map(function () {
-    return _jsMonads.mM27.bnd(_jsMonads.add, 1000).bnd(_jsMonads.mM27.ret);
+    return mM27.bnd(add, 1000).bnd(mM27.ret);
   }).delay(1000).map(function () {
-    return _jsMonads.mM27.bnd(_jsMonads.double).bnd(_jsMonads.mM27.ret);
+    return mM27.bnd(double).bnd(mM27.ret);
   }).delay(1000).map(function () {
-    return _jsMonads.mM27.bnd(_jsMonads.add, 1).bnd(_jsMonads.mM27.ret);
+    return mM27.bnd(add, 1).bnd(mM27.ret);
   }).delay(1000);
 
   //.then(
@@ -9127,9 +8895,9 @@ function main(sources) {
 
   var addS = function addS(x, y) {
     if (typeof x === 'number') {
-      return (0, _jsMonads.ret)(x + y);
+      return ret(x + y);
     } else if (typeof x.product === 'number') {
-      return (0, _jsMonads.ret)(x.product + y);
+      return ret(x.product + y);
     } else console.log('Problem in addS');
   };
 
@@ -9145,19 +8913,19 @@ function main(sources) {
   var numClick$ = sources.DOM.select('.num').events('click');
 
   var numClickAction$ = numClick$.map(function (e) {
-    _jsMonads.mM3.bnd(_jsMonads.push, e.target.textContent).bnd(function () {
-      _jsMonads.mM1.x[e.target.id] = "";
+    mM3.bnd(push, e.target.textContent).bnd(function () {
+      mM1.x[e.target.id] = "";
     });
-    if (_jsMonads.mM3.x.length === 2 && _jsMonads.mM8.x !== 0) {
+    if (mM3.x.length === 2 && mM8.x !== 0) {
       updateCalc();
     }
-  }).startWith(_jsMonads.mM1.x[0]);
+  }).startWith(mM1.x[0]);
 
   var opClick$ = sources.DOM.select('.op').events('click');
 
   var opClickAction$ = opClick$.map(function (e) {
-    _jsMonads.mM8.ret(e.target.textContent);
-    if (_jsMonads.mM3.x.length === 2) {
+    mM8.ret(e.target.textContent);
+    if (mM3.x.length === 2) {
       updateCalc();
     }
   });
@@ -9165,7 +8933,7 @@ function main(sources) {
   var rollClick$ = sources.DOM.select('.roll').events('click');
 
   var rollClickAction$ = rollClick$.map(function (e) {
-    _jsMonads.mM13.ret(_jsMonads.mM13.x - 1);
+    mM13.ret(mM13.x - 1);
     socket.send('CG#$42,' + Group + ',' + Name + ',' + -1 + ',' + 0);
     socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
   });
@@ -9178,44 +8946,44 @@ function main(sources) {
       return;
     }
     if (e.keyCode == 13 && Number.isInteger(v * 1)) {
-      var result = _jsMonads.mMfib.bnd(_jsMonads.fib, v).x;
-      _jsMonads.mM19.ret(result);
+      var result = mMfib.bnd(fib, v).x;
+      mM19.ret(result);
     }
-    if (e.keyCode == 13 && !Number.isInteger(v * 1)) _jsMonads.mM19.ret("You didn't provide an integer");
+    if (e.keyCode == 13 && !Number.isInteger(v * 1)) mM19.ret("You didn't provide an integer");
   });
 
-  var calcStream$ = (0, _most.merge)(mult$, unitAction$, mult2$, mult3$, mult4$, mult5$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  var calcStream$ = (0, _most.merge)(mult$, unitAction$, mult2$, mult4$, mult5$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: calcStream$.map(function () {
-      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', _jsMonads.mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', _jsMonads.mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', _jsMonads.mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', _jsMonads.mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', _jsMonads.mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', _jsMonads.mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', _jsMonads.mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + _jsMonads.mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', _jsMonads.mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), _codeJs2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _codeJs2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', _jsMonads.mM19.x), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), _codeJs2['default'].driver, (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), _codeJs2['default'].main, (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _codeJs2['default'].next, (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), _codeJs2['default'].game, (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), _codeJs2['default'].updateCalc, (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('div.caption', 'Name Spaces'), (0, _motorcycleDom.h)('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation in which two numbers are multiplied and added to the number 1. The following snippet shows monad "mMmult" being created and provided with methods and a number attribute. It also shows the definition of mult$.  '), _codeJs2['default'].mult, (0, _motorcycleDom.h)('p', 'mult$ merges into the stream that initiates each new cycle of the virtual DOM. "mMmult.x.product" is displayed in the paragraph directly below this one.'), (0, _motorcycleDom.h)('p#add', _jsMonads.mMmult.x.product), (0, _motorcycleDom.h)('p', 'Enter two numbers below. '), (0, _motorcycleDom.h)('input#addA'), (0, _motorcycleDom.h)('span', ' * '), (0, _motorcycleDom.h)('input#addB'), (0, _motorcycleDom.h)('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraphs below contains mMmult.x.product2 and then mMmult.x.product3:'), (0, _motorcycleDom.h)('p.add', 'mMmult.x.product2: ' + _jsMonads.mMmult.x.product2), (0, _motorcycleDom.h)('p.add', 'mMmult.x.product3: ' + _jsMonads.mMmult.x.product3), (0, _motorcycleDom.h)('p.add', 'mM27.x: ' + _jsMonads.mM27.x), (0, _motorcycleDom.h)('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run in Motorcycle, it needs to blend into cycle. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. We provide two streams to calcStream in order to assign timed computation results to mMmult.x.product2; one for incrementally releasing computation steps, and one for assigning the results to mMmult.x.product2. Here is how a computation is performed, and how the sequential results are assigned to mMmult.x.product2: '), _codeJs2['default'].product2, (0, _motorcycleDom.h)('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '), (0, _motorcycleDom.h)('p', 'This is how the same results are calculated and assigned to mMmult.x.product3. '), _codeJs2['default'].product3, (0, _motorcycleDom.h)('p', 'The final display in the list (above) shows the result of this computation:'), _codeJs2['default'].product4, (0, _motorcycleDom.h)('p', '"debounce" causes a 3,200 millisecond delay. The delay allows time for any previously started computations to complete, thereby avoiding the possiblility of unexpected results stemming from two or more simultaneously running computation chains. I don\'t know of any way to abort a computation once it has begun. When I experimented with setTimeout, I discovered that clearTimeout did not stop ongoing timeouts in this Motorcycle.js application. As is the case here, reliable results could be obtained only by allowing time for any pending timeouts to complete. Using the stream of 1\'s consistently provides correct results, with new computations overriding and nullifying any previously started computations. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
+      return (0, _motorcycleDom.h)('div.content', [(0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('h2', 'JS-monads-part4'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('span', 'This installment of the JS-monads series features '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/motorcyclejs' }, style: { color: '#EECCFF' } }, 'Motorcyclejs'), (0, _motorcycleDom.h)('span', ' handling the monads. Motorcyclejs is Cyclejs, only using '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/paldepind/snabbdom' }, style: { color: '#EECCFF' } }, 'Snabbdom'), (0, _motorcycleDom.h)('span', ' instead of "virtual-dom", and '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/cujojs/most' }, style: { color: '#EECCFF' } }, 'Most'), (0, _motorcycleDom.h)('span', ' instead of "RxJS".'), (0, _motorcycleDom.h)('h3', 'The Game From JS-monads-part3'), (0, _motorcycleDom.h)('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#0.num', mM1.x[0] + ''), (0, _motorcycleDom.h)('button#1.num', mM1.x[1] + ''), (0, _motorcycleDom.h)('button#2.num', mM1.x[2] + ''), (0, _motorcycleDom.h)('button#3.num', mM1.x[3] + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button#4.op', 'add'), (0, _motorcycleDom.h)('button#5.op', 'subtract'), (0, _motorcycleDom.h)('button#5.op', 'mult'), (0, _motorcycleDom.h)('button#5.op', 'div'), (0, _motorcycleDom.h)('button#5.op', 'concat'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('button.roll', { style: tempStyle2 }, 'ROLL'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p', new Monad([6, 6, 6, 6]).x[0]), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('div.winner', mMgoals2.x + ''), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('p.login', { style: tempStyle }, 'Please enter some name.'), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input.login', { style: tempStyle }), (0, _motorcycleDom.h)('p', mM6.x.toString()), (0, _motorcycleDom.h)('p.group', { style: tempStyle2 }, 'Change group: '), (0, _motorcycleDom.h)('input.group', { style: tempStyle2 }), (0, _motorcycleDom.h)('div.messages', [(0, _motorcycleDom.h)('p', { style: tempStyle2 }, 'Enter messages here: '), (0, _motorcycleDom.h)('input.inputMessage', { style: tempStyle2 }), (0, _motorcycleDom.h)('div', mMmessages.x)]), (0, _motorcycleDom.h)('p.group2', [(0, _motorcycleDom.h)('p', 'Group: ' + Group), (0, _motorcycleDom.h)('p', 'Goals: ' + mMgoals.x), (0, _motorcycleDom.h)('div.scoreDisplay', [(0, _motorcycleDom.h)('span', 'player[score][goals]'), (0, _motorcycleDom.h)('div', mMscoreboard.x)])]), (0, _motorcycleDom.h)('span', 'People in the same group, other than solo, share text messages and dice rolls. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Here are the definitions of the monad constructors: '), _codeJs2['default'].monads, (0, _motorcycleDom.h)('p', 'As is apparent from the definition of Monad, when some monad "m" uses its "bnd" method on some function "f(x,v)", the first argument is the value of m (which is m.x). The return value of m.bnd(f,v) is f(m.x, v). Here is a function which takes two arguments: '), _codeJs2['default'].fib, (0, _motorcycleDom.h)('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:'), (0, _motorcycleDom.h)('p', { style: { color: '#FF0000' } }, 'mMfib.bnd(fib,n)'), (0, _motorcycleDom.h)('p', 'The result will be displayed undernieth the input box. '), (0, _motorcycleDom.h)('br'), (0, _motorcycleDom.h)('input#code'), (0, _motorcycleDom.h)('p#code2', mM19.x), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('span', 'I won\'t discuss every aspect of the multi-player websockets game code. It is open source and available at '), (0, _motorcycleDom.h)('a', { props: { href: 'https://github.com/dschalk/JS-monads-part4' }, style: { color: '#EECCFF' } }, 'https://github.com/dschalk/JS-monads-part4'), (0, _motorcycleDom.h)('span', ' I want to show how I used the monads to organize code and to control browser interactions with the Haskell websockets server. Let\'s begin with the parsing and routing of incoming websockets messages. This is how the websockets driver is defined:'), _codeJs2['default'].driver, (0, _motorcycleDom.h)('p', '"create" comes from the most library. It creates a blank stream; and with "add", it becomes a stream of incoming messages. '), (0, _motorcycleDom.h)('p', 'This is how the driver, referenced by "sources.WS", is used: '), _codeJs2['default'].main, (0, _motorcycleDom.h)('p', 'MonadIter instances have the "mMZ" prefix. Each instance has a "p" attribute which is a selector pointing to all of the code which comes after the call to its "bnd" method. Here is its definition of "next": '), _codeJs2['default'].next, (0, _motorcycleDom.h)('p', ' "main.js" has other code for handling keyboard and mouse events, and for combining everything into a single stream. It returns a stream of descriptions of the virtual DOM. The Motorcycle function "run" takes main and the sources object, with attributes DOM and JS referencing the drivers. It is called only once. "run" establishes the relationships between "main" and the drivers. After that, everything is automatic. Click events, keypress events, and websockets messages come in, Most updates the virtual dom stream, and Snabbdom diffs and patches the DOM. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p', 'Game clicks are handled as follows: '), _codeJs2['default'].game, (0, _motorcycleDom.h)('p', 'mM3 is populated by clicks on numbers, mM8 changes from 0 to the name of a clicked operator. So, when mM3.x.length equals 2 and mM8 is no longer 0, it is time to call updateCalc. Here is updateCalc: '), _codeJs2['default'].updateCalc, (0, _motorcycleDom.h)('p', 'This is light-weight, non-blocking asynchronous code. There are no data base, ajax, or websockets calls; nothing that would require error handling. Promises and JS6 iterators can be used to avoid "pyramid of doom" nested code structures, but that would entail excess baggage here. updateCalc illuminates a niche where the monads are right at home. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('div.caption', 'Name Spaces'), (0, _motorcycleDom.h)('p', 'The monads can serve as name spaces. A monad\'s value can be an object with as many attributes and methods as you like. In the next example, we create a monad named "mMmult" and use it to encapsulate a simple computation in which two numbers are multiplied and added to the number 1. The following snippet shows monad "mMmult" being created and provided with methods and a number attribute. It also shows the definition of mult$.  '), _codeJs2['default'].mult, (0, _motorcycleDom.h)('p', 'Enter two numbers below. '), (0, _motorcycleDom.h)('input#addA'), (0, _motorcycleDom.h)('span', ' * '), (0, _motorcycleDom.h)('input#addB'), (0, _motorcycleDom.h)('p', 'mMmult is a const, so it can\'t be mutated; and since it is a specialized monad created for a single purpose, we wouldn\'t expect any team members, advertizers, or anyone else to disrupt the computation by mutating the object mMmult.x or altering its contents. The paragraphs below contains mMmult.x.product2 and then mMmult.x.product3:'), (0, _motorcycleDom.h)('p.add', 'Using a stream of 1\'s with MonadIter: ' + mMmult2.x), (0, _motorcycleDom.h)('p.add', 'Using a stream of 1\'s with "if" tests: ' + mMtem.x), (0, _motorcycleDom.h)('p.add', 'Using most.delay: ' + mM27.x), (0, _motorcycleDom.h)('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run in Motorcycle, it needs to blend into cycle. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. We provide two streams to calcStream in order to assign timed computation results to mMmult.x.product2; one for incrementally releasing computation steps, and one for assigning the results to mMmult.x.product2. Here is how a computation is performed, and how the sequential results are assigned to mMmult.x.product2: '), _codeJs2['default'].product2, (0, _motorcycleDom.h)('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '), (0, _motorcycleDom.h)('p', 'This is how the same results are calculated and assigned to mMmult.x.product3. '), _codeJs2['default'].product3, (0, _motorcycleDom.h)('p', 'The final display in the list (above) shows the result of this computation:'), _codeJs2['default'].product4, (0, _motorcycleDom.h)('p', '"debounce" causes a 3,200 millisecond delay. The delay allows time for any previously started computations to complete, thereby avoiding the possiblility of unexpected results stemming from two or more simultaneously running computation chains. I don\'t know of any way to abort a computation once it has begun. When I experimented with setTimeout, I discovered that clearTimeout did not stop ongoing timeouts in this Motorcycle.js application. As is the case here, reliable results could be obtained only by allowing time for any pending timeouts to complete. Using the stream of 1\'s consistently provides correct results, with new computations overriding and nullifying any previously started computations. '), (0, _motorcycleDom.h)('hr'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p'), (0, _motorcycleDom.h)('p')]);
     })
   };
 }
 
 function updateCalc() {
-  _jsMonads.mMcalc.bnd(function () {
-    return _jsMonads.mMZ2.bnd(function () {
-      return _jsMonads.mM13.bnd(score, 1).bnd(_jsMonads.next2, _jsMonads.mM13.x % 5 === 0, _jsMonads.mMZ5) // Releases mMZ5.
+  mMcalc.bnd(function () {
+    return mMZ2.bnd(function () {
+      return mM13.bnd(score, 1).bnd(next2, mM13.x % 5 === 0, mMZ5) // Releases mMZ5.
       .bnd(newRoll);
-    }), _jsMonads.mMZ4.bnd(function () {
-      return _jsMonads.mM13.bnd(score, 3).bnd(_jsMonads.next2, _jsMonads.mM13.x % 5 === 0, _jsMonads.mMZ5).bnd(newRoll);
-    }), _jsMonads.mMZ5.bnd(function () {
-      return _jsMonads.mM13.bnd(score, 5).bnd(function (v) {
-        return _jsMonads.mM13.ret(v).bnd(_jsMonads.next, 25, _jsMonads.mMZ6);
+    }), mMZ4.bnd(function () {
+      return mM13.bnd(score, 3).bnd(next2, mM13.x % 5 === 0, mMZ5).bnd(newRoll);
+    }), mMZ5.bnd(function () {
+      return mM13.bnd(score, 5).bnd(function (v) {
+        return mM13.ret(v).bnd(next, 25, mMZ6);
       });
-    }), _jsMonads.mMZ6.bnd(function () {
-      return _jsMonads.mM9.bnd(score2).bnd(_jsMonads.next, 3, _jsMonads.mMZ7);
-    }), _jsMonads.mMZ7.bnd(function () {
-      return _jsMonads.mM13.bnd(winner);
-    }), _jsMonads.mM3.bnd(function (x) {
-      return _jsMonads.mM7.ret((0, _jsMonads.calc)(x[0], _jsMonads.mM8.x, x[1])).bnd(_jsMonads.log, _jsMonads.mM7.x).bnd(_jsMonads.next, 18, _jsMonads.mMZ4) // Releases mMZ4.
-      .bnd(_jsMonads.next, 20, _jsMonads.mMZ2).bnd(function () {
-        return _jsMonads.mM1.bnd(_jsMonads.push, _jsMonads.mM7.x) // Returns an anonymous monad.
-        .bnd(_jsMonads.mM1.ret) // Gives mM1 the anonymous monad's value.
-        .bnd(displayOff, _jsMonads.mM1.x.length + '').bnd(function () {
-          return _jsMonads.mM3.ret([]).bnd(function () {
-            return _jsMonads.mM4.ret(0).bnd(_jsMonads.mM8.ret);
+    }), mMZ6.bnd(function () {
+      return mM9.bnd(score2).bnd(next, 3, mMZ7);
+    }), mMZ7.bnd(function () {
+      return mM13.bnd(winner);
+    }), mM3.bnd(function (x) {
+      return mM7.ret(calc(x[0], mM8.x, x[1])).bnd(next, 18, mMZ4) // Releases mMZ4.
+      .bnd(next, 20, mMZ2).bnd(function () {
+        return mM1.bnd(push, mM7.x) // Returns an anonymous monad.
+        .bnd(mM1.ret) // Gives mM1 the anonymous monad's value.
+        .bnd(displayOff, mM1.x.length + '').bnd(function () {
+          return mM3.ret([]).bnd(function () {
+            return mM4.ret(0).bnd(mM8.ret);
           });
         });
       });
@@ -9224,13 +8992,13 @@ function updateCalc() {
 }
 
 var updateScoreboard = function updateScoreboard(v) {
-  _jsMonads.mMscoreboard.ret([]);
-  var ar = _jsMonads.mMscbd.x;
+  mMscoreboard.ret([]);
+  var ar = mMscbd.x;
   var keys = Object.keys(ar);
   for (var k in keys) {
-    _jsMonads.mMscoreboard.bnd(_jsMonads.unshift, (0, _motorcycleDom.h)('div.indent', ar[k]));
+    mMscoreboard.bnd(unshift, (0, _motorcycleDom.h)('div.indent', ar[k]));
   }
-  return _jsMonads.mMscoreboard;
+  return mMscoreboard;
 };
 
 window.onload = function (event) {
@@ -9238,49 +9006,49 @@ window.onload = function (event) {
 };
 
 var updateMessages = function updateMessages(v) {
-  _jsMonads.mMmessages.ret([]);
-  var ar = _jsMonads.mMmsg.x;
+  mMmessages.ret([]);
+  var ar = mMmsg.x;
   var keys = Object.keys(ar);
   for (var k in keys) {
-    _jsMonads.mMmessages.bnd(_jsMonads.unshift, (0, _motorcycleDom.h)('div', ar[k]));
+    mMmessages.bnd(unshift, (0, _motorcycleDom.h)('div', ar[k]));
   }
-  return _jsMonads.mMmessages;
+  return mMmessages;
 };
 
 var displayOff = function displayOff(x, a) {
   document.getElementById(a).style.display = 'none';
-  return (0, _jsMonads.ret)(x);
+  return ret(x);
 };
 
 var displayInline = function displayInline(x, a) {
   if (document.getElementById(a)) document.getElementById(a).style.display = 'inline';
-  return (0, _jsMonads.ret)(x);
+  return ret(x);
 };
 
 var score = function score(v, j) {
   socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 0);
-  return _jsMonads.mM13.ret(v + j);
+  return mM13.ret(v + j);
 };
 
 var score2 = function score2() {
-  _jsMonads.mMgoals.ret(_jsMonads.mMgoals.x + 1);
+  mMgoals.ret(mMgoals.x + 1);
   var j = -25;
   socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 1);
-  _jsMonads.mM13.ret(0);
-  return _jsMonads.mMgoals;
+  mM13.ret(0);
+  return mMgoals;
 };
 
 var winner = function winner() {
   var k = -3;
-  _jsMonads.mMgoals.ret(_jsMonads.mMgoals.x - 3);
+  mMgoals.ret(mMgoals.x - 3);
   socket.send('CG#$42,' + Group + ',' + Name + ',' + 0 + ',' + k);
   socket.send('CE#$42,' + Group + ',' + Name + ',nothing ');
-  return (0, _jsMonads.ret)(0);
+  return ret(0);
 };
 
 var newRoll = function newRoll(v) {
   socket.send('CA#$42,' + Group + ',' + Name + ',6,6,12,20');
-  return (0, _jsMonads.ret)(v);
+  return ret(v);
 };
 
 var refresh = function refresh() {
@@ -9297,4 +9065,4 @@ var sources = {
 
 _motorcycleCore2['default'].run(main, sources);
 
-},{"./code.js":168,"@motorcycle/core":1,"@motorcycle/dom":74,"js-monads":100,"most":166}]},{},[169]);
+},{"./code.js":167,"@motorcycle/core":1,"@motorcycle/dom":74,"most":165}]},{},[168]);

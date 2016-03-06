@@ -44,24 +44,25 @@ Motorcyclejs is a most remarkable library. And it plays so nicely with the monad
 Here is how the monad instances are constructed:
 
 ```javascript
-  class Monad {
-    var _this = this; 
-    constructor(z,g) {
+  var Monad = function Monad(z, g) {
+    var _this = this;
 
-      this.x = z;
-      if (arguments.length === 1) {this.id = 'anonymous'}
-      else {this.id = g}
+    this.x = z;
+    if (arguments.length === 1) {
+      this.id = 'anonymous';
+    } else {
+      this.id = g;
+    };
 
-      this.bnd = function (func, ...args) {
-        return func(_this.x, ...args);
-      };
+    this.bnd = function (func, ...args) {
+       return func(_this.x, ...args);
+    };
 
-      this.ret = function (a) {
-        _this.x = a;
-        return _this;
-      };
-    }
-  };
+    this.ret = function (a) {
+      window[_this.id] = new Monad(a, _this.id);
+      return window[_this.id]
+    };
+  };          
 
   class MonadIter {
     var _this = this;                  
@@ -79,7 +80,7 @@ Here is how the monad instances are constructed:
     }
   } 
 ```
-And this is the definition of "next":
+The functions used with the "bnd" method return new anonymous monads. The "ret" method returns a new monad that has the same name as the calling monad, thereby taking the original monad's place in all subsequent procedures. This is the definition of "next":
 
 ```javascript
   var next = function next(x, y, mon2) {

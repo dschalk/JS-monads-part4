@@ -3,24 +3,25 @@ import {h, pre} from '@motorcycle/dom';
 var Group = 'solo';
 var Name = 'Fred';
 
-var monads = h('pre', `  class Monad {
+const monads = h('pre', {style: {color: '#AFEEEE' }}, `  var Monad = function Monad(z, g) {
+    var _this = this;
 
-    constructor(z,g) {
+    this.x = z;
+    if (arguments.length === 1) {
+      this.id = 'anonymous';
+    } else {
+      this.id = g;
+    };
 
-      this.x = z;
-      if (arguments.length === 1) {this.id = 'anonymous'}
-      else {this.id = g}
+    this.bnd = function (func, ...args) {
+       return func(_this.x, ...args);
+    };
 
-      this.bnd = function (func, ...args) {
-        return func(this.x, ...args);
-      };
-
-      this.ret = function (a) {
-        this.x = a;
-        return this;
-      };
-    }
-  };
+    this.ret = function (a) {
+      window[_this.id] = new Monad(a, _this.id);
+      return window[_this.id]
+    };
+  };               
 
   class MonadIter {                
 
