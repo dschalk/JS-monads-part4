@@ -158,12 +158,9 @@ var updateCalc = h('pre',  `  function updateCalc() {
   ));
 }  `  )
 
-var mult = h('pre',  `  const mMmult = new Monad({}, 'mMmult')
-
-  mMmult.x.addA = sources.DOM.select('input#addA').events('input'),
+var mult = h('pre',  `  mMmult.x.addA = sources.DOM.select('input#addA').events('input'),
   mMmult.x.addB = sources.DOM.select('input#addB').events('input'),
-  mMmult.x.product = 0;
-  mMmult.x.product2 = 0;
+  mMmult.x.product = this.x.result.map(v => {return v});
   mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)
 
   const mult$ = mMmult.x.result.map(v => {
@@ -193,39 +190,30 @@ var product2 = h('pre',  `  const unitDriver = function () {
   }
 
   const unitAction$ = sources.UNIT.map(v => {  // unitDriver, cycled back inside of "run".
-      mMunit.ret(mMunit.x + v)  // mMunit is a monad dedicated to calling "next" with its bnd method.
+      mMunit.ret(mMunit.x + v)        
       .bnd(next, 1, mMZ26)  // Releases mMZ26 (below) after two seconds.
       .bnd(next, 2, mMZ27)
       .bnd(next, 3, mMZ28)
   });
 
   const mult2$ = mMmult.x.result.map(v => {
-    mMmult.x.product2 = v;
-    let mMtemp = new Monad(v);
-    mMZ26.bnd(() => mMtemp.bnd(add, 1000).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
-    mMZ27.bnd(() => mMtemp.bnd(double).bnd(mMtemp.ret).bnd(x => mMmult.x.product2 = x));
-    mMZ28.bnd(() => mMtemp.bnd(add, 1).bnd(x => mMmult.x.product2 = x)); 
+    mMZ26.bnd(() => mMmult2.bnd(add, 1000).bnd(mMmult2.ret));
+    mMZ27.bnd(() => mMmult2.bnd(double).bnd(mMmult2.ret));
+    mMZ28.bnd(() => mMmult2.bnd(add, 1).bnd(mMmult2.ret)); 
     mMunit.ret(0);
   });
   `  )
 
-
-var product3 = h('pre',  `  const mult3$ = mMmult.x.result.map(v => {
-    mMtem.ret(v)
-    mMmult.x.product3 = v;
-    mMpause.ret(0);
-  })
-
-  const mult4$ = sources.UNIT.map(v => {
+  const product3 = h('pre',  `  const mult4$ = sources.UNIT.map(v => {
       mMpause.ret(mMpause.x + v)
       if(mMpause.x ===1) {
-        mMtem.bnd(add, 1000).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
+        mMtem.bnd(add, 1000).bnd(mMtem.ret)
       }
       if(mMpause.x === 2) {
-        mMtem.bnd(double).bnd(mMtem.ret).bnd(x => mMmult.x.product3 = x)
+        mMtem.bnd(double).bnd(mMtem.ret)
       }
       if(mMpause.x === 3) {
-        mMtem.bnd(add, 1).bnd(x => mMmult.x.product3 = x) 
+        mMtem.bnd(add, 1).bnd(mMtem.ret) 
       }
     })
   `  )
@@ -237,6 +225,52 @@ var product4 = h('pre',  `  const mult5$ = mMmult.x.result
   .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).delay(1000)
   `  )
 
+  const immutable = h('pre',  `  addOb.addC = sources.DOM
+  .select('input#addC').events('input');
+  addOb.addD = sources.DOM.select('input#addD').events('input');
+  addOb.result = combine((a,b) => a.target.value * b.target.value, addOb.addC, addOb.addD);
+  // Next, the above stream of products of the two numbers entered 
+  // in input fields (the stream "addOb.result") is put to use. 
+  const mult7$ = addOb.result.map(v => {
+    mMt.ret(v);
+    history.push(mMt);
+    mMpause2.ret(0);  // re-sets mMpause2 in preparation for the next procedure.
+  })
+  // Now, the stream of 1's from sources.UNIT controlls the sequenced computation.
+  const mult6$ = sources.UNIT.map(v => {
+      mMpause2.ret(mMpause2.x + v)
+      if(mMpause2.x === 1) {
+        mMt.bnd(add, 1000).bnd(mMt.ret)
+        history.push(mMt);
+      }
+      if(mMpause2.x === 2) {
+        mMt.bnd(double).bnd(mMt.ret)
+        history.push(mMt);
+      }
+      if(mMpause2.x === 3) {
+        mMt.bnd(add, 1).bnd(mMt.ret) 
+        history.push(mMt);
+      }
+    });
+
+  const backClick$ = sources.DOM
+    .select('#back').events('click');
+
+  const backClickAction$ = backClick$.map(() => {
+    if (index > 0) {
+      index -= 1;
+    }
+  });
+
+  const forwardClick$ = sources.DOM
+    .select('#forward').events('click');
+
+  const forwardClickAction$ = forwardClick$.map(() => {
+    if (index < (history.length - 1)) {
+      index += 1;
+    }
+  })
+  `  )
 
 
-export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2, product3, product4}
+export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2, product3, product4, immutable}

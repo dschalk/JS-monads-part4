@@ -154,6 +154,20 @@ h3 {
   font-style: bold;
 }
 
+#addC {
+  width: 80px;
+  font-size: 24px;
+  color: #0000FF;
+  font-style: bold;
+}
+
+#addD {
+  width: 80px;
+  font-size: 24px;
+  color: #0000FF;
+  font-style: bold;
+}
+
 .spacer {
   width: 150px;
 }

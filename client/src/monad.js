@@ -124,7 +124,13 @@ var mMprod = new Monad(0, 'mMprod');
 var mMmult = new Monad({}, 'mMmult');
 var mMmult2 = new Monad({}, 'mMmult2');
 var mMpause = new Monad(0, 'mMpause');
+var mMpause2 = new Monad(0, 'mMpause2');
 var mMtem = new Monad(0, 'mMtem');
+var mMtem2 = new Monad(0, 'mMtem2');
+var mMt = new Monad(0, 'mMt');
+var mMhistory = new Monad(0, 'mMhistory');
+var mMindex = new Monad(0, 'mMindex');
+var mMcursor = new Monad(0, 'mMcursor');
 
 var mMZ1 = MI();
 var mMZ2 = MI();
