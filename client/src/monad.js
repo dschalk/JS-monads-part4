@@ -128,6 +128,7 @@ var mMpause2 = new Monad(0, 'mMpause2');
 var mMtem = new Monad(0, 'mMtem');
 var mMtem2 = new Monad(0, 'mMtem2');
 var mMt = new Monad(0, 'mMt');
+var mMtest = new Monad(0, 'mMtest');
 var mMhistory = new Monad(0, 'mMhistory');
 var mMindex = new Monad(0, 'mMindex');
 var mMcursor = new Monad(0, 'mMcursor');
@@ -325,11 +326,11 @@ var log = function log(x,message) {
   let mon = new Monad(x);
   return mon;
 };
-
+/*
 var delay = function delay(x, mon) {
   return new Promise(function (resolve, reject) {
     setTimeout(resolve, 2000);
   });
 };
-
+*/
 

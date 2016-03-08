@@ -44,7 +44,6 @@ function main(sources) {
   var index = 0;
   var cow;
 
-
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
     .bnd(array => mMscores.ret(array[3].split("<br>"))
@@ -198,14 +197,19 @@ function main(sources) {
   console.log('history: ', history);
 
   const mult5$ = mMmult.x.result
-  .debounce(3200).map(v => {mM27.ret(v)}).delay(1000)
-  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).delay(1000)
-  .map(() => mM27.bnd(double).bnd(mM27.ret)).delay(1000)
-  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).delay(1000)
+  .map(v => mM27.ret(v))
+  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).debounce(1000)
+  .map(() => mM27.bnd(double).bnd(mM27.ret)).debounce(1000)
+  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).debounce(1000)
   
-  //.then(
-    //mM27.bnd(add, 1).bnd(mM27.ret)) 
+  var test$ = sources.DOM.select('input#addF').events('input');
 
+  const testAction$ = test$.map(e => mMtest
+    .ret(e.target.value*1)).delay(1000)
+    .map(() => mMtest.ret(mMtest.x + 1000)).delay(1000)
+    .map(() => mMtest.ret(mMtest.x * 2)).delay(1000)
+    .map(() => mMtest.ret(mMtest.x + 1)).delay(1000)
+  
   var addS = function addS (x,y) {
     if (typeof x === 'number') {
       return ret(x + y);
@@ -268,7 +272,7 @@ function main(sources) {
     if( e.keyCode == 13 && !Number.isInteger(v*1) ) mM19.ret("You didn't provide an integer");
   });
 
-  const calcStream$ = merge(mult7$, mult6$, forwardClickAction$, backClickAction$, mult$, mult2$, mult4$, mult5$, unitAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const calcStream$ = merge(testAction$, mult7$, mult6$, forwardClickAction$, backClickAction$, mult$, mult2$, mult4$, mult5$, unitAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -368,7 +372,6 @@ function main(sources) {
       code.product3,
       h('p', 'The final display in the list (above) shows the result of this computation:' ),  
       code.product4,  
-      h('p', '"debounce" causes a 3,200 millisecond delay. The delay allows time for any previously started computations to complete, thereby avoiding the possiblility of unexpected results stemming from two or more simultaneously running computation chains. I don\'t know of any way to abort a computation once it has begun. When I experimented with setTimeout, I discovered that clearTimeout did not stop ongoing timeouts in this Motorcycle.js application. As is the case here, reliable results could be obtained only by allowing time for any pending timeouts to complete. Using the stream of 1\'s consistently provides correct results, with new computations overriding and nullifying any previously started computations. ' ),  
       h('hr',),  
       h('p', 'For any monad m with value a and id "m", m.ret(v) returns a new monad named "m" with id "m" and value v. It looks like m got the new value v. What follows is a demonstration showing that m does not get mutated when it calls its "ret" method. '),
       h('p', 'The monad mMt will repeatedly use its "ret" method. Each time mMt does this, we will save mMt in an array named "history", which looks like this: [mMt, mMt, ...]. The size of history increases each time we run a computation similar to the ones above. ' ),
@@ -383,8 +386,14 @@ function main(sources) {
       h('button#forward',  'FORWARD'  ),
       h('p',  'index: ' + index  ),
       h('p',  'history[' + index + ']: ' + history[index].x ),  
-      h('p', ' . ' ),  
-      h('p', ' . ' ),  
+      h('hr',),  
+      h('p', 'The next demonstration involves an algorithm similar to the one above using "most.debounce" only using "most.delay" instead. To see why most.delay is a bad choice in this context, enter a number then enter a different number immediately afterwards. The first calculation will not stop, so two sequences will be doubling mMtext.x and adding 1 or 1000 to it, causing the result to be larger than it should be. If you wait for the first sequence to finish, you will get the expected result; otherwise, you won\'t.  Here is the code:  '  ),
+      code.test,
+      h('p', ' Put a number in the box below '  ),
+      h('input#addF'  ),
+      h('p',  mMtest.x  ),  
+      h('p', ' Try changing the number right after starting a computation and see how large the resulting number is. I got 240514 by pressing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times.  ' ),  
+      h('p', ' The algorithms used in the previous examples consistently give the desired result, never running two or more computation sequences simultaneously. ' ),
       h('p', ' . ' ),  
       h('p', ' . ' ),  
       h('p', ' . ' ),  

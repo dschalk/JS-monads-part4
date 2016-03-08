@@ -219,10 +219,10 @@ var product2 = h('pre',  `  const unitDriver = function () {
   `  )
 
 var product4 = h('pre',  `  const mult5$ = mMmult.x.result
-  .debounce(3200).map(v => {mM27.ret(v)}).delay(1000)
-  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).delay(1000)
-  .map(() => mM27.bnd(double).bnd(mM27.ret)).delay(1000)
-  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).delay(1000)
+  .map(v => {mM27.ret(v)})
+  .map(() => mM27.bnd(add, 1000).bnd(mM27.ret)).debounce(1000)
+  .map(() => mM27.bnd(double).bnd(mM27.ret)).debounce(1000)
+  .map(() => mM27.bnd(add, 1).bnd(mM27.ret)).debounce(2000)
   `  )
 
   const immutable = h('pre',  `  addOb.addC = sources.DOM
@@ -272,5 +272,24 @@ var product4 = h('pre',  `  const mult5$ = mMmult.x.result
   })
   `  )
 
+  var test = h('pre',  `  const testAction$ = test$.map(e => mMtest
+    .ret(e.target.value*1)).delay(1000)
+    .map(() => mMtest.ret(mMtest.x + 1000)).delay(1000)
+    .map(() => mMtest.ret(mMtest.x * 2)).delay(1000)
+    .map(() => mMtest.ret(mMtest.x + 1)).delay(1000)
+  `  )
 
-export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2, product3, product4, immutable}
+  var p4 = h('pre',  `  
+  `  )
+
+  var p5 = h('pre',  `  
+  `  )
+
+  var p6 = h('pre',  `  
+  `  )
+
+
+
+
+
+export default {monads, fib, driver, main, next, game, updateCalc, mult, add, product2, product3, product4, immutable, test}
