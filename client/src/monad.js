@@ -25,7 +25,7 @@ var Monad = function Monad(z, g) {
   };
 
   this.ret = function (a) {
-    window[_this.id] = new Monad(a, _this.id);
+    window[_this.id] = new Monad(a,_this.id);
     return window[_this.id];
   };
 };
@@ -132,6 +132,10 @@ var mMtest = new Monad(0, 'mMtest');
 var mMhistory = new Monad(0, 'mMhistory');
 var mMindex = new Monad(0, 'mMindex');
 var mMcursor = new Monad(0, 'mMcursor');
+var mMgroup = new Monad('solo', 'mMgroup');
+var mMgoals = new Monad(0, 'mMgoals');
+var mMname = new Monad(0, 'mMname');
+var mMob = new Monad({}, 'mMob');
 
 var mMZ1 = MI();
 var mMZ2 = MI();
@@ -165,6 +169,10 @@ var mMZ27 = MI();
 var mMZ28 = MI();
 var mMZ29 = MI();
 
+var trim = function trim(x,str) {
+  return ret(str.trim());
+};
+
 var fib = function fib(x,k) {
   let j = k;
 
@@ -173,7 +181,7 @@ var fib = function fib(x,k) {
     j -= 1;
   }
   return ret('fibonacci ' + k + ' = ' + x[0]);
-}
+};
 
 var toNums = function toNums(x) {
   let y = x.map(x => parseFloat(x));

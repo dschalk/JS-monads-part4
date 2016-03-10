@@ -83,7 +83,7 @@ changeGroup :: Text -> Text -> ServerState -> ServerState
 changeGroup name group = map (newGroup name group)
 
 changeS :: Text -> Int -> Int -> Client -> Client
-changeS x y z (a, b, c, d, e) | x == a    = (a, b+y, c+z, d, e)
+changeS x y z (a, b, c, d, e) | x == a    = (a, b+y, z, d, e)
                          | otherwise = (a, b, c, d, e)
 
 changeScore :: Text -> Int -> Int -> ServerState -> ServerState

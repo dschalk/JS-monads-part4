@@ -3,11 +3,6 @@ import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '
 import {just, create, merge, combine, fromEvent, periodic, observe, delay, filter} from 'most'; 
 import code from './code.js'; 
 
-var Group = 'solo';  // These mutable global variables will eventually be eliminated.
-var Goals = 0;
-var Name;
-var addOb = {};
-
 var tempStyle = {display: 'inline'}
 var tempStyle2 = {display: 'none'}
 mM6.ret('');
@@ -80,16 +75,16 @@ function main(sources) {
       .bnd(refresh)))
   
   const loginPress$ = sources.DOM
-    .select('input.login').events('keydown');
+    .select('input.login').events('keypress');
 
   const loginPressAction$ = loginPress$.map(e => {
-    let v = e.target.value;
+    let v = (e.target.value);
     if (v == '' ) {
       return;
     } 
     if( e.keyCode == 13 ) {
       socket.send("CC#$42" + v);
-      Name = v;
+      mMname.ret(v.trim())
       mM3.ret([]).bnd(mM2.ret);
       e.target.value = '';
       tempStyle = {display: 'none'}
@@ -98,7 +93,7 @@ function main(sources) {
   });
 
   const groupPress$ = sources.DOM
-    .select('input.group').events('keydown');
+    .select('input.group').events('keypress');
 
   const groupPressAction$ = groupPress$.map(e => {
     let v = e.target.value;
@@ -106,8 +101,8 @@ function main(sources) {
       return;
     } 
     if( e.keyCode == 13 ) 
-      Group = e.target.value;
-      socket.send(`CO#$42,${e.target.value},${Name},${e.target.value}`);
+      mMgroup.ret(e.target.value);
+      socket.send(`CO#$42,${e.target.value},${mMname.x},${e.target.value}`);
   });
 
   mMmult.x.addA = sources.DOM.select('input#addA').events('input');
@@ -123,11 +118,11 @@ function main(sources) {
     mMpause2.ret(0);
   });
 
-  addOb.addC = sources.DOM.select('input#addC').events('input');
-  addOb.addD = sources.DOM.select('input#addD').events('input');
-  addOb.result = combine((a,b) => a.target.value * b.target.value, addOb.addC, addOb.addD);
+  mMob.x.addC = sources.DOM.select('input#addC').events('input');
+  mMob.x.addD = sources.DOM.select('input#addD').events('input');
+  mMob.x.result = combine((a,b) => a.target.value * b.target.value, mMob.x.addC, mMob.x.addD);
 
-  const mult7$ = addOb.result.map(v => {
+  const mult7$ = mMob.x.result.map(v => {
     mMt.ret(v);
     history.push(mMt);
     mMpause2.ret(0);
@@ -225,7 +220,7 @@ function main(sources) {
 
   const messagePressAction$ = messagePress$.map(e => {
     if( e.keyCode == 13 ) {
-      socket.send(`CD#$42,${Group},${Name},${e.target.value}`);
+      socket.send(`CD#$42,${mMgroup.x.trim()},${mMname.x},${e.target.value}`);
       e.target.value = '';
     }
   });
@@ -253,8 +248,8 @@ function main(sources) {
 
   const rollClickAction$ = rollClick$.map(e => {  
     mM13.ret(mM13.x - 1);
-    socket.send('CG#$42,' + Group + ',' + Name + ',' + -1 + ',' + 0);
-    socket.send(`CA#$42,${Group},${Name},6,6,12,20`);
+    socket.send('CG#$42,' + mMgroup.x.trim() + ',' + mMname.x.trim() + ',' + -1 + ',' + mMgoals.x);
+    socket.send(`CA#$42,${mMgroup.x},${mMname.x.trim()},6,6,12,20`);
   });
 
   const fibPress$ = sources.DOM
@@ -319,7 +314,7 @@ function main(sources) {
       h('input.inputMessage', {style: tempStyle2} ),
       h('div', mMmessages.x  ) ]),
       h('p.group2', [ 
-      h('p',  'Group: ' + Group ),
+      h('p',  'Group: ' + mMgroup.x ),
       h('p',  'Goals: ' + mMgoals.x ),
       h('div.scoreDisplay', [
       h('span', 'player[score][goals]' ),
@@ -474,14 +469,15 @@ var displayInline = function displayInline(x,a) {
 };
 
 var score = function score(v,j) {
-  socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 0);
+  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + j + ',' + mMgoals.x);
   return mM13.ret(v + j);
 }
 
 var score2 = function score2() {
+  console.log('In score2 again  mMgoals.x ', mMgoals.x);
   mMgoals.ret(mMgoals.x + 1);
   let j = -25;
-  socket.send('CG#$42,' + Group + ',' + Name + ',' + j + ',' + 1);
+  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + j + ',' + mMgoals.x);
   mM13.ret(0);
   return mMgoals;
 }
@@ -489,13 +485,13 @@ var score2 = function score2() {
 var winner = function winner() {
   let k = -3
   mMgoals.ret(mMgoals.x - 3);
-  socket.send('CG#$42,' + Group + ',' + Name + ',' + 0 + ',' + k);
-  socket.send('CE#$42,' + Group + ',' + Name + ',nothing ');
+  socket.send('CG#$42,' + mMgroup.x + ',' + mMname.x + ',' + 0 + ',' + mMgoals.x);
+  socket.send('CE#$42,' + mMgroup.x + ',' + mMname.x + ',nothing ');
   return ret(0);
 }
 
 var newRoll = function(v) {
-  socket.send(`CA#$42,${Group},${Name},6,6,12,20`);
+  socket.send(`CA#$42,${mMgroup.x},${mMname.x.trim()},6,6,12,20`);
   return ret(v);
 };
 
