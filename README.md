@@ -90,7 +90,7 @@ The functions used with the "bnd" method return new anonymous monads. The "ret" 
     return ret(x);  // An anonymous monad with the value of the calling monad.
   } 
 ```
-Moset of the functions monads are defined in an index.html script, so they are available in the browser console.
+Moset of the functions, along with the Monad and MonadIter instances, are defined in an index.html script, and are therefore always available in the browser console.
 
 
 
