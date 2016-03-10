@@ -136,6 +136,7 @@ var mMgroup = new Monad('solo', 'mMgroup');
 var mMgoals = new Monad(0, 'mMgoals');
 var mMname = new Monad(0, 'mMname');
 var mMob = new Monad({}, 'mMob');
+var mMsender = new Monad('nobody', 'mMsender');
 
 var mMZ1 = MI();
 var mMZ2 = MI();

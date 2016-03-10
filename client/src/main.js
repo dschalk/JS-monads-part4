@@ -42,7 +42,7 @@ function main(sources) {
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
     .bnd(array => mMscores.ret(array[3].split("<br>"))
-    .bnd(() => mMname.ret(mMar.x[2])
+    .bnd(() => mMsender.ret(mMar.x[2])
     .bnd(() => mMprefix.ret(mMar.x[0])
       .bnd(next, 'CA#$42', mMZ10)
       .bnd(next, 'CB#$42', mMZ11)
@@ -62,12 +62,12 @@ function main(sources) {
       .bnd(() => mM3.ret([])
       .bnd(() => mM8.ret(0) )))),
     (mMZ12.bnd(() => mM6
-      .ret( mMname.x + ' successfully logged in.'))),
+      .ret( mMsender.x + ' successfully logged in.'))),
     (mMZ13.bnd(() => mMar
       .bnd(splice, 0 ,3)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
-      .bnd(push, mMname.x + ': ' + mMar.x)
+      .bnd(push, mMsender.x + ': ' + mMar.x)
       .bnd(updateMessages)))),
     (mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ))), 
     (mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
@@ -102,7 +102,7 @@ function main(sources) {
     } 
     if( e.keyCode == 13 ) 
       mMgroup.ret(e.target.value);
-      socket.send(`CO#$42,${e.target.value},${mMname.x},${e.target.value}`);
+      socket.send(`CO#$42,${e.target.value},${mMname.x.trim()},${e.target.value}`);
   });
 
   mMmult.x.addA = sources.DOM.select('input#addA').events('input');
@@ -220,7 +220,7 @@ function main(sources) {
 
   const messagePressAction$ = messagePress$.map(e => {
     if( e.keyCode == 13 ) {
-      socket.send(`CD#$42,${mMgroup.x.trim()},${mMname.x},${e.target.value}`);
+      socket.send(`CD#$42,${mMgroup.x.trim()},${mMname.x.trim()},${e.target.value}`);
       e.target.value = '';
     }
   });
@@ -314,8 +314,12 @@ function main(sources) {
       h('input.inputMessage', {style: tempStyle2} ),
       h('div', mMmessages.x  ) ]),
       h('p.group2', [ 
-      h('p',  'Group: ' + mMgroup.x ),
-      h('p',  'Goals: ' + mMgoals.x ),
+      h('span',  'Group: ' + mMgroup.x ),
+      h('br'),
+      h('span',  'Goals: ' + mMgoals.x ),
+      h('br'),
+      h('span',  'Name: ' + mMname.x ),
+      h('br'),
       h('div.scoreDisplay', [
       h('span', 'player[score][goals]' ),
       h('div', mMscoreboard.x ) ]) ]),
@@ -351,22 +355,23 @@ function main(sources) {
       h('hr',),  
       h('p', 'A monad\'s value can be an object with as many attributes and methods as you like. Here, we take two numbers from input boxes and create a stream of their product, all inside of the monad mMmult. We are using mMmult.x, which starts out as an empty object, for the sole purpose of creating a namespace for three streams.  '  ),
       code.mult,
-      h('p', 'The value fetched from mMmult.x.result: ' + mM28.x ),
-      h('p', 'Enter two numbers below. '  ),
+      h('p', 'mMmult$ provides the result of the computation the mMmult.x.result stream to several monads. For example, here is mM28.x: ' + mM28.x ),
+      h('p', 'And here are the results of some computation sequences. To see them, type numbers into the boxes below. ' ),
       h('input#addA'  ),
       h('span', ' * '   ),
       h('input#addB'  ),
       h('p', 'The paragraphs below contain step delayed computations stemming from mMmult.x.result. ' ),
       h('p.add', 'Using a stream of 1\'s with MonadIter: ' + mMmult2.x    ),  
       h('p.add', 'Using a stream of 1\'s with "if" tests: ' + mMtem.x   ),  
-      h('p.add', 'Using most.delay: ' + mM27.x   ),  
-      h('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses required a little effort. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run smoothly in Motorcycle, it should blend into the main stream that feeds the virtual DOM. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. The first two results above use a driver named "unitDriver" Here is how the result using MonadIter is computed: '  ),
+      h('p.add', 'Using most.debounce: ' + mM27.x   ),  
+      h('p', 'Like mMmult.x.product, it stems from mMmult.x.result. Obtaining the final result is simple, but presenting intermediate results after one-second pauses is tricky. Algorithms that worked in JS-monads-part3, a plain Snabbdom application, don\'t work in Motorcycle.js. For code to run smoothly in Motorcycle, it should blend into the main stream that feeds data to the virtual DOM. In our case, it needs to receive information from "sources" and return a stream that merges into calcStream, which provides the information necessary for patching the DOM. The first two results above use a driver named "unitDriver" These examples always give the expected result, free of side effects from ongoing previously started sequences of computations. You can type numbers in the input boxes in rapid succession and always see the result expected from the last number appearing in the box. Here is how the result using MonadIter is computed: '  ),
       code.product2,
       h('p', '"periodic" is from the "most" library. Motorcycle.js is like Cycle.js, only it uses most and Snabbdom instead of RxJS and virtual-dom. '  ),  
       h('p', 'This is how the same results are calculated using "if" tests: '  ),  
       code.product3,
       h('p', 'The final display in the list (above) shows the result of this computation:' ),  
       code.product4,  
+      h('p', 'It usually gives the same result as the first two computations, but I found that adding and removing numbers in rapid succession occasionally gives a result slightly larger than expected. I suspect that the larger-than-expected result is caused by a side effect from a previously intitiated sequence of computations. The example at the bottom of this page shows that substituting `delay` for `debounce` results in side effects from all ongoing computations always being propagated and incorporated into the most recent computation.  ' ),
       h('hr',),  
       h('p', 'For any monad m with value a and id "m", m.ret(v) returns a new monad named "m" with id "m" and value v. It looks like m got the new value v. What follows is a demonstration showing that m does not get mutated when it calls its "ret" method. '),
       h('p', 'The monad mMt will repeatedly use its "ret" method. Each time mMt does this, we will save mMt in an array named "history", which looks like this: [mMt, mMt, ...]. The size of history increases each time we run a computation similar to the ones above. ' ),
@@ -387,8 +392,8 @@ function main(sources) {
       h('p', ' Put a number in the box below '  ),
       h('input#addF'  ),
       h('p',  mMtest.x  ),  
-      h('p', ' Try changing the number right after starting a computation and see how large the resulting number is. I got 240514 by pressing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times.  ' ),  
-      h('p', ' The algorithms used in the previous examples consistently give the desired result, never running two or more computation sequences simultaneously. ' ),
+      h('p', ' Try changing the number right after starting a computation and see how large the resulting number is. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces large numbers, the faster you do it, the larger the number will; at least, I think, up to the limit of completing all 14 steps in under one second.  ' ),  
+      h('p', ' The algorithms using sources.UNIT consistently give the desired result, never letting side effects from recently started sequences of computations spill over into the most recent sequences of computations. The one using most.debounce rarely give a too-large result and the one using most.delay always does. That doesn\'t necessarily imply that most.delay or most.debounce are buggy or that they could be improved. It does show that it is a mistake to start a sequence of computations using either of them if a similar sequence is already running. ' ),
       h('p', ' . ' ),  
       h('p', ' . ' ),  
       h('p', ' . ' ),  

@@ -158,13 +158,17 @@ var updateCalc = h('pre',  `  function updateCalc() {
   ));
 }  `  )
 
-var mult = h('pre',  `  mMmult.x.addA = sources.DOM.select('input#addA').events('input'),
-  mMmult.x.addB = sources.DOM.select('input#addB').events('input'),
-  mMmult.x.product = this.x.result.map(v => {return v});
-  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB)
-
+var mult = h('pre',  `  mMmult.x.addA = sources.DOM.select('input#addA').events('input');
+  mMmult.x.addB = sources.DOM.select('input#addB').events('input');
+  mMmult.x.result = combine((a,b) => a.target.value * b.target.value, mMmult.x.addA, mMmult.x.addB);
+  
   const mult$ = mMmult.x.result.map(v => {
-    mMmult.x.product = v;
+    mMmult2.ret(v);
+    mMtem.ret(v);
+    mMtem2.ret(v);
+    mM28.ret(v);
+    mMpause.ret(0);
+    mMpause2.ret(0);
   });
   `  )
 
@@ -204,18 +208,28 @@ var product2 = h('pre',  `  const unitDriver = function () {
   });
   `  )
 
-  const product3 = h('pre',  `  const mult4$ = sources.UNIT.map(v => {
-      mMpause.ret(mMpause.x + v)
-      if(mMpause.x ===1) {
-        mMtem.bnd(add, 1000).bnd(mMtem.ret)
-      }
-      if(mMpause.x === 2) {
-        mMtem.bnd(double).bnd(mMtem.ret)
-      }
-      if(mMpause.x === 3) {
-        mMtem.bnd(add, 1).bnd(mMtem.ret) 
-      }
-    })
+  const product3 = h('pre',  `  const unitDriver = function () {
+    return periodic(1000, 1);  // Creates a stream of 1-1-1-1..., in one-second intervals.
+  }
+  
+  const sources = {            // Re-used. Same as above. Feeds main.
+    DOM: makeDOMDriver('#main-container'),
+    WS: websocketsDriver,
+    UNIT: unitDriver           // Added unitDriver to the sources object.
+  }
+
+  const mult4$ = sources.UNIT.map(v => {
+    mMpause.ret(mMpause.x + v)
+    if(mMpause.x ===1) {
+      mMtem.bnd(add, 1000).bnd(mMtem.ret)
+    }
+    if(mMpause.x === 2) {
+      mMtem.bnd(double).bnd(mMtem.ret)
+    }
+    if(mMpause.x === 3) {
+      mMtem.bnd(add, 1).bnd(mMtem.ret) 
+    }
+  })
   `  )
 
 var product4 = h('pre',  `  const mult5$ = mMmult.x.result
