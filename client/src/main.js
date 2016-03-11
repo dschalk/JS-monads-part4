@@ -392,7 +392,7 @@ function main(sources) {
       h('p', ' Put a number in the box below '  ),
       h('input#addF'  ),
       h('p',  mMtest.x  ),  
-      h('p', ' Try changing the number right after starting a computation and see how large the resulting number is. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces large numbers, the faster you do it, the larger the number will; at least, I think, up to the limit of completing all 14 steps in under one second.  ' ),  
+      h('p', ' Try changing the number right after starting a computation. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces numbers larger 2001, which is the result of the default blank input field of 0. The faster you do it, the larger the number will; up to the limit of completing all 14 steps in under one second.  In the three algorithm example, if you put 1 in the left input box and type 1 seven times followed by BACKSPACE seven times in the other box, all three results are 2001. Trying for large numbers, I got 1.475739525896764e+269 by holding down the 9 key for a while. ' ),  
       h('p', ' The algorithms using sources.UNIT consistently give the desired result, never letting side effects from recently started sequences of computations spill over into the most recent sequences of computations. The one using most.debounce rarely give a too-large result and the one using most.delay always does. That doesn\'t necessarily imply that most.delay or most.debounce are buggy or that they could be improved. It does show that it is a mistake to start a sequence of computations using either of them if a similar sequence is already running. ' ),
       h('p', ' . ' ),  
       h('p', ' . ' ),  
