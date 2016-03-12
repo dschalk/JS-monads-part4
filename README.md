@@ -1,45 +1,10 @@
-#JS-monads-part4
+#JS-monads-part5
 
-Refactored the JS-monads-part3 game to use [Motorcyclejs](https://github.com/motorcyclejs). This is how websockets messages are received in main.js:
+Values that are subject to updating are contained in instances of Monad. For any Monad instance mon with id 'mon' and value val, which means m.x === val returns true, an update accomplish by m.ret(newVal) does not mutate mon.x. It does return a new monad with the same name and id as the monad that called its ret method, but with the value newVal instead of val. After the call to ret, all references to "mon" now point to the newly created monad. You can save the calling monad, for example by pushing it into an array or assigning a variable to it, if you want access to the monad that was known globally as "mon" before it called its ret method, thereby replacing itself in the global object "window". 
 
-```javascript
-  const messages$ = (sources.WS).map(e => 
-    mMar.ret(e.data.split(','))
-    .bnd(array => mMscores.ret(array[3].split("<br>"))
-    .bnd(() => mMname.ret(mMar.x[2])
-    .bnd(() => mMprefix.ret(mMar.x[0])
-      .bnd(next, 'CA#$42', mMZ10)
-      .bnd(next, 'CB#$42', mMZ11)
-      .bnd(next, 'CC#$42', mMZ12)
-      .bnd(next, 'CD#$42', mMZ13)
-      .bnd(next, 'CE#$42', mMZ14)
-      .bnd(next, 'EE#$42', mMZ15)))));
-    mMmain.bnd(() =>
-    (mMZ10.bnd(() => mM1
-      .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
-      .bnd(displayInline,'1')
-      .bnd(displayInline,'2')
-      .bnd(displayInline,'3')))),
-    (mMZ11.bnd(() => mMscbd
-      .ret(mMscores.x)
-      .bnd(updateScoreboard)
-      .bnd(() => mM3.ret([])
-      .bnd(() => mM8.ret(0) )))),
-    (mMZ12.bnd(() => mM6
-      .ret( mMname.x + ' successfully logged in.'))),
-    (mMZ13.bnd(() => mMar
-      .bnd(splice, 0 ,3)
-      .bnd(reduce, (a,b) => a + ", " + b)
-      .bnd(() => mMmsg
-      .bnd(push, mMname.x + ': ' + mMar.x)
-      .bnd(updateMessages)))),
-    (mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ))), 
-    (mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
-        mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
-      .bnd(refresh)))
-```
+There is no restriction on the values that a monad can hold. It can be monads within monads, objects within arrays, anything you want. Likewise, there is no restriction on the functions that serve as arguments to the bnd method. In this demo application, the functions supplied to the bnd method do not cause mutations, and most of them return new anonymous monads with id "anonymous". If you want to provide a function's return value to the monad that calls its bnd method on the function, you can do it for most practical purposes with mon.ret(mon.bnd(function).x) or its equvalent, mon.bnd(function).bnd(mon.ret). You get a new monad named "mon", but since all references to "mon" will point to it rather than the previous still-existing-until-garbage-collected entity that was named "mon", the value of mon has been changed for most practical purposes.
 
-Motorcyclejs is a most remarkable library. And it plays so nicely with the monads. 
+This demonstration uses Motorcyclejs, which is Cycle.js only using Snabbdom instead of virtual-dom, and most instead of RxJS. 
 
 Here is how the monad instances are constructed:
 
@@ -80,7 +45,7 @@ Here is how the monad instances are constructed:
     }
   } 
 ```
-The functions used with the "bnd" method return new anonymous monads. The "ret" method returns a new monad that has the same name as the calling monad, thereby taking the original monad's place in all subsequent procedures. This is the definition of "next":
+MonadIter instances are used in conjuction with the function named "next", which is defined as folows:
 
 ```javascript
   var next = function next(x, y, mon2) {
@@ -90,7 +55,7 @@ The functions used with the "bnd" method return new anonymous monads. The "ret" 
     return ret(x);  // An anonymous monad with the value of the calling monad.
   } 
 ```
-Moset of the functions, along with the Monad and MonadIter instances, are defined in an index.html script. They are, therefore, always available in the browser console.
+Moset of the functions, along with the Monad and MonadIter instances used in this demo, are defined in an index.html script. They are, therefore, always available for experimentation in the browser console.
 
 
 

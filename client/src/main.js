@@ -23,6 +23,8 @@ const websocketsDriver = function () {
     })
 }
 
+var mM1ob = {'mM1': mM1};
+
 const unitDriver = function () {
   return periodic(1000, 1);
 }
@@ -31,13 +33,9 @@ mM1.ret([0,0,0,0]);
 mM3.ret([]);
 
 function main(sources) {
+
   mMfib.ret([0,1]);
   mMpause.ret(0);
-  var count = 0;
-  var temp = new Monad('temp', 'temp');
-  var history = [mMt];
-  var index = 0;
-  var cow;
 
   const messages$ = (sources.WS).map(e => 
     mMar.ret(e.data.split(','))
@@ -124,7 +122,7 @@ function main(sources) {
 
   const mult7$ = mMob.x.result.map(v => {
     mMt.ret(v);
-    history.push(mMt);
+    mMhistory.bnd(push,mMt).bnd(mMhistory.ret);
     mMpause2.ret(0);
   })
   
@@ -132,15 +130,15 @@ function main(sources) {
       mMpause2.ret(mMpause2.x + v)
       if(mMpause2.x === 1) {
         mMt.bnd(add, 1000).bnd(mMt.ret)
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
       if(mMpause2.x === 2) {
         mMt.bnd(double).bnd(mMt.ret)
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
       if(mMpause2.x === 3) {
         mMt.bnd(add, 1).bnd(mMt.ret) 
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
     });
 
@@ -148,8 +146,8 @@ function main(sources) {
     .select('#back').events('click');
 
   const backClickAction$ = backClick$.map(() => {
-    if (index > 0) {
-      index -= 1;
+    if (mMindex.x > 0) {
+     mMindex.ret(mMindex.x -1) 
     }
   });
 
@@ -157,8 +155,8 @@ function main(sources) {
     .select('#forward').events('click');
 
   const forwardClickAction$ = forwardClick$.map(() => {
-    if (index < (history.length - 1)) {
-      index += 1;
+    if (mMindex.x < (mMhistory.x.length - 1)) {
+     mMindex.ret(mMindex.x +1) 
     }
   })
 
@@ -384,16 +382,16 @@ function main(sources) {
       h('input#addD'  ),
       h('button#back',  'BACK'  ),   
       h('button#forward',  'FORWARD'  ),
-      h('p',  'index: ' + index  ),
-      h('p',  'history[' + index + ']: ' + history[index].x ),  
+      h('p',  'mMindex.x: ' + mMindex.x  ),
+      h('p',  'mMhistory.x[' + mMindex.x + ']: ' + mMhistory.x[mMindex.x].x ),  
       h('hr',),  
       h('p', 'The next demonstration involves an algorithm similar to the one above using "most.debounce" only using "most.delay" instead. To see why most.delay is a bad choice in this context, enter a number then enter a different number immediately afterwards. The first calculation will not stop, so two sequences will be doubling mMtext.x and adding 1 or 1000 to it, causing the result to be larger than it should be. If you wait for the first sequence to finish, you will get the expected result; otherwise, you won\'t.  Here is the code:  '  ),
       code.test,
       h('p', ' Put a number in the box below '  ),
       h('input#addF'  ),
       h('p',  mMtest.x  ),  
-      h('p', ' Try changing the number right after starting a computation. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces numbers larger 2001, which is the result of the default blank input field of 0. The faster you do it, the larger the number will; up to the limit of completing all 14 steps in under one second.  In the three algorithm example, if you put 1 in the left input box and type 1 seven times followed by BACKSPACE seven times in the other box, all three results are 2001. Trying for large numbers, I got 1.475739525896764e+269 by holding down the 9 key for a while. ' ),  
-      h('p', ' The algorithms using sources.UNIT consistently give the desired result, never letting side effects from recently started sequences of computations spill over into the most recent sequences of computations. The one using most.debounce rarely give a too-large result and the one using most.delay always does. That doesn\'t necessarily imply that most.delay or most.debounce are buggy or that they could be improved. It does show that it is a mistake to start a sequence of computations using either of them if a similar sequence is already running. ' ),
+      h('p', ' Try changing the number right after starting a computation. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces numbers larger 2001, which is the result of the default blank input field of 0. The faster you do it, the larger the number will; up to the limit of completing all 14 steps in under one second.  In the three algorithm example, if you put 1 in the left input box and type 1 seven times followed by BACKSPACE seven times in the other box, all three results are 2001. ' ),  
+      h('p', ' The algorithms using sources.UNIT consistently give the desired result, never letting side effects from recently started sequences of computations spill over into the most recent sequences of computations. The one using most.debounce rarely give a too-large result and the one using most.delay always does. That doesn\'t necessarily imply that most.delay or most.debounce are buggy or that they could be improved. It does show that it is a mistake to start a sequence of computations using either of them if a similar sequence might already be running. ' ),
       h('p', ' . ' ),  
       h('p', ' . ' ),  
       h('p', ' . ' ),  
@@ -429,13 +427,14 @@ function updateCalc() {
                     .ret(calc(x[0], mM8.x, x[1]))
                     .bnd(next, 18, mMZ4)  // Releases mMZ4.
                     .bnd(next, 20, mMZ2) 
-                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns an anonymous monad.
-                    .bnd(mM1.ret)   // Gives mM1 the anonymous monad's value.
+                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns a new anonymous monad.
+                    .bnd(mM1.ret)   // Creates a new mM1 the ddanonymous monad's value.
+                    .bnd(v => mMsaveAr.bnd(log, v))
                     .bnd(displayOff, ((mM1.x.length)+''))
                     .bnd(() => mM3
                     .ret([])
                     .bnd(() => mM4
-                    .ret(0).bnd(mM8.ret)))))) 
+                    .ret(0).bnd(mM8.ret))))))
   ))
 }
 

@@ -137,6 +137,12 @@ var mMgoals = new Monad(0, 'mMgoals');
 var mMname = new Monad(0, 'mMname');
 var mMob = new Monad({}, 'mMob');
 var mMsender = new Monad('nobody', 'mMsender');
+var mMsave = new Monad({x: 'start'}, 'mMsave');
+var mMsaveAr = new Monad([], 'mMsaveAr');
+var mMindex = new Monad(0, 'mMindex');
+var mMcount = new Monad(0, 'mMcount');
+var mMhistory = new Monad([], 'mMhistory');
+var mMtemp = new Monad('temp', 'mMtemp');
 
 var mMZ1 = MI();
 var mMZ2 = MI();
@@ -234,19 +240,13 @@ var toFloat = function toFloat(x) {
   return ret(newx);
 };
 
-var push = function push(x, j) {
-  if (Array.isArray(x)) {
-    return ret(x.push(j));
-  }
-  return ret(x);
-}
-
 var push = function push(x,v) {
   let ar = x;
   ar.push(v);
   let cleanX = ar.filter(v => (v !== "" && v !== undefined));
   return ret(cleanX);
 };
+
 var splice = function splice(x, j, k) {
   if (Array.isArray(x)) {
     return ret(x.splice(j,k));
