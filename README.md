@@ -1,4 +1,4 @@
-#JS-monads-part5
+#JS-monads-part4
 
 Values that are subject to updating are contained in instances of Monad. For any Monad instance mon with id 'mon' and value val, which means m.x === val returns true, an update accomplish by m.ret(newVal) does not mutate mon.x. It does return a new monad with the same name and id as the monad that called its ret method, but with the value newVal instead of val. After the call to ret, all references to "mon" now point to the newly created monad. You can save the calling monad, for example by pushing it into an array or assigning a variable to it, if you want access to the monad that was known globally as "mon" before it called its ret method, thereby replacing itself in the global object "window". 
 
