@@ -245,25 +245,25 @@ var product4 = h('pre',  `  const mult5$ = mMmult.x.result
   addOb.result = combine((a,b) => a.target.value * b.target.value, addOb.addC, addOb.addD);
   // Next, the above stream of products of the two numbers entered 
   // in input fields (the stream "addOb.result") is put to use. 
-  const mult7$ = addOb.result.map(v => {
+  const mult7$ = mMob.x.result.map(v => {
     mMt.ret(v);
-    history.push(mMt);
-    mMpause2.ret(0);  // re-sets mMpause2 in preparation for the next procedure.
+    mMhistory.bnd(push,mMt).bnd(mMhistory.ret);
+    mMpause2.ret(0);
   })
   // Now, the stream of 1's from sources.UNIT controlls the sequenced computation.
   const mult6$ = sources.UNIT.map(v => {
       mMpause2.ret(mMpause2.x + v)
       if(mMpause2.x === 1) {
         mMt.bnd(add, 1000).bnd(mMt.ret)
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
       if(mMpause2.x === 2) {
         mMt.bnd(double).bnd(mMt.ret)
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
       if(mMpause2.x === 3) {
         mMt.bnd(add, 1).bnd(mMt.ret) 
-        history.push(mMt);
+        mMhistory.bnd(push,mMt);
       }
     });
 
@@ -271,8 +271,8 @@ var product4 = h('pre',  `  const mult5$ = mMmult.x.result
     .select('#back').events('click');
 
   const backClickAction$ = backClick$.map(() => {
-    if (index > 0) {
-      index -= 1;
+    if (mMindex.x > 0) {
+     mMindex.ret(mMindex.x -1) 
     }
   });
 
@@ -280,8 +280,8 @@ var product4 = h('pre',  `  const mult5$ = mMmult.x.result
     .select('#forward').events('click');
 
   const forwardClickAction$ = forwardClick$.map(() => {
-    if (index < (history.length - 1)) {
-      index += 1;
+    if (mMindex.x < (mMhistory.x.length - 1)) {
+     mMindex.ret(mMindex.x +1) 
     }
   })
   `  )
