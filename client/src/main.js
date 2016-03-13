@@ -1,6 +1,6 @@
 import Cycle from '@motorcycle/core';
 import {h, p, span, h1, h2, h3, br, div, label, input, hr, makeDOMDriver} from '@motorcycle/dom'; 
-import {just, create, merge, combine, fromEvent, periodic, observe, delay, filter} from 'most'; 
+import {just, create, merge, combine, fromEvent, periodic, observe, delay, filter, of} from 'most'; 
 import code from './code.js'; 
 
 var tempStyle = {display: 'inline'}
@@ -119,6 +119,9 @@ function main(sources) {
   mMob.x.addC = sources.DOM.select('input#addC').events('input');
   mMob.x.addD = sources.DOM.select('input#addD').events('input');
   mMob.x.result = combine((a,b) => a.target.value * b.target.value, mMob.x.addC, mMob.x.addD);
+  
+  mMt.ret(0);
+  mMhistory.bnd(push,mMt).bnd(mMhistory.ret);
 
   const mult7$ = mMob.x.result.map(v => {
     mMt.ret(v);
@@ -284,6 +287,7 @@ function main(sources) {
       h('h3', 'The Game From JS-monads-part3' ),
       h('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '    ),
       h('br'),
+      h('br' ),
       h('button#0.num', mM1.x[0] + '' ),
       h('button#1.num', mM1.x[1] + '' ),
       h('button#2.num', mM1.x[2] + '' ),
@@ -312,6 +316,7 @@ function main(sources) {
       h('input.inputMessage', {style: tempStyle2} ),
       h('div', mMmessages.x  ) ]),
       h('p.group2', [ 
+      h('br'),  
       h('span',  'Group: ' + mMgroup.x ),
       h('br'),
       h('span',  'Goals: ' + mMgoals.x ),
@@ -429,12 +434,11 @@ function updateCalc() {
                     .bnd(next, 20, mMZ2) 
                     .bnd(() => mM1.bnd(push,mM7.x)  // Returns a new anonymous monad.
                     .bnd(mM1.ret)   // Creates a new mM1 the ddanonymous monad's value.
-                    .bnd(v => mMsaveAr.bnd(log, v))
                     .bnd(displayOff, ((mM1.x.length)+''))
                     .bnd(() => mM3
                     .ret([])
                     .bnd(() => mM4
-                    .ret(0).bnd(mM8.ret))))))
+                    .ret(0).bnd(mM8.ret) )))))
   ))
 }
 

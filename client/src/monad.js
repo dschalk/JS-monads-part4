@@ -101,8 +101,8 @@ var mM24 = M(0,'mM24');
 var mM25 = M(0,'mM25');
 var mM26 = M(0,'mM26');
 var mM27 = M(0,'mM27');
-var mM28 = M(0,'mM28');
-var mM29 = M(0,'mM29');
+var mM28 = M([],'mM28');
+var mM29 = M([],'mM29');
 var mMscbd = M([],'mMscbd');
 var mMmessages = M([],'mMmessages');
 var mMscoreboard = M([],'mMscoreboard');
@@ -228,61 +228,60 @@ var wait = function wait(x, y, mon2) {
   return mon2;
 };
 
-var unshift = function unshift(x,v) {
-  x.unshift(v);
-  return ret(x);
+var unshift = function unshift(y,v) {
+  let ar = ret(y);
+  ar.x.unshift(v);
+  return ret(ar.x);
 };
 
 var toFloat = function toFloat(x) {
-  var newx = x.map(function (a) {
-    return parseFloat(a);
-  });
-  return ret(newx);
+    return ret(parseFloat(x));
 };
 
-var push = function push(x,v) {
-  let ar = x;
-  ar.push(v);
-  let cleanX = ar.filter(v => (v !== "" && v !== undefined));
-  return ret(cleanX);
+var push = function push(y,v) {
+  if (Array.isArray(y)) {
+    y.push(v);
+    let cleanX = y.filter(v => (v !== ""));
+    return ret(cleanX);
+  }
+  return ret(y);
 };
 
 var splice = function splice(x, j, k) {
   if (Array.isArray(x)) {
-    return ret(x.splice(j,k));
+    let ar = ret(x);
+    return ret(ar.x.splice(j,k));
   }
   return ret(x);
 }
 
 var clean = function clean(x) {
-  return ret(x.filter(v => v !== ""));
+  let ar = ret(x);
+  return ret(ret.x.filter(v => v !== ""));
 }
 
 var filter = function filter(x, condition) {
   if (Array.isArray(x)) {
-    return ret(x.filter(v => condition))
+    let ar = ret(x);
+    return ret(ar.x.filter(v => condition))
   }
   return ret(x);
 }
 
 var map = function map(x, y) {
   if (Array.isArray(x)) {
-    return ret(x.map(v => y))
+    let ar = ret(x);
+    return ret(ar.x.map(v => y));
   }
   return ret(x);
 }
 
 var reduce = function reduce(x, y) {
   if (Array.isArray(x) && x.length > 0) {
-    return ret(x.reduce(y))
+    let ar = ret(x);
+    return ret(ar.x.reduce(y))
   }
   return ret(x);
-}
-
-var pop = function pop(x) {
-  let v = x[x.length - 1];
-  console.log('In pop. v = ',v);
-  return ret(v);
 }
 
 var next = function next(x, y, mon2) {
