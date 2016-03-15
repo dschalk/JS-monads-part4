@@ -8690,8 +8690,32 @@ Object.defineProperty(exports, '__esModule', {
 
 var _motorcycleDom = require('@motorcycle/dom');
 
-var Group = 'solo';
-var Name = 'Fred';
+var Monad = function Monad(z, g) {
+  var _this = this;
+
+  this.x = z;
+  if (arguments.length === 1) {
+    this.id = 'anonymous';
+  } else {
+    this.id = g;
+  }
+
+  this.bnd = function (func) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return func.apply(undefined, [_this.x].concat(args));
+  };
+
+  this.ret = function (a) {
+    window[_this.id] = new Monad(a, _this.id);
+    return window[_this.id];
+  };
+};
+
+var mMname = new Monad('Fred', 'mMname');
+var mMgroup = new Monad('solo', 'mMgroup');
 
 var monads = (0, _motorcycleDom.h)('pre', { style: { color: '#AFEEEE' } }, '  var Monad = function Monad(z, g) {\n    var _this = this;\n\n    this.x = z;\n    if (arguments.length === 1) {\n      this.id = \'anonymous\';\n    } else {\n      this.id = g;\n    };\n\n    this.bnd = function (func, ...args) {\n       return func(_this.x, ...args);\n    };\n\n    this.ret = function (a) {\n      window[_this.id] = new Monad(a, _this.id);\n      return window[_this.id]\n    };\n  };               \n\n  class MonadIter {                \n\n    constructor() {\n\n      this.p = function() {};\n\n      this.release = function () {\n        return this.p();\n      }\n \n      this.bnd = function (func) {\n          this.p = func;\n      }\n    }\n  }; ');
 
