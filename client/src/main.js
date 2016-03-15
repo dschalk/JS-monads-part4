@@ -51,9 +51,13 @@ function main(sources) {
     mMmain.bnd(() =>
     (mMZ10.bnd(() => mM1
       .ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]])
+      .bnd(() => push(mMsaveAr.x, mMsave.ret([mMar.x[3], mMar.x[4], mMar.x[5], mMar.x[6]]), mMsaveAr)
+      .bnd(() => mMindex2.bnd(add,1)
+      .bnd(mMindex2.ret)
+      .bnd(displayInline,'0')
       .bnd(displayInline,'1')
       .bnd(displayInline,'2')
-      .bnd(displayInline,'3')))),
+      .bnd(displayInline,'3'))))),
     (mMZ11.bnd(() => mMscbd
       .ret(mMscores.x)
       .bnd(updateScoreboard)
@@ -62,15 +66,15 @@ function main(sources) {
     (mMZ12.bnd(() => mM6
       .ret( mMsender.x + ' successfully logged in.'))),
     (mMZ13.bnd(() => mMar
-      .bnd(splice, 0 ,3)
+      .bnd(splice2, 0, 3, mMar)
       .bnd(reduce, (a,b) => a + ", " + b)
       .bnd(() => mMmsg
-      .bnd(push, mMsender.x + ': ' + mMar.x)
+      .bnd(push, mMsender.x + ': ' + mMar.x, mMmsg)
       .bnd(updateMessages)))),
     (mMZ14.bnd(() => mMgoals2.ret('The winner is ' + mMname.x ))), 
     (mMZ15.bnd(() => mMgoals2.ret('A player named ' + 
         mMname.x + 'is currently logged in. Page will refresh in 4 seconds.')
-      .bnd(refresh)))
+      .bnd(refresh))))
   
   const loginPress$ = sources.DOM
     .select('input.login').events('keypress');
@@ -121,11 +125,11 @@ function main(sources) {
   mMob.x.result = combine((a,b) => a.target.value * b.target.value, mMob.x.addC, mMob.x.addD);
   
   mMt.ret(0);
-  mMhistory.bnd(push,mMt).bnd(mMhistory.ret);
+  mMhistory.bnd(push,mMt, mMhistory);
 
   const mult7$ = mMob.x.result.map(v => {
     mMt.ret(v);
-    mMhistory.bnd(push,mMt).bnd(mMhistory.ret);
+    mMhistory.bnd(push,mMt, mMhistory);
     mMpause2.ret(0);
   })
   
@@ -133,15 +137,15 @@ function main(sources) {
       mMpause2.ret(mMpause2.x + v)
       if(mMpause2.x === 1) {
         mMt.bnd(add, 1000).bnd(mMt.ret)
-        mMhistory.bnd(push,mMt);
+        mMhistory.bnd(push,mMt, mMhistory);
       }
       if(mMpause2.x === 2) {
         mMt.bnd(double).bnd(mMt.ret)
-        mMhistory.bnd(push,mMt);
+        mMhistory.bnd(push,mMt, mMhistory);
       }
       if(mMpause2.x === 3) {
         mMt.bnd(add, 1).bnd(mMt.ret) 
-        mMhistory.bnd(push,mMt);
+        mMhistory.bnd(push,mMt, mMhistory);
       }
     });
 
@@ -231,8 +235,11 @@ function main(sources) {
      
   const numClickAction$ = numClick$.map(e => {
     mM3
-    .bnd(push,e.target.textContent)
-    .bnd(() => {mM1.x[e.target.id] = "";})
+    .bnd(push,e.target.textContent, mM3)
+    mM28.ret([mM1.x[0], mM1.x[1], mM1.x[2], mM1.x[3]]);
+    mM28.x[e.target.id] = "";
+    mM1.ret(mM28.x)
+    .bnd(cleanup); 
     if (mM3.x.length === 2 && mM8.x !== 0) {updateCalc();}
   }).startWith(mM1.x[0]);
 
@@ -268,7 +275,32 @@ function main(sources) {
     if( e.keyCode == 13 && !Number.isInteger(v*1) ) mM19.ret("You didn't provide an integer");
   });
 
-  const calcStream$ = merge(testAction$, mult7$, mult6$, forwardClickAction$, backClickAction$, mult$, mult2$, mult4$, mult5$, unitAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
+  const forwardClick2$ = sources.DOM
+    .select('#forward2').events('click');
+
+  const backClick2$ = sources.DOM
+    .select('#back2').events('click');
+
+  const forwardClick2Action$ = forwardClick2$.map(() => {
+    if (mMindex2.x > 0) {
+      console.log('In forwardClick2Action$');
+      mMindex2.bnd(add,-1).bnd(mMindex2.ret)
+      let mMtemp = ret(mMsaveAr.x[mMindex2.x].x)
+      mM1.ret(mMtemp.x) 
+      .bnd(() => show());
+    }
+  });
+
+  const backClick2Action$ = backClick2$.map(() => {
+    if (mMsaveAr.x.length > (mMindex2.x + 1)) {
+      mMindex2.bnd(add,1).bnd(mMindex2.ret)
+      let mMtemp = ret(mMsaveAr.x[mMindex2.x].x)
+      mM1.ret(mMtemp.x) 
+      .bnd(() => show());
+    }
+  });
+
+  const calcStream$ = merge(backClick2Action$, forwardClick2Action$, testAction$, mult7$, mult6$, forwardClickAction$, backClickAction$, mult$, mult2$, mult4$, mult5$, unitAction$, fibPressAction$, groupPressAction$, rollClickAction$, messagePressAction$, loginPressAction$, messages$, numClickAction$, opClickAction$);
 
   return {
     DOM: 
@@ -287,6 +319,7 @@ function main(sources) {
       h('h3', 'The Game From JS-monads-part3' ),
       h('p', 'If clicking two numbers and an operator (in any order) results in 20 or 18, the score increases by 1 or 3, respectively. If the score becomes 0 mod 5, 5 points are added. A score of 25 results in one goal. That can only be achieved by arriving at a score of 20, which jumps the score to 25. Directly computing 25 results in a score of 30, and no goal. Each time ROLL is clicked, one point is deducted. Three goals wins the game. '    ),
       h('br'),
+      h('button#save',  {style: {display: 'none'}},   mM1.x+''  ),
       h('br' ),
       h('button#0.num', mM1.x[0] + '' ),
       h('button#1.num', mM1.x[1] + '' ),
@@ -301,6 +334,9 @@ function main(sources) {
       h('br'),
       h('button.roll', {style: tempStyle2}, 'ROLL' ),
       h('br'),
+      h('br'),
+      h('button#forward2',  'TAKE BACK'  ),
+      h('button#back2',  'FORWARD'  ),
       h('br'),
       h('div.winner', mMgoals2.x+''  ),
       h('br'),
@@ -327,6 +363,7 @@ function main(sources) {
       h('span', 'player[score][goals]' ),
       h('div', mMscoreboard.x ) ]) ]),
       h('span', 'People in the same group, other than solo, share text messages and dice rolls. '  ),
+      h('p', 'The TAKE BACK and FORWARD feature relies on the immutability of display code saved in an array. TAKE BACK and FORWARD change the array index for the display and computations. A simpler example of the general algorithm is presented in the "Time Travel" section below.' ),
       h('hr'),
       h('p', 'Here are the definitions of the monad constructors: '   ),
       code.monads,
@@ -334,7 +371,7 @@ function main(sources) {
       code.fib,
       h('p', 'If you enter some number "n" in the box below, mMfib, whose initial value is [0,1], uses its bnd method as follows:' ),  
       h('p', {style: {color: '#FF0000'}}, 'mMfib.bnd(fib,n)' ),
-      h('p',   'The result will be displayed undernieth the input box. ' ),
+      h('p',   'The result will be displayed underneath the input box. ' ),
       h('br'),
       h('input#code', ),  
       h('p#code2', mM19.x ),  
@@ -376,6 +413,7 @@ function main(sources) {
       code.product4,  
       h('p', 'It usually gives the same result as the first two computations, but I found that adding and removing numbers in rapid succession occasionally gives a result slightly larger than expected. I suspect that the larger-than-expected result is caused by a side effect from a previously intitiated sequence of computations. The example at the bottom of this page shows that substituting `delay` for `debounce` results in side effects from all ongoing computations always being propagated and incorporated into the most recent computation.  ' ),
       h('hr',),  
+      h('h2', 'Time Travel'  ),
       h('p', 'For any monad m with value a and id "m", m.ret(v) returns a new monad named "m" with id "m" and value v. It looks like m got the new value v. What follows is a demonstration showing that m does not get mutated when it calls its "ret" method. '),
       h('p', 'The monad mMt will repeatedly use its "ret" method. Each time mMt does this, we will save mMt in an array named "history", which looks like this: [mMt, mMt, ...]. The size of history increases each time we run a computation similar to the ones above. ' ),
      h('p', 'We will then traverse history using the BACK and FORWARD buttons and display mMt.x, verifying that each mMt still has the value it had when it was pushed into the history array. Here is the code: ' ),  
@@ -395,7 +433,7 @@ function main(sources) {
       h('p', ' Put a number in the box below '  ),
       h('input#addF'  ),
       h('p',  mMtest.x  ),  
-      h('p', ' Try changing the number right after starting a computation. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces numbers larger 2001, which is the result of the default blank input field of 0. The faster you do it, the larger the number will; up to the limit of completing all 14 steps in under one second.  In the three algorithm example, if you put 1 in the left input box and type 1 seven times followed by BACKSPACE seven times in the other box, all three results are 2001. ' ),  
+      h('p', ' Try changing the number right after starting a computation. Typing "1" seven times in rapid succession and then rapidly pressing BACKSPACE seven times produces numbers larger 2001 (the result expected from the default value of 0). In the three algorithm example, if you put 1 in the left input box and type 1 seven times followed by BACKSPACE seven times in the other box, all three results are 2001. The faster you type numbers into the box, the larger the resuld. I held down the "9" key until I got infinity.  ' ),  
       h('p', ' The algorithms using sources.UNIT consistently give the desired result, never letting side effects from recently started sequences of computations spill over into the most recent sequences of computations. The one using most.debounce rarely give a too-large result and the one using most.delay always does. That doesn\'t necessarily imply that most.delay or most.debounce are buggy or that they could be improved. It does show that it is a mistake to start a sequence of computations using either of them if a similar sequence might already be running. ' ),
       h('p', ' . ' ),  
       h('p', ' . ' ),  
@@ -410,6 +448,61 @@ function main(sources) {
     )  
   } 
 }  
+
+const show = function show() {
+  let number0 = document.getElementById('0');
+  let number1 = document.getElementById('1');
+  let number2 = document.getElementById('2');
+  let number3 = document.getElementById('3');
+
+  if (mM1.x.length === 1) {
+    number0.style.display = 'inline' 
+    number1.style.display = 'none'   
+    number2.style.display = 'none'   
+    number3.style.display = 'none'   
+  }
+
+  if (mM1.x.length === 2) {
+    number0.style.display = 'inline' 
+    number1.style.display = 'inline'   
+    number2.style.display = 'none'   
+    number3.style.display = 'none'   
+  }
+
+  if (mM1.x.length === 3) {
+    number0.style.display = 'inline' 
+    number1.style.display = 'inline'   
+    number2.style.display = 'inline'   
+    number3.style.display = 'none'   
+  }
+
+  if (mM1.x.length === 4) {
+    number0.style.display = 'inline' 
+    number1.style.display = 'inline'   
+    number2.style.display = 'inline'   
+    number3.style.display = 'inline'   
+  }
+};
+
+function show2(x) {
+  mMsaveAr.bnd(unshift, [mM1.x[0], mM1.x[1], mM1.x[2], mM1.x[3]], mMsaveAr);
+  return ret(x);
+};
+
+function cleanup (x) {
+    let target0 = document.getElementById('0');
+    let target1 = document.getElementById('1');
+    let target2 = document.getElementById('2');
+    let target3 = document.getElementById('3');
+    let targetAr = [target0, target1, target2, target3];
+    for (let i = 0; i < 4; i+=1) {
+      if (mM1.x[i] === undefined) {
+        targetAr[i].style.display = 'none';
+      }
+      else {targetAr[i].style.display = 'inline'}
+    }
+    return ret(x);
+};
 
 function updateCalc() { 
   mMcalc.bnd(() => (
@@ -428,17 +521,22 @@ function updateCalc() {
                (mMZ6.bnd(() => mM9.bnd(score2) 
                             .bnd(next,3,mMZ7))),
                   (mMZ7.bnd(() => mM13.bnd(winner))),                 
-      (mM3.bnd(x => mM7
+       (mM3.bnd(x => mM7
                     .ret(calc(x[0], mM8.x, x[1]))
                     .bnd(next, 18, mMZ4)  // Releases mMZ4.
                     .bnd(next, 20, mMZ2) 
-                    .bnd(() => mM1.bnd(push,mM7.x)  // Returns a new anonymous monad.
-                    .bnd(mM1.ret)   // Creates a new mM1 the ddanonymous monad's value.
+                    .bnd(() => mM1.bnd(push, mM7.x, mM1)
+                    .bnd(v => mM1.bnd(log, 'first ' + v))
+                    .bnd(v => mMsaveAr.bnd(splice, ((mMindex2.x)+1), mMsave.ret(v).bnd(clean,mMsave), mMsaveAr))
+                    .bnd(v => mM1.bnd(log, 'after ' + v))
+                    .bnd(() => mMindex2.bnd(add,1))
+                    .bnd(mMindex2.ret)
                     .bnd(displayOff, ((mM1.x.length)+''))
                     .bnd(() => mM3
                     .ret([])
                     .bnd(() => mM4
-                    .ret(0).bnd(mM8.ret) )))))
+                    .ret(0).bnd(mM8.ret).bnd(cleanup)
+                    )))))
   ))
 }
 
@@ -447,7 +545,7 @@ var updateScoreboard = function updateScoreboard(v) {
   let ar = mMscbd.x;
   let keys = Object.keys(ar);
   for (let k in keys) {
-    mMscoreboard.bnd(unshift, h('div.indent', ar[k]))
+    mMscoreboard.bnd(unshift, h('div.indent', ar[k]), mMscoreboard)
   }
   return mMscoreboard;
 }
@@ -461,7 +559,7 @@ var updateMessages = function updateMessages(v) {
   let ar = mMmsg.x;
   let keys = Object.keys(ar);
   for (let k in keys) {
-    mMmessages.bnd(unshift, h('div', ar[k]))
+    mMmessages.bnd(unshift, h('div', ar[k]),mMmessages)
   }
   return mMmessages;
 }
