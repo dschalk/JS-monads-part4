@@ -495,7 +495,7 @@ function cleanup (x) {
     let target2 = document.getElementById('2');
     let target3 = document.getElementById('3');
     let targetAr = [target0, target1, target2, target3];
-    for (let i = 0; i < 4; i+=1) {
+    for (let i in [0,1,2,3]) {
       if (mM1.x[i] === undefined) {
         targetAr[i].style.display = 'none';
       }
