@@ -9128,13 +9128,13 @@ function cleanup(x) {
   var target2 = document.getElementById('2');
   var target3 = document.getElementById('3');
   var targetAr = [target0, target1, target2, target3];
-  for (var i in [0, 1, 2, 3]) {
-    if (mM1.x[i] === undefined) {
-      targetAr[i].style.display = 'none';
+  [0, 1, 2, 3].map(function (v) {
+    if (mM1.x[v] === undefined) {
+      targetAr[v].style.display = 'none';
     } else {
-      targetAr[i].style.display = 'inline';
+      targetAr[v].style.display = 'inline';
     }
-  }
+  });
   return ret(x);
 };
 
